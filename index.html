@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת עומסים על מעקה מרפסת</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f9fa; margin: 0; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 12px; shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2980b9; }
+        .field { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        select, input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 15px; background: #2980b9; color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        #result { margin-top: 20px; background: #fff; border: 1px solid #ccc; padding: 15px; display: none; white-space: pre-wrap; font-family: monospace; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>בדיקת עומסים על מעקה מרפסת</h2>
+        <div class="field">
+            <label>סוג מעקה *</label>
+            <select id="type" onchange="toggleFields()">
+                <option value="מילא">מעקה עם לוח מילא</option>
+                <option value="פלדה">מעקה פלדה</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>מספר פרויקט *</label>
+            <input type="text" id="projId">
+        </div>
+        <div id="windFields">
+            <div class="field">
+                <label>עיר *</label>
+                <select id="city"></select>
+            </div>
+            <div class="field">
+                <label>גובה בניין (מ')</label>
+                <input type="number" id="hb" value="30.00" step="0.1">
+            </div>
+        </div>
+        <div class="field">
+            <label>L1 מפתח (מ')</label>
+            <input type="number" id="l1" value="1.50" step="0.01">
+        </div>
+        <div class="field">
+            <label>L2 מפתח (מ')</label>
+            <input type="number" id="l2" value="1.50" step="0.01">
+        </div>
+        <button onclick="calculate()">בצע חישוב</button>
+        <div id="result"></div>
+        <button id="downloadBtn" class="hidden" onclick="downloadPDF()" style="background:#27ae60; margin-top:10px;">שמור דוח</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
