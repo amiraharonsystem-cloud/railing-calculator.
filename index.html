@@ -3,49 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת בדיקת מעקות - ת"י 1142</title>
+    <title>מערכת בדיקת מעקות - גרסה מלאה</title>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <style>
-        :root { --blue: #1a4a7a; --green: #27ae60; --gray: #f4f7f6; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--gray); margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .wrapper { background: white; width: 100%; max-width: 550px; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); border-top: 8px solid var(--blue); }
-        h2 { text-align: center; color: var(--blue); margin-top: 0; }
-        .section { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #eee; }
-        .section-title { font-weight: bold; color: var(--blue); margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
-        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #444; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; margin-bottom: 10px; }
+        :root { --blue: #1a4a7a; --green: #27ae60; --bg: #f0f2f5; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); margin: 0; padding: 10px; direction: rtl; }
+        .wrapper { background: white; width: 100%; max-width: 500px; margin: auto; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: var(--blue); margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .section { background: #fdfdfd; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #e0e4e8; }
+        .section-title { font-weight: bold; color: var(--blue); margin-bottom: 12px; font-size: 16px; display: block; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #555; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; margin-bottom: 10px; -webkit-appearance: none; background-color: white; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .btn { width: 100%; padding: 18px; background: var(--green); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .status-row { display: flex; justify-content: space-between; align-items: center; background: white; padding: 8px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #eee; }
+        .status-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
         .status-row select { width: auto; margin: 0; padding: 5px; }
     </style>
 </head>
-<body onload="initCities()">
+<body>
 
 <div class="wrapper">
-    <h2>דוח בדיקת מעקה - ת"י 1142</h2>
+    <h2>תעודת בדיקת מעקה - ת"י 1142</h2>
 
     <div class="section">
-        <div class="section-title">פרטי פרויקט ואתר</div>
-        <label>מספר פרויקט / דוח *</label>
-        <input type="text" id="proj_id" placeholder="למשל: 1001/24">
-        <label>שם האתר / לקוח</label>
-        <input type="text" id="site_name" placeholder="שם הפרויקט">
-        <label>מיקום הבדיקה</label>
-        <input type="text" id="loc" placeholder="קומה / דירה">
+        <span class="section-title">פרטי פרויקט וזיהוי</span>
+        <label>מספר דוח / פרויקט *</label>
+        <input type="text" id="proj_id" placeholder="למשל: 505/2025">
+        <label>שם האתר / המזמין</label>
+        <input type="text" id="site_name" placeholder="שם הלקוח">
+        <label>מיקום הבדיקה המדויק</label>
+        <input type="text" id="loc" placeholder="קומה, דירה, חזית">
     </div>
 
     <div class="section">
-        <div class="section-title">נתוני חישוב (שלב א')</div>
+        <span class="section-title">נתוני חישוב הנדסי</span>
         <label>בחר עיר לבדיקה *</label>
         <select id="city_select">
-            <option value="">-- בחר עיר מהרשימה --</option>
-        </select>
-        <div class="grid">
-            <div>
-                <label>גובה בניין (מ')</label>
-                <input type="number" id="hb" value="30.00" step="0.1">
-            </div>
-            <div>
-                <label>גובה מעקה (מ')</label>
-                <input type="number" id="hr" value="1.05" step="
+            <option value="תל אביב-יפו">תל אביב-יפו</option>
+            <option value="ירושלים">ירושלים</option>
+            <option value="חיפה">חיפה</option>
+            <option value="אשדוד">אשדוד</option>
+            <option value="באר שבע">באר שבע</option>
+            <option value="ראשון לציון">ראשון לציון</option>
+            <option value="פתח תקווה">פתח תקווה</option>
+            <option value="נתניה">נתניה</option>
+            <option value="חולון">חולון</option>
+            <option value="בני ברק">בני ברק</option>
+            <option value="רמת גן">רמת גן</option>
+            <option value="אשקלון">אשקלון</option>
+            <option value="רחובות">רחובות</option>
+            <option value="בית שמש">בית שמש</option>
+            <option value="כפר סבא">כפר סבא</option>
+            <option value="חדרה">חדרה</option>
