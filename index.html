@@ -2,142 +2,157 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>מערכת דוחות מעקה</title>
-    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת דוחות מעקה - ת"י 1142</title>
     <style>
-        :root { --blue: #1a4a7a; --green: #27ae60; --bg: #f4f7f9; }
-        body { font-family: system-ui, sans-serif; background: var(--bg); margin: 0; direction: rtl; }
-        .app-container { max-width: 600px; margin: 10px auto; background: white; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); overflow: hidden; }
-        .tabs { display: flex; background: #eee; border-bottom: 2px solid #ddd; }
-        .tab { flex: 1; padding: 15px 5px; text-align: center; cursor: pointer; font-weight: bold; color: #666; font-size: 14px; }
+        :root { --blue: #1a4a7a; --bg: #f4f7f9; }
+        body { font-family: system-ui, sans-serif; background: var(--bg); margin: 0; direction: rtl; padding: 10px; }
+        .app-container { max-width: 600px; margin: auto; background: white; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); overflow: hidden; }
+        .tabs { display: flex; background: #eee; }
+        .tab { flex: 1; padding: 15px 5px; text-align: center; cursor: pointer; font-weight: bold; color: #666; font-size: 14px; border-bottom: 2px solid #ddd; }
         .tab.active { background: white; color: var(--blue); border-bottom: 3px solid var(--blue); }
-        .tab-content { display: none; padding: 20px; min-height: 450px; }
+        .tab-content { display: none; padding: 20px; }
         .tab-content.active { display: block; }
-        .field { margin-bottom: 15px; }
-        label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 5px; color: #333; }
+        .field { margin-bottom: 12px; }
+        label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
-        .btn { padding: 15px 25px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .btn-next { background: var(--blue); color: white; width: 100%; }
-        .btn-submit { width: 100%; background: var(--green); color: white; padding: 20px; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; margin-top: 20px; }
-        .calc-box { background: #f0f7ff; padding: 10px; border-radius: 8px; border: 1px dashed var(--blue); font-weight: bold; text-align: center; margin-top: 5px; }
+        .btn-next { width: 100%; background: var(--blue); color: white; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        
+        /* עיצוב הדוח הסופי */
+        #final-report { display: none; background: white; padding: 20px; border: 2px solid #000; margin-top: 20px; line-height: 1.6; }
+        .report-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .report-table td, .report-table th { border: 1px solid #000; padding: 8px; text-align: right; }
+        .header-title { text-align: center; font-weight: bold; font-size: 18px; text-decoration: underline; margin-bottom: 20px; }
+        @media print { .tabs, .btn-next, .field, label, .app-container { display: none; } #final-report { display: block; } }
     </style>
 </head>
 <body>
 
-<div class="app-container">
+<div class="app-container" id="form-ui">
     <div class="tabs">
         <div class="tab active" id="t0" onclick="showTab(0)">מנהלה</div>
         <div class="tab" id="t1" onclick="showTab(1)">אתר</div>
         <div class="tab" id="t2" onclick="showTab(2)">חישובים</div>
-        <div class="tab" id="t3" onclick="showTab(3)">תוצאות</div>
+        <div class="tab" id="t3" onclick="showTab(3)">סיכום</div>
     </div>
 
     <div id="tab0" class="tab-content active">
-        <div class="field"><label>קוד פרויקט</label><input type="text" id="proj_code"></div>
-        <div class="field"><label>שם המזמין</label><input type="text" id="client_name"></div>
-        <div class="field"><label>נציג המזמין</label><input type="text" id="client_rep"></div>
-        <div class="field"><label>תאריך בדיקה</label><input type="date" id="r_date"></div>
-        <button class="btn btn-next" onclick="showTab(1)">הבא ➔</button>
+        <div class="field"><label>קוד פרויקט</label><input type="text" id="p_code"></div>
+        <div class="field"><label>שם המזמין</label><input type="text" id="c_name"></div>
+        <div class="field"><label>נציג המזמין</label><input type="text" id="c_rep"></div>
+        <div class="field"><label>תאריך</label><input type="date" id="r_date"></div>
+        <button class="btn-next" onclick="showTab(1)">המשך לאתר ➔</button>
     </div>
 
     <div id="tab1" class="tab-content">
-        <div class="field"><label>כתובת האתר</label><input type="text" id="site_addr"></div>
-        <div class="field"><label>תיאור הפריט</label><input type="text" id="item_desc" placeholder="מעקה זכוכית..."></div>
-        <div class="field"><label>מיקום הבדיקה</label><input type="text" id="test_loc" placeholder="דירה/קומה"></div>
-        <div class="nav-buttons">
-            <button class="btn btn-next" onclick="showTab(2)">הבא ➔</button>
-        </div>
+        <div class="field"><label>כתובת האתר</label><input type="text" id="s_addr"></div>
+        <div class="field"><label>תיאור הפריט</label><input type="text" id="i_desc" placeholder="מעקה זכוכית..."></div>
+        <div class="field"><label>מיקום הבדיקה</label><input type="text" id="t_loc" placeholder="קומה/דירה"></div>
+        <button class="btn-next" onclick="showTab(2)">המשך לחישובים ➔</button>
     </div>
 
     <div id="tab2" class="tab-content">
         <div class="field">
-            <label>עיר/ישוב (חיפוש מהיר)</label>
+            <label>עיר (חיפוש אוטומטי)</label>
             <input list="cities" id="city_input" placeholder="הקלד שם ישוב...">
             <datalist id="cities">
-                </datalist>
+                <option value="אשדוד"><option value="אשקלון"><option value="באר שבע"><option value="בת ים"><option value="גבעתיים"><option value="הוד השרון"><option value="הרצליה"><option value="חולון"><option value="חיפה"><option value="טבריה"><option value="ירושלים"><option value="כפר סבא"><option value="לוד"><option value="מודיעין"><option value="נהריה"><option value="נתניה"><option value="עכו"><option value="עפולה"><option value="פתח תקווה"><option value="צפת"><option value="קרית גת"><option value="ראשון לציון"><option value="רחובות"><option value="רמלה"><option value="רמת גן"><option value="רעננה"><option value="תל אביב-יפו">
+            </datalist>
         </div>
         <div class="grid">
-            <div class="field"><label>גובה לוח (מ')</label><input type="number" id="h_val" value="1.00" oninput="calcS()"></div>
+            <div class="field"><label>גובה לוח (מ')</label><input type="number" id="h_val" value="1.10" oninput="calcS()"></div>
             <div class="field"><label>אורך לוח (מ')</label><input type="number" id="w_val" value="1.00" oninput="calcS()"></div>
         </div>
-        <div class="calc-box">שטח לוח מחושב (S): <span id="s_result">1.00</span> מ"ר</div>
-        
-        <div class="grid" style="margin-top:15px;">
-            <div class="field"><label>L1 חזית (מ')</label><input type="number" id="l1" value="1.50"></div>
-            <div class="field"><label>L2 פינה (מ')</label><input type="number" id="l2" value="1.50"></div>
+        <div style="background:#eef; padding:10px; border-radius:8px; text-align:center; font-weight:bold;">
+            שטח מחושב S = <span id="s_res">1.10</span> מ"ר
         </div>
-        <div class="nav-buttons">
-            <button class="btn btn-next" onclick="showTab(3)">הבא ➔</button>
+        <div class="grid" style="margin-top:10px;">
+            <div class="field"><label>L1 חזית</label><input type="number" id="l1" value="1.50"></div>
+            <div class="field"><label>L2 פינה</label><input type="number" id="l2" value="1.50"></div>
         </div>
+        <button class="btn-next" onclick="showTab(3)">הצג דוח סופי ➔</button>
     </div>
 
     <div id="tab3" class="tab-content">
         <div class="field"><label>בדיקה חזותית</label><select id="v1"><option>מתאים</option><option>לא מתאים</option></select></div>
         <div class="field"><label>בדיקה גיאומטרית</label><select id="v2"><option>מתאים</option><option>לא מתאים</option></select></div>
-        <div class="field"><label>הערות</label><textarea id="notes" rows="4"></textarea></div>
-        <button class="btn-submit" onclick="generateExcel()">📊 הפק אקסל סופי</button>
+        <div class="field"><label>הערות</label><textarea id="notes" rows="3"></textarea></div>
+        <button class="btn-next" style="background:#27ae60;" onclick="viewReport()">הצג דוח רשמי</button>
     </div>
 </div>
 
-<script>
-    const cityList = ["אבו גוש","אבו סנאן","אבן יהודה","אופקים","אור יהודה","אור עקיבא","אורנית","אילת","אכסאל","אלעד","אלפי מנשה","אלקנה","אעבלין","אריאל","אשדוד","אשקלון","באקה אל-גרבייה","באר שבע","באר יעקב","בוקעאתא","בית אל","בית דגן","בית שאן","בית שמש","ביתר עילית","בני ברק","בני עי\"ש","בנימינה","בסמה","בסמת טבעון","בענה","בת ים","גבעת שמואל","גבעת זאב","גבעתיים","ג'דיידה-מכר","ג'ולס","ג'לג'וליה","גן יבנה","גני תקווה","ג'סר א-זרקא","ג'ש (גוש חלב)","גדרות","גדרה","דלית אל-כרמל","דבורייה","דייר אל-אסד","דייר חנא","דימונה","הוד השרון","הרצליה","זכרון יעקב","זמר","זרזיר","חצור הגלילית","חריש","חולון","חיפה","חצור","חריש","טבריה","טייבה","טירה","טירת כרמל","טמרה","יבנה","יהוד-מונוסון","יסוד המעלה","יפיע","יקנעם עילית","ירוחם","ירושלים","ירכא","כאבול","כאוכב אבו אל-היג'א","כוכב יאיר","כסיפה","כסרא-סמיע","כפר ברא","כפר ורדים","כפר יאסף","כפר יונה","כפר כמא","כפר כנא","כפר מנדא","כפר סבא","כפר קאסם","כפר קרע","כפר שמריהו","כפר תבור","כרמיאל","להבים","לוד","מבשרת ציון","מג'ד אל-כרום","מג'דל שמס","מגדל","מגדל העמק","מודיעין עילית","מודיעין-מכבים-רעות","מזכרת בתיה","מטולה","מזרעה","מיתר","מעלה אדומים","מעלה אפרים","מעלה עירון","מעלות-תרשיחא","מצפה רמון","משהד","נהריה","נוף הגליל","נתיבות","נתניה","נשר","נצרת","נתיבות","סאג'ור","סח'נין","סביון","עומר","עילוט","עין מאהל","עין קנייא","עכו","עמנואל","עספיא","עפולה","ערד","ערערה","פוריידיס","פסוטה","פקיעין","פרדס חנה-כרכור","פרדסיה","פתח תקווה","צפת","קצרין","קרית אונו","קרית ארבע","קרית אתא","קרית ביאליק","קרית גת","קרית ים","קרית מוצקין","קרית מלאכי","קרית עקרון","קרית שמונה","קרני שומרון","רהט","רכסים","רמלה","רמת גן","רמת השרון","רמת ישי","רעננה","רכסים","רהט","שדרות","שוהם","שלומי","שפרעם","תל אביב-יפו","תל שבע","תל מונד"];
+<div id="final-report">
+    <div class="header-title">תעודת בדיקת מעקה במעטפת הבניין (ת"י 1142)</div>
+    <table class="report-table">
+        <tr>
+            <td colspan="2"><b>קוד פרויקט:</b> <span id="out_p"></span></td>
+            <td colspan="2"><b>תאריך:</b> <span id="out_date"></span></td>
+        </tr>
+        <tr>
+            <td colspan="4"><b>שם המזמין:</b> <span id="out_cname"></span></td>
+        </tr>
+        <tr>
+            <td colspan="2"><b>כתובת האתר:</b> <span id="out_addr"></span></td>
+            <td colspan="2"><b>נציג בבדיקה:</b> <span id="out_rep"></span></td>
+        </tr>
+        <tr>
+            <th colspan="4" style="background:#eee;">פרטי המערכת והבדיקה</th>
+        </tr>
+        <tr>
+            <td colspan="2"><b>תיאור הפריט:</b> <span id="out_item"></span></td>
+            <td colspan="2"><b>מיקום:</b> <span id="out_loc"></span></td>
+        </tr>
+        <tr>
+            <td colspan="2"><b>עיר:</b> <span id="out_city"></span></td>
+            <td colspan="2"><b>שטח לוח S:</b> <span id="out_s"></span> מ"ר</td>
+        </tr>
+        <tr>
+            <td><b>L1 חזית:</b> <span id="out_l1"></span></td>
+            <td><b>L2 פינה:</b> <span id="out_l2"></span></td>
+            <td colspan="2"><b>סטטוס חזותי:</b> <span id="out_v1"></span></td>
+        </tr>
+        <tr>
+            <td colspan="4"><b>הערות:</b> <span id="out_notes"></span></td>
+        </tr>
+    </table>
+    <br>
+    <button class="btn-next" onclick="window.print()">🖨️ הדפס ל-PDF</button>
+    <button class="btn-next" style="background:#666;" onclick="location.reload()">חזור לעריכה</button>
+</div>
 
-    window.onload = () => {
-        document.getElementById('r_date').valueAsDate = new Date();
-        const dl = document.getElementById('cities');
-        cityList.forEach(city => {
-            let opt = document.createElement('option');
-            opt.value = city;
-            dl.appendChild(opt);
-        });
-    };
+<script>
+    document.getElementById('r_date').valueAsDate = new Date();
 
     function calcS() {
         const h = document.getElementById('h_val').value || 0;
         const w = document.getElementById('w_val').value || 0;
-        const s = (h * w).toFixed(2);
-        document.getElementById('s_result').innerText = s;
+        document.getElementById('s_res').innerText = (h * w).toFixed(2);
     }
 
-    function showTab(index) {
-        document.querySelectorAll('.tab-content').forEach((c, i) => {
-            c.classList.toggle('active', i === index);
-            document.getElementById('t' + i).classList.toggle('active', i === index);
-        });
-        window.scrollTo(0,0);
+    function showTab(idx) {
+        document.querySelectorAll('.tab-content').forEach((c, i) => c.classList.toggle('active', i === idx));
+        document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
     }
 
-    function generateExcel() {
-        const proj = document.getElementById('proj_code').value;
-        const s_calc = document.getElementById('s_result').innerText;
-        
-        const data = [
-            ["תעודת בדיקת מעקה במעטפת הבניין"],
-            ["קוד פרויקט:", proj, "", "תאריך:", document.getElementById('r_date').value],
-            ["שם המזמין:", document.getElementById('client_name').value],
-            ["נציג המזמין:", document.getElementById('client_rep').value],
-            ["כתובת האתר:", document.getElementById('site_addr').value],
-            [""],
-            ["נתוני לוח מליא:"],
-            ["גובה לוח:", document.getElementById('h_val').value, "אורך לוח:", document.getElementById('w_val').value],
-            ["שטח מחושב S:", s_calc],
-            [""],
-            ["נתוני שדה:"],
-            ["עיר:", document.getElementById('city_input').value],
-            ["L1 (חזית):", document.getElementById('l1').value, "L2 (פינה):", document.getElementById('l2').value],
-            [""],
-            ["תוצאות:"],
-            ["חזותית:", document.getElementById('v1').value, "גיאומטרית:", document.getElementById('v2').value],
-            ["הערות:", document.getElementById('notes').value]
-        ];
+    function viewReport() {
+        document.getElementById('form-ui').style.display = 'none';
+        document.getElementById('final-report').style.display = 'block';
 
-        const ws = XLSX.utils.aoa_to_sheet(data);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "דוח מעקה");
-        XLSX.writeFile(wb, `Report_${proj || 'Draft'}.xlsx`);
+        // מילוי נתונים בטבלה
+        document.getElementById('out_p').innerText = document.getElementById('p_code').value;
+        document.getElementById('out_date').innerText = document.getElementById('r_date').value;
+        document.getElementById('out_cname').innerText = document.getElementById('client_name')?.value || document.getElementById('c_name').value;
+        document.getElementById('out_addr').innerText = document.getElementById('s_addr').value;
+        document.getElementById('out_rep').innerText = document.getElementById('c_rep').value;
+        document.getElementById('out_item').innerText = document.getElementById('i_desc').value;
+        document.getElementById('out_loc').innerText = document.getElementById('t_loc').value;
+        document.getElementById('out_city').innerText = document.getElementById('city_input').value;
+        document.getElementById('out_s').innerText = document.getElementById('s_res').innerText;
+        document.getElementById('out_l1').innerText = document.getElementById('l1').value;
+        document.getElementById('out_l2').innerText = document.getElementById('l2').value;
+        document.getElementById('out_v1').innerText = document.getElementById('v1').value;
+        document.getElementById('out_notes').innerText = document.getElementById('notes').value;
     }
 </script>
 </body>
