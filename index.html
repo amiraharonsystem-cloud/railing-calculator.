@@ -3,124 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת בדיקת מעקה - ת"י 1142</title>
+    <title>מערכת הפקת דוחות מעקה - ת"י 1142</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; direction: rtl; padding: 20px; display: flex; justify-content: center; }
-        .form-container { background: white; width: 100%; max-width: 500px; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        h2 { text-align: center; color: #1a4a7a; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 10px; background: #fafafa; }
-        .section-title { font-weight: bold; margin-bottom: 10px; display: block; color: #1a4a7a; }
-        label { display: block; margin-top: 10px; font-size: 14px; font-weight: 600; }
-        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        :root { --p: #1a4a7a; --s: #27ae60; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); direction: rtl; margin: 0; padding: 15px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 8px solid var(--p); }
+        h2 { text-align: center; color: var(--p); margin-bottom: 25px; }
+        .section { background: #fdfdfd; padding: 15px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 15px; }
+        .section-title { font-weight: bold; color: var(--p); border-bottom: 2px solid #eee; margin-bottom: 12px; display: block; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #444; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; margin-bottom: 12px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-submit { width: 100%; background: #27ae60; color: white; padding: 18px; border: none; border-radius: 10px; font-size: 20px; font-weight: bold; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 0 #1e8449; }
-        .btn-submit:active { transform: translateY(2px); box-shadow: none; }
+        .btn-main { width: 100%; padding: 20px; background: var(--s); color: white; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 0 #1e8449; }
+        .btn-main:active { transform: translateY(3px); box-shadow: none; }
+        .check-box { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #fff; border: 1px solid #eee; border-radius: 6px; margin-bottom: 5px; }
+        .check-box select { width: auto; margin: 0; padding: 5px; }
     </style>
 </head>
 <body>
 
-<div class="form-container">
-    <h2>דוח בדיקת מעקה</h2>
+<div class="container">
+    <h2>תעודת בדיקת מעקה מרפסת</h2>
 
     <div class="section">
-        <span class="section-title">פרטי פרויקט</span>
-        <label>מספר דוח/פרויקט *</label>
-        <input type="text" id="report_num" placeholder="חובה">
-        <label>שם האתר / לקוח</label>
-        <input type="text" id="site_name">
-        <label>מיקום הבדיקה</label>
-        <input type="text" id="location_info" placeholder="קומה / חזית">
+        <span class="section-title">1. פרטי הלקוח וזיהוי</span>
+        <div class="grid">
+            <div><label>דו"ח מס' *</label><input type="text" id="report_id" placeholder="חובה"></div>
+            <div><label>סוג בדיקה</label>
+                <select id="test_type">
+                    <option value="ראשונה">ראשונה</option>
+                    <option value="חוזרת">חוזרת</option>
+                </select>
+            </div>
+        </div>
+        <label>שם המזמין</label><input type="text" id="client_name">
+        <label>כתובת האתר</label><input type="text" id="site_addr">
     </div>
 
     <div class="section">
-        <span class="section-title">נתוני חישוב הנדסי</span>
-        <label>בחר עיר *</label>
-        <select id="city">
+        <span class="section-title">2. נתוני חישוב הנדסי</span>
+        <label>עיר לבדיקה *</label>
+        <select id="city_sel">
             <option value="תל אביב-יפו">תל אביב-יפו</option>
             <option value="ירושלים">ירושלים</option>
             <option value="חיפה">חיפה</option>
+            <option value="אשדוד">אשדוד</option>
+            <option value="באר שבע">באר שבע</option>
+            <option value="נתניה">נתניה</option>
             <option value="ראשון לציון">ראשון לציון</option>
             <option value="פתח תקווה">פתח תקווה</option>
-            <option value="אשדוד">אשדוד</option>
-            <option value="נתניה">נתניה</option>
-            <option value="בני ברק">בני ברק</option>
-            <option value="חולון">חולון</option>
-            <option value="באר שבע">באר שבע</option>
+            <option value="אשקלון">אשקלון</option>
+            <option value="בית שמש">בית שמש</option>
         </select>
         <div class="grid">
-            <div><label>גובה בניין (מ')</label><input type="number" id="hb" value="30"></div>
-            <div><label>גובה מעקה (מ')</label><input type="number" id="hr" value="1.05"></div>
-        </div>
-        <div class="grid">
+            <div><label>גובה בניין (מ')</label><input type="number" id="hb" value="30.00"></div>
             <div><label>L1 חזית (מ')</label><input type="number" id="l1" value="1.50"></div>
-            <div><label>L2 פינה (מ')</label><input type="number" id="l2" value="1.50"></div>
         </div>
     </div>
 
     <div class="section">
-        <span class="section-title">תוצאות בדיקת שטח</span>
-        <label>בדיקה חזותית</label>
-        <select id="res_visual"><option value="מתאים">מתאים ✅</option><option value="לא מתאים">לא מתאים ❌</option></select>
-        <label>בדיקה גיאומטרית</label>
-        <select id="res_geo"><option value="מתאים">מתאים ✅</option><option value="לא מתאים">לא מתאים ❌</option></select>
-        <label>הערות</label>
-        <textarea id="notes" rows="2"></textarea>
+        <span class="section-title">3. נתוני לוח מליא (S, L)</span>
+        <div class="grid">
+            <div><label>שטח הלוח S (מ"ר)</label><input type="number" id="s_area" value="1.00"></div>
+            <div><label>מפתח לוח L (מ')</label><input type="number" id="l_width" value="1.00"></div>
+        </div>
+        <div class="grid">
+            <div><label>S1 (מ')</label><input type="number" id="s1_val" value="0.00"></div>
+            <div><label>S2 (מ')</label><input type="number" id="s2_val" value="0.00"></div>
+        </div>
     </div>
 
-    <button type="button" class="btn-submit" onclick="downloadExcel()">📊 הפק אקסל עכשיו</button>
+    <div class="section">
+        <span class="section-title">4. סטטוס בדיקה</span>
+        <div class="check-box"><span>בדיקה חזותית:</span><select id="v_visual"><option value="מתאים">מתאים ✅</option><option value="לא מתאים">לא מתאים ❌</option></select></div>
+        <div class="check-box"><span>בדיקה גיאומטרית:</span><select id="v_geo"><option value="מתאים">מתאים ✅</option><option value="לא מתאים">לא מתאים ❌</option></select></div>
+        <div class="check-box"><span>לוח מליא:</span><select id="v_panel"><option value="מתאים">מתאים ✅</option><option value="לא מתאים">לא מתאים ❌</option></select></div>
+    </div>
+
+    <button class="btn-main" onclick="exportToExcel()">📊 הפק אקסל בדיוק כמו המקור</button>
 </div>
 
 <script>
-    const CITY_WINDS = {"תל אביב-יפו":24,"ירושלים":26,"חיפה":24,"ראשון לציון":24,"פתח תקווה":24,"אשדוד":24,"נתניה":24,"בני ברק":24,"חולון":24,"באר שבע":24};
+    const CITY_DATA = {"תל אביב-יפו":24,"ירושלים":26,"חיפה":24,"אשדוד":24,"באר שבע":24,"נתניה":24,"ראשון לציון":24,"פתח תקווה":24,"אשקלון":24,"בית שמש":26};
 
-    function downloadExcel() {
+    function exportToExcel() {
         try {
-            const reportId = document.getElementById('report_num').value;
-            if(!reportId) { alert("אנא הזן מספר דוח"); return; }
+            const rid = document.getElementById('report_id').value;
+            if(!rid) { alert("נא להזין מספר דוח"); return; }
 
-            const cityName = document.getElementById('city').value;
-            const vb = CITY_WINDS[cityName] || 24;
+            const city = document.getElementById('city_sel').value;
+            const vb = CITY_DATA[city] || 24;
             const hb = parseFloat(document.getElementById('hb').value);
-            const hr = parseFloat(document.getElementById('hr').value);
             const l1 = parseFloat(document.getElementById('l1').value);
-            const l2 = parseFloat(document.getElementById('l2').value);
 
-            // נוסחאות מהאקסל המקורי
-            const ze = Math.max(hb + hr, 2.0);
+            // חישוב עומסים לפי הנוסחאות באקסל המקורי
+            const ze = Math.max(hb + 1.05, 2.0);
             const logZ = Math.log(ze / 1.0);
             const ce = (0.234 * logZ) * (1 + 7 / logZ);
             const we = 0.613 * Math.pow(vb, 2) * ce * 1.8;
-            const Fser = Math.ceil(Math.max(we * hr, 750 + ((we * hr) / 2)));
+            const Fser = Math.ceil(Math.max(we * 1.05, 750 + ((we * 1.05) / 2)));
 
-            const data = [
-                ["תעודת בדיקת מעקה - תקן 1142"],
-                ["מספר דוח:", reportId],
+            // בניית מבנה הנתונים (AO_A) לטובת ה-CSV/XLSX
+            const rows = [
+                ["תעודת בדיקת מעקה במעטפת הבניין"],
+                ["מספר דוח:", rid, "", "סוג בדיקה:", document.getElementById('test_type').value],
+                ["שם המזמין:", document.getElementById('client_name').value],
+                ["כתובת האתר:", document.getElementById('site_addr').value],
                 ["תאריך:", new Date().toLocaleDateString('he-IL')],
-                ["שם האתר:", document.getElementById('site_name').value],
-                ["מיקום בדיקה:", document.getElementById('location_info').value],
                 [""],
-                ["נתונים הנדסיים:"],
-                ["עיר:", cityName, "מהירות רוח (Vb):", vb],
-                ["לחץ רוח (We):", we.toFixed(2), "עומס שירות (Fser):", Fser],
+                ["נתוני תכנון והנדסה"],
+                ["עיר:", city, "Vb:", vb, "מ/ש"],
+                ["גובה בניין:", hb, "לחץ רוח We:", we.toFixed(2)],
+                ["עומס שירות Fser:", Fser, "נ/מ\"א"],
                 [""],
-                ["תוצאות בדיקה:"],
-                ["חזותית:", document.getElementById('res_visual').value],
-                ["גיאומטרית:", document.getElementById('res_geo').value],
+                ["נתוני לוח מליא (מדידה)"],
+                ["שטח לוח S:", document.getElementById('s_area').value, "מפתח לוח L:", document.getElementById('l_width').value],
+                ["S1:", document.getElementById('s1_val').value, "S2:", document.getElementById('s2_val').value],
                 [""],
-                ["עומס ניצב שדה:", Math.ceil(Fser * l1 * 0.75), "ניוטון"],
-                ["עומס ניצב פינה:", Math.ceil(Fser * (0.5 * l2 + 0.125 * l1)), "ניוטון"],
-                ["הערות:", document.getElementById('notes').value]
+                ["תוצאות בדיקה"],
+                ["בדיקה חזותית:", document.getElementById('v_visual').value],
+                ["בדיקה גיאומטרית:", document.getElementById('v_geo').value],
+                ["שלמות לוח:", document.getElementById('v_panel').value],
+                [""],
+                ["חישוב עומס ניצב (סעיף ב'):", Math.ceil(Fser * l1 * 0.75), "ניוטון"]
             ];
 
-            const ws = XLSX.utils.aoa_to_sheet(data);
+            const ws = XLSX.utils.aoa_to_sheet(rows);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "דוח");
 
-            // הורדה
-            XLSX.writeFile(wb, "Report_" + reportId + ".xlsx");
+            XLSX.writeFile(wb, `Report_${rid}.xlsx`);
         } catch (e) {
-            alert("שגיאה ביצירת הקובץ: " + e.message);
+            alert("שגיאה: " + e.message);
         }
     }
 </script>
