@@ -3,172 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מחשבון עומסי מעקה</title>
+    <title>מחשבון עומסים - גרסה מעוצבת</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
-        :root { --primary: #2980b9; --success: #27ae60; --bg: #f4f7f6; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); margin: 0; padding: 15px; display: flex; justify-content: center; }
-        .card { background: white; width: 100%; max-width: 500px; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: var(--primary); margin-bottom: 25px; border-bottom: 2px solid var(--bg); padding-bottom: 10px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .field { margin-bottom: 18px; }
-        .full { grid-column: span 2; }
-        label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; color: #34495e; }
-        select, input { width: 100%; padding: 12px; border: 1px solid #dcdde1; border-radius: 8px; box-sizing: border-box; font-size: 16px; transition: border 0.3s; }
-        select:focus, input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 5px rgba(41,128,185,0.2); }
-        button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: background 0.3s; }
-        button:hover { background: #2471a3; }
-        #resultBox { margin-top: 25px; padding: 20px; background: #fff; border: 2px solid #e1e8ed; border-radius: 10px; display: none; }
-        #reportText { white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.5; color: #2c3e50; }
-        .hidden { display: none; }
-        .download-btn { background: var(--success); margin-top: 15px; }
+        :root { --primary: #1a2a3a; --accent: #3498db; --success: #218838; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #eef2f3; margin: 0; padding: 10px; display: flex; justify-content: center; }
+        .card { background: white; width: 100%; max-width: 480px; padding: 20px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border-top: 6px solid var(--primary); }
+        h2 { text-align: center; color: var(--primary); margin-bottom: 20px; font-size: 24px; }
+        .section-header { background: #f8f9fa; padding: 10px; border-right: 4px solid var(--accent); font-weight: bold; margin: 15px 0; font-size: 15px; color: #333; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .field { margin-bottom: 12px; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #444; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        button { width: 100%; padding: 18px; background: var(--success); color: white; border: none; border-radius: 10px; font-size: 19px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        button:active { background: #1e7e34; transform: translateY(2px); }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>בדיקת עומסים על מעקה</h2>
-        
+
+<div class="card">
+    <h2>תכנון עומסים למעקה</h2>
+    
+    <div class="field">
+        <label>סוג מעקה *</label>
+        <select id="type" onchange="toggleFields()">
+            <option value="מעקה עם לוח מילא">מעקה עם לוח מילא</option>
+            <option value="מעקה פלדה">מעקה פלדה</option>
+        </select>
+    </div>
+
+    <div class="section-header">פרטי זיהוי</div>
+    <div class="grid">
         <div class="field">
-            <label>סוג מעקה *</label>
-            <select id="type" onchange="toggleFields()">
-                <option value="מילא">מעקה עם לוח מילא</option>
-                <option value="פלדה">מעקה פלדה</option>
-            </select>
+            <label>מספר פרויקט *</label>
+            <input type="text" id="projId" placeholder="חובה">
         </div>
-
-        <div class="grid">
-            <div class="field">
-                <label>מספר פרויקט *</label>
-                <input type="text" id="projId" placeholder="למשל: 101">
-            </div>
-            <div class="field">
-                <label>שם אתר / לקוח</label>
-                <input type="text" id="siteName">
-            </div>
-        </div>
-
-        <div id="windSection" class="grid">
-            <div class="field full">
-                <label>עיר *</label>
-                <select id="city"></select>
-            </div>
-            <div class="field">
-                <label>גובה בניין (מ')</label>
-                <input type="number" id="hb" value="30.00" step="1">
-            </div>
-            <div class="field">
-                <label>דרגת חספוס</label>
-                <select id="terrain">
-                    <option value="0.234">דרגה IV: עירוני</option>
-                    <option value="0.215">דרגה III: מגורים</option>
-                    <option value="0.190">דרגה II: פתוח</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="grid">
-            <div class="field">
-                <label>L1 מפתח (מ')</label>
-                <input type="number" id="l1" value="1.50" step="0.01">
-            </div>
-            <div class="field">
-                <label>L2 מפתח (מ')</label>
-                <input type="number" id="l2" value="1.50" step="0.01">
-            </div>
-        </div>
-
-        <button onclick="calculate()">בצע חישוב והצג דוח</button>
-
-        <div id="resultBox">
-            <div id="reportText"></div>
-            <button class="download-btn" onclick="downloadHTML()">💾 שמור כדוח HTML</button>
+        <div class="field">
+            <label>שם לקוח</label>
+            <input type="text" id="customer">
         </div>
     </div>
 
-    <script>
-        const CITY_MAP = {
-            "אבו גוש": 26, "אופקים": 24, "אור יהודה": 24, "אור עקיבא": 24, "אילת": 24, "אלעד": 24,
-            "אשדוד": 24, "אשקלון": 24, "באר שבע": 24, "בית שמש": 26, "בני ברק": 24, "בת ים": 24,
-            "גבעתיים": 24, "הרצליה": 24, "חדרה": 24, "חולון": 24, "חיפה": 24, "טבריה": 24, 
-            "ירושלים": 26, "כפר סבא": 24, "מודיעין-מכבים-רעות": 26, "נתניה": 24, "פתח תקווה": 24, 
-            "צפת": 28, "ראשון לציון": 24, "רחובות": 24, "רמת גן": 24, "תל אביב-יפו": 24
-        };
+    <div id="windParams">
+        <div class="section-header">חישוב עומס רוח</div>
+        <div class="field">
+            <label>בחר עיר *</label>
+            <select id="city"></select>
+        </div>
+        <div class="grid">
+            <div class="field">
+                <label>גובה בניין (מ')</label>
+                <input type="number" id="hb" value="30.00" step="0.5">
+            </div>
+            <div class="field">
+                <label>חספוס פני שטח</label>
+                <select id="terrain">
+                    <option value="0.234">דרגה IV: עירוני</option>
+                    <option value="0.215">דרגה III: תעשייה</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
-        const citySelect = document.getElementById('city');
-        Object.keys(CITY_MAP).sort().forEach(city => {
-            let opt = document.createElement('option');
-            opt.value = city; opt.innerHTML = city;
-            citySelect.appendChild(opt);
-        });
+    <div class="section-header">מידות מפתחים (L)</div>
+    <div class="grid">
+        <div class="field">
+            <label>L1 חזית (מ')</label>
+            <input type="number" id="l1" value="1.50" step="0.01">
+        </div>
+        <div class="field">
+            <label>L2 פינה (מ')</label>
+            <input type="number" id="l2" value="1.50" step="0.01">
+        </div>
+    </div>
 
-        function toggleFields() {
-            const isSteel = document.getElementById('type').value === 'פלדה';
-            document.getElementById('windSection').style.display = isSteel ? 'none' : 'grid';
-        }
+    <button onclick="exportToExcel()">📊 הפק אקסל מעוצב</button>
+</div>
 
-        function calculate() {
-            const type = document.getElementById('type').value;
-            const projId = document.getElementById('projId').value;
-            const l1 = parseFloat(document.getElementById('l1').value);
-            const l2 = parseFloat(document.getElementById('l2').value);
-            const hr = 1.05; // גובה מעקה קבוע
-            const u = "נ'/מ\"א";
-            
-            if (!projId) { alert("אנא הזן מספר פרויקט"); return; }
+<script>
+    const CITY_MAP = {
+        "אבו גוש": 26, "אופקים": 24, "אור יהודה": 24, "אשדוד": 24, "אשקלון": 24, "באר שבע": 24, 
+        "בית שמש": 26, "בני ברק": 24, "בת ים": 24, "גבעתיים": 24, "הרצליה": 24, "חדרה": 24, 
+        "חולון": 24, "חיפה": 24, "טבריה": 24, "ירושלים": 26, "כפר סבא": 24, "מודיעין": 26, 
+        "נתניה": 24, "פתח תקווה": 24, "צפת": 28, "ראשון לציון": 24, "רחובות": 24, "תל אביב-יפו": 24
+    };
 
-            let Fser, fw = 0, infoLine = "";
+    const citySelect = document.getElementById('city');
+    Object.keys(CITY_MAP).sort().forEach(c => {
+        let o = document.createElement('option'); o.value = c; o.text = c; citySelect.add(o);
+    });
 
-            if (type === 'מילא') {
-                const city = document.getElementById('city').value;
-                const vb = CITY_MAP[city];
-                const hb = parseFloat(document.getElementById('hb').value);
-                const ceFactor = parseFloat(document.getElementById('terrain').value);
-                
-                const ze = Math.max(hb + hr, 2.0);
-                const logVal = Math.log(ze / 1.0); // חישוב מקורב לדרגה IV
-                const ce = (0.234 * logVal) * (1 + 7 / logVal); 
-                const we = 0.613 * Math.pow(vb, 2) * ce * 1.8;
-                fw = we * hr;
-                Fser = Math.ceil(Math.max(fw, 750 + (fw / 2)));
-                infoLine = `מיקום: ${city} | עומס רוח: ${fw.toFixed(2)} ${u}`;
-            } else {
-                Fser = 750;
-                infoLine = `סוג מעקה פלדה - עומס שירות בסיסי`;
-            }
+    function toggleFields() {
+        document.getElementById('windParams').style.display = 
+            document.getElementById('type').value === 'מעקה פלדה' ? 'none' : 'block';
+    }
 
-            const res_b = Math.ceil(Fser * l1 * 0.75);
-            const res_a = Math.ceil(res_b / 2);
-            const res_g = Math.ceil(0.5 * Fser * (0.5 * l2 + 0.5 * l1));
-            const res_d = Math.ceil(Fser * (0.5 * l2 + 0.125 * l1));
-            const res_h = Math.ceil(Fser * (0.5 * l2 + 0.5 * l1));
+    function exportToExcel() {
+        const type = document.getElementById('type').value;
+        const proj = document.getElementById('projId').value;
+        const customer = document.getElementById('customer').value || "-";
+        const l1 = parseFloat(document.getElementById('l1').value);
+        const l2 = parseFloat(document.getElementById('l2').value);
+        const city = document.getElementById('city').value;
 
-            let report = `=== דוח תוצאות חישוב - ${type} ===\n`;
-            report += `תאריך: ${new Date().toLocaleDateString('he-IL')}\n`;
-            report += `פרויקט: ${projId} | ${infoLine}\n`;
-            report += `עומס נבחר (Fser): ${Fser} ${u}\n`;
-            report += `------------------------------------\n`;
-            report += `סעיף א' (חצי עומס): ${res_a} ${u}\n`;
-            report += `סעיף ב' (עומס מלא): ${res_b} ${u}\n`;
-            report += `סעיף ג' (ביניים):   ${res_g} ${u}\n`;
-            report += `סעיף ד' (פינה):     ${res_d} ${u}\n`;
-            report += `סעיף ה' (קצה):      ${res_h} ${u}\n`;
+        if (!proj) { alert("אנא הזן מספר פרויקט"); return; }
 
-            document.getElementById('reportText').innerText = report;
-            document.getElementById('resultBox').style.display = 'block';
-            window.scrollTo(0, document.body.scrollHeight);
-        }
-
-        function downloadHTML() {
-            const report = document.getElementById('reportText').innerText;
-            const proj = document.getElementById('projId').value;
-            const city = document.getElementById('type').value === 'מילא' ? document.getElementById('city').value : "פלדה";
-            const htmlContent = `<html><body dir="rtl" style="font-family:monospace; padding:50px;">${report.replace(/\n/g, '<br>')}</body></html>`;
-            
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `דוח_עומסים_${proj}_${city}.html`;
-            link.click();
-        }
-    </script>
-</body>
-</html>
+        let Fser = 750, fw = 0;
+        if (type !== 'מעקה פלדה') {
+            const vb = CITY_MAP[city];
+            const hb = parseFloat(document.getElementById('hb').value);
+            const ze = Math.max(hb + 1.05, 2.0);
+            const logZ = Math.log(ze / 1.0);
+            const ce = (0.234 * logZ) * (1 + 7 / logZ);
+            const we = 0.613 * Math.pow(vb
