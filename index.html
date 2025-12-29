@@ -2,127 +2,143 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>דוח מעקה - גרסת מובייל יציבה</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>מערכת דוחות מעקה</title>
     <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
     <style>
-        body { font-family: system-ui, sans-serif; background: #f0f2f5; direction: rtl; padding: 10px; margin: 0; }
-        .form-container { background: white; max-width: 500px; margin: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 20px; border-top: 8px solid #1a4a7a; }
-        h2 { text-align: center; color: #1a4a7a; margin-top: 0; }
-        .section-h { background: #eef2f7; padding: 10px; font-weight: bold; margin: 20px 0 10px; border-right: 5px solid #1a4a7a; border-radius: 4px; }
-        label { display: block; margin: 12px 0 5px; font-size: 14px; font-weight: bold; color: #333; }
-        input, select, textarea { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; box-sizing: border-box; }
+        :root { --blue: #1a4a7a; --green: #27ae60; --bg: #f4f7f9; }
+        body { font-family: system-ui, sans-serif; background: var(--bg); margin: 0; direction: rtl; }
+        .app-container { max-width: 600px; margin: 10px auto; background: white; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); overflow: hidden; }
+        .tabs { display: flex; background: #eee; border-bottom: 2px solid #ddd; }
+        .tab { flex: 1; padding: 15px 5px; text-align: center; cursor: pointer; font-weight: bold; color: #666; font-size: 14px; }
+        .tab.active { background: white; color: var(--blue); border-bottom: 3px solid var(--blue); }
+        .tab-content { display: none; padding: 20px; min-height: 450px; }
+        .tab-content.active { display: block; }
+        .field { margin-bottom: 15px; }
+        label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 5px; color: #333; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .footer-btn { 
-            width: 100%; padding: 20px; background: #28a745; color: white; border: none; 
-            border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; 
-            margin-top: 30px; box-shadow: 0 4px 10px rgba(40,167,69,0.3);
-        }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
+        .btn { padding: 15px 25px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-next { background: var(--blue); color: white; width: 100%; }
+        .btn-submit { width: 100%; background: var(--green); color: white; padding: 20px; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; margin-top: 20px; }
+        .calc-box { background: #f0f7ff; padding: 10px; border-radius: 8px; border: 1px dashed var(--blue); font-weight: bold; text-align: center; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-<div class="form-container">
-    <h2>הפקת דוח מעקה</h2>
-    
-    <div class="section-h">1. פרטי המנהלה</div>
-    <div class="grid">
-        <div><label>דו"ח מס' *</label><input type="text" id="r_no" required></div>
-        <div><label>מבטל דו"ח</label><input type="text" id="r_cancel"></div>
-    </div>
-    <div class="grid">
-        <div><label>קוד פרויקט</label><input type="text" id="p_code"></div>
-        <div><label>תאריך</label><input type="date" id="r_date"></div>
-    </div>
-    <label>שם המזמין</label><input type="text" id="c_name">
-    <label>נציג המזמין בבדיקה</label><input type="text" id="c_rep">
-
-    <div class="section-h">2. פרטי האתר והמערכת</div>
-    <label>כתובת האתר</label><input type="text" id="s_addr">
-    <label>תיאור הפריט שנבדק</label><input type="text" id="i_desc">
-    <label>מיקום הבדיקה</label><input type="text" id="t_loc">
-
-    <div class="section-h">3. נתוני חישוב ועיר</div>
-    <label>עיר לבדיקה</label>
-    <select id="city_select">
-        <option value="24">תל אביב-יפו (24)</option>
-        <option value="26">ירושלים (26)</option>
-        <option value="24">חיפה (24)</option>
-        <option value="24">אשדוד (24)</option>
-        <option value="24">באר שבע (24)</option>
-        <option value="26">צפת (26)</option>
-        <option value="24">אילת (24)</option>
-    </select>
-    <div class="grid">
-        <div><label>L1 חזית (מ')</label><input type="number" id="l1" value="1.50" step="0.01"></div>
-        <div><label>L2 פינה (מ')</label><input type="number" id="l2" value="1.50" step="0.01"></div>
-    </div>
-    <div class="grid">
-        <div><label>S שטח לוח</label><input type="number" id="s_val" value="1.00" step="0.01"></div>
-        <div><label>L מפתח לוח</label><input type="number" id="l_val" value="1.00" step="0.01"></div>
-    </div>
-    <div class="grid">
-        <div><label>S1 (מ')</label><input type="number" id="s1" value="0.50" step="0.01"></div>
-        <div><label>S2 (מ')</label><input type="number" id="s2" value="0.50" step="0.01"></div>
+<div class="app-container">
+    <div class="tabs">
+        <div class="tab active" id="t0" onclick="showTab(0)">מנהלה</div>
+        <div class="tab" id="t1" onclick="showTab(1)">אתר</div>
+        <div class="tab" id="t2" onclick="showTab(2)">חישובים</div>
+        <div class="tab" id="t3" onclick="showTab(3)">תוצאות</div>
     </div>
 
-    <div class="section-h">4. תוצאות וסיכום</div>
-    <label>בדיקה חזותית</label>
-    <select id="v1"><option>מתאים</option><option>לא מתאים</option></select>
-    <label>בדיקה גיאומטרית</label>
-    <select id="v2"><option>מתאים</option><option>לא מתאים</option></select>
-    <label>הערות</label>
-    <textarea id="notes" rows="3"></textarea>
+    <div id="tab0" class="tab-content active">
+        <div class="field"><label>קוד פרויקט</label><input type="text" id="proj_code"></div>
+        <div class="field"><label>שם המזמין</label><input type="text" id="client_name"></div>
+        <div class="field"><label>נציג המזמין</label><input type="text" id="client_rep"></div>
+        <div class="field"><label>תאריך בדיקה</label><input type="date" id="r_date"></div>
+        <button class="btn btn-next" onclick="showTab(1)">הבא ➔</button>
+    </div>
 
-    <button class="footer-btn" onclick="generateExcel()">📊 הפק אקסל עכשיו</button>
+    <div id="tab1" class="tab-content">
+        <div class="field"><label>כתובת האתר</label><input type="text" id="site_addr"></div>
+        <div class="field"><label>תיאור הפריט</label><input type="text" id="item_desc" placeholder="מעקה זכוכית..."></div>
+        <div class="field"><label>מיקום הבדיקה</label><input type="text" id="test_loc" placeholder="דירה/קומה"></div>
+        <div class="nav-buttons">
+            <button class="btn btn-next" onclick="showTab(2)">הבא ➔</button>
+        </div>
+    </div>
+
+    <div id="tab2" class="tab-content">
+        <div class="field">
+            <label>עיר/ישוב (חיפוש מהיר)</label>
+            <input list="cities" id="city_input" placeholder="הקלד שם ישוב...">
+            <datalist id="cities">
+                </datalist>
+        </div>
+        <div class="grid">
+            <div class="field"><label>גובה לוח (מ')</label><input type="number" id="h_val" value="1.00" oninput="calcS()"></div>
+            <div class="field"><label>אורך לוח (מ')</label><input type="number" id="w_val" value="1.00" oninput="calcS()"></div>
+        </div>
+        <div class="calc-box">שטח לוח מחושב (S): <span id="s_result">1.00</span> מ"ר</div>
+        
+        <div class="grid" style="margin-top:15px;">
+            <div class="field"><label>L1 חזית (מ')</label><input type="number" id="l1" value="1.50"></div>
+            <div class="field"><label>L2 פינה (מ')</label><input type="number" id="l2" value="1.50"></div>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn btn-next" onclick="showTab(3)">הבא ➔</button>
+        </div>
+    </div>
+
+    <div id="tab3" class="tab-content">
+        <div class="field"><label>בדיקה חזותית</label><select id="v1"><option>מתאים</option><option>לא מתאים</option></select></div>
+        <div class="field"><label>בדיקה גיאומטרית</label><select id="v2"><option>מתאים</option><option>לא מתאים</option></select></div>
+        <div class="field"><label>הערות</label><textarea id="notes" rows="4"></textarea></div>
+        <button class="btn-submit" onclick="generateExcel()">📊 הפק אקסל סופי</button>
+    </div>
 </div>
 
 <script>
-    document.getElementById('r_date').valueAsDate = new Date();
+    const cityList = ["אבו גוש","אבו סנאן","אבן יהודה","אופקים","אור יהודה","אור עקיבא","אורנית","אילת","אכסאל","אלעד","אלפי מנשה","אלקנה","אעבלין","אריאל","אשדוד","אשקלון","באקה אל-גרבייה","באר שבע","באר יעקב","בוקעאתא","בית אל","בית דגן","בית שאן","בית שמש","ביתר עילית","בני ברק","בני עי\"ש","בנימינה","בסמה","בסמת טבעון","בענה","בת ים","גבעת שמואל","גבעת זאב","גבעתיים","ג'דיידה-מכר","ג'ולס","ג'לג'וליה","גן יבנה","גני תקווה","ג'סר א-זרקא","ג'ש (גוש חלב)","גדרות","גדרה","דלית אל-כרמל","דבורייה","דייר אל-אסד","דייר חנא","דימונה","הוד השרון","הרצליה","זכרון יעקב","זמר","זרזיר","חצור הגלילית","חריש","חולון","חיפה","חצור","חריש","טבריה","טייבה","טירה","טירת כרמל","טמרה","יבנה","יהוד-מונוסון","יסוד המעלה","יפיע","יקנעם עילית","ירוחם","ירושלים","ירכא","כאבול","כאוכב אבו אל-היג'א","כוכב יאיר","כסיפה","כסרא-סמיע","כפר ברא","כפר ורדים","כפר יאסף","כפר יונה","כפר כמא","כפר כנא","כפר מנדא","כפר סבא","כפר קאסם","כפר קרע","כפר שמריהו","כפר תבור","כרמיאל","להבים","לוד","מבשרת ציון","מג'ד אל-כרום","מג'דל שמס","מגדל","מגדל העמק","מודיעין עילית","מודיעין-מכבים-רעות","מזכרת בתיה","מטולה","מזרעה","מיתר","מעלה אדומים","מעלה אפרים","מעלה עירון","מעלות-תרשיחא","מצפה רמון","משהד","נהריה","נוף הגליל","נתיבות","נתניה","נשר","נצרת","נתיבות","סאג'ור","סח'נין","סביון","עומר","עילוט","עין מאהל","עין קנייא","עכו","עמנואל","עספיא","עפולה","ערד","ערערה","פוריידיס","פסוטה","פקיעין","פרדס חנה-כרכור","פרדסיה","פתח תקווה","צפת","קצרין","קרית אונו","קרית ארבע","קרית אתא","קרית ביאליק","קרית גת","קרית ים","קרית מוצקין","קרית מלאכי","קרית עקרון","קרית שמונה","קרני שומרון","רהט","רכסים","רמלה","רמת גן","רמת השרון","רמת ישי","רעננה","רכסים","רהט","שדרות","שוהם","שלומי","שפרעם","תל אביב-יפו","תל שבע","תל מונד"];
+
+    window.onload = () => {
+        document.getElementById('r_date').valueAsDate = new Date();
+        const dl = document.getElementById('cities');
+        cityList.forEach(city => {
+            let opt = document.createElement('option');
+            opt.value = city;
+            dl.appendChild(opt);
+        });
+    };
+
+    function calcS() {
+        const h = document.getElementById('h_val').value || 0;
+        const w = document.getElementById('w_val').value || 0;
+        const s = (h * w).toFixed(2);
+        document.getElementById('s_result').innerText = s;
+    }
+
+    function showTab(index) {
+        document.querySelectorAll('.tab-content').forEach((c, i) => {
+            c.classList.toggle('active', i === index);
+            document.getElementById('t' + i).classList.toggle('active', i === index);
+        });
+        window.scrollTo(0,0);
+    }
 
     function generateExcel() {
-        const id = document.getElementById('r_no').value;
-        if(!id) { alert("חובה למלא מספר דוח!"); return; }
-
-        const vb = document.getElementById('city_select').value;
-        const l1 = parseFloat(document.getElementById('l1').value);
-        const l2 = parseFloat(document.getElementById('l2').value);
+        const proj = document.getElementById('proj_code').value;
+        const s_calc = document.getElementById('s_result').innerText;
         
-        // חישוב עומס (לוגיקת בסיס)
-        const Fser = Math.ceil(Math.max(850, 750 + (vb * 1.5)));
-
         const data = [
             ["תעודת בדיקת מעקה במעטפת הבניין"],
-            ["מס' דווח:", id, "מבטל דווח מס':", document.getElementById('r_cancel').value],
-            ["קוד פרויקט:", document.getElementById('p_code').value, "תאריך:", document.getElementById('r_date').value],
+            ["קוד פרויקט:", proj, "", "תאריך:", document.getElementById('r_date').value],
+            ["שם המזמין:", document.getElementById('client_name').value],
+            ["נציג המזמין:", document.getElementById('client_rep').value],
+            ["כתובת האתר:", document.getElementById('site_addr').value],
             [""],
-            ["1. פרטי המזמין והאתר"],
-            ["שם המזמין:", document.getElementById('c_name').value],
-            ["נציג:", document.getElementById('c_rep').value],
-            ["כתובת האתר:", document.getElementById('s_addr').value],
-            ["תיאור הפריט:", document.getElementById('i_desc').value],
-            ["מיקום הבדיקה:", document.getElementById('t_loc').value],
+            ["נתוני לוח מליא:"],
+            ["גובה לוח:", document.getElementById('h_val').value, "אורך לוח:", document.getElementById('w_val').value],
+            ["שטח מחושב S:", s_calc],
             [""],
-            ["2. נתוני מדידה וחישוב"],
-            ["מהירות רוח Vb:", vb],
-            ["L1 (חזית):", l1], ["L2 (פינה):", l2],
-            ["S שטח לוח:", document.getElementById('s_val').value], 
-            ["L מפתח לוח:", document.getElementById('l_val').value],
-            ["S1:", document.getElementById('s1').value], ["S2:", document.getElementById('s2').value],
+            ["נתוני שדה:"],
+            ["עיר:", document.getElementById('city_input').value],
+            ["L1 (חזית):", document.getElementById('l1').value, "L2 (פינה):", document.getElementById('l2').value],
             [""],
-            ["3. תוצאות בדיקה"],
-            ["חזותית:", document.getElementById('v1').value],
-            ["גיאומטרית:", document.getElementById('v2').value],
-            ["עומס ניצב שדה:", Math.ceil(Fser * l1 * 0.75)],
+            ["תוצאות:"],
+            ["חזותית:", document.getElementById('v1').value, "גיאומטרית:", document.getElementById('v2').value],
             ["הערות:", document.getElementById('notes').value]
         ];
 
         const ws = XLSX.utils.aoa_to_sheet(data);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "דוח");
-        XLSX.writeFile(wb, "Report_" + id + ".xlsx");
+        XLSX.utils.book_append_sheet(wb, ws, "דוח מעקה");
+        XLSX.writeFile(wb, `Report_${proj || 'Draft'}.xlsx`);
     }
 </script>
-
 </body>
 </html>
