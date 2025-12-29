@@ -3,106 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>מערכת דוחות מעקה - ת"י 1142</title>
+    <title>מפיק דוח מעקה - גרסה יציבה</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        :root { --blue: #1a4a7a; --green: #27ae60; --bg: #f4f7f9; }
+        :root { --blue: #1a4a7a; --green: #27ae60; --bg: #f2f5f8; }
         body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 10px; direction: rtl; }
-        .app-container { max-width: 550px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); overflow: hidden; border-top: 6px solid var(--blue); }
-        
-        /* Tab Styling */
-        .tabs-header { display: flex; background: #f8f9fa; border-bottom: 1px solid #ddd; }
-        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: none; font-size: 13px; font-weight: bold; color: #777; cursor: pointer; border-bottom: 3px solid transparent; }
-        .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); background: white; }
-        
-        .tab-content { display: none; padding: 20px; }
-        .tab-content.active { display: block; }
-        
-        /* Form Elements */
-        .field { margin-bottom: 15px; }
-        label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 5px; color: #444; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; background: #fff; -webkit-appearance: none; }
+        .container { max-width: 500px; margin: auto; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); border-top: 8px solid var(--blue); }
+        .header { padding: 15px; text-align: center; background: #fff; border-bottom: 1px solid #eee; border-radius: 15px 15px 0 0; }
+        .page { display: none; padding: 20px; min-height: 350px; }
+        .page.active { display: block; }
+        .field { margin-bottom: 12px; }
+        label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; color: #444; }
+        input, select, textarea { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #fafafa; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        
-        /* Buttons */
-        .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee; }
-        .btn { padding: 12px 25px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
+        .nav-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { flex: 1; padding: 16px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
         .btn-next { background: var(--blue); color: white; }
-        .btn-prev { background: #e9ecef; color: #495057; }
-        .btn-submit { width: 100%; background: var(--green); color: white; padding: 18px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; margin-top: 20px; }
+        .btn-prev { background: #e0e0e0; color: #333; }
+        .btn-submit { background: var(--green); color: white; width: 100%; margin-top: 15px; font-size: 18px; }
+        .step-indicator { font-size: 12px; color: #888; margin-bottom: 10px; text-align: center; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="tabs-header">
-        <button class="tab-btn active" id="btn0" onclick="goToTab(0)">מנהלה</button>
-        <button class="tab-btn" id="btn1" onclick="goToTab(1)">אתר</button>
-        <button class="tab-btn" id="btn2" onclick="goToTab(2)">חישוב</button>
-        <button class="tab-btn" id="btn3" onclick="goToTab(3)">תוצאות</button>
+<div class="container">
+    <div class="header">
+        <h3 style="margin:0; color:var(--blue);">דוח מעקה - ת"י 1142</h3>
     </div>
 
-    <div id="tab0" class="tab-content active">
+    <div id="p1" class="page active">
+        <div class="step-indicator">שלב 1 מתוך 4: פרטי הזמנה</div>
         <div class="grid">
-            <div class="field"><label>דו"ח מס' *</label><input type="text" id="report_id"></div>
-            <div class="field"><label>מבטל דו"ח מס'</label><input type="text" id="cancel_id"></div>
+            <div class="field"><label>דו"ח מס' *</label><input type="text" id="r_id"></div>
+            <div class="field"><label>מבטל דו"ח</label><input type="text" id="c_id"></div>
         </div>
-        <div class="field"><label>קוד פרויקט</label><input type="text" id="proj_code"></div>
-        <div class="field"><label>שם המזמין</label><input type="text" id="client_name"></div>
-        <div class="field"><label>מען המזמין</label><input type="text" id="client_addr"></div>
-        <div class="field"><label>נציג המזמין בבדיקה</label><input type="text" id="client_rep"></div>
-        <div class="nav-buttons"><button class="btn btn-next" style="width:100%" onclick="goToTab(1)">המשך לפרטי אתר ➔</button></div>
-    </div>
-
-    <div id="tab1" class="tab-content">
-        <div class="field"><label>שם האתר</label><input type="text" id="site_name"></div>
-        <div class="field"><label>כתובת האתר</label><input type="text" id="site_addr"></div>
-        <div class="field"><label>תיאור המבנה</label><input type="text" id="struct_desc"></div>
-        <div class="field"><label>תיאור הפריט שנבדק</label><input type="text" id="item_desc"></div>
-        <div class="field"><label>מיקום הבדיקה</label><input type="text" id="test_loc"></div>
-        <div class="field"><label>סוג הבדיקה</label>
-            <select id="test_type"><option value="ראשונה">ראשונה</option><option value="חוזרת">חוזרת</option></select>
-        </div>
-        <div class="nav-buttons">
-            <button class="btn btn-prev" onclick="goToTab(0)">⬅ חזור</button>
-            <button class="btn btn-next" onclick="goToTab(2)">הבא ➔</button>
+        <div class="field"><label>שם המזמין</label><input type="text" id="c_name"></div>
+        <div class="field"><label>מען המזמין</label><input type="text" id="c_addr"></div>
+        <div class="field"><label>נציג המזמין</label><input type="text" id="c_rep"></div>
+        <div class="field"><label>קוד פרויקט</label><input type="text" id="p_code"></div>
+        <div class="nav-btns">
+            <button class="btn btn-next" onclick="showP(2)">הבא: פרטי אתר ➔</button>
         </div>
     </div>
 
-    <div id="tab2" class="tab-content">
-        <div class="field"><label>עיר (Vb)</label>
-            <select id="city_sel">
-                <option value="24">תל אביב / מרכז (24)</option><option value="26">ירושלים / הרים (26)</option>
-                <option value="24">חיפה / קריות (24)</option><option value="24">אשדוד / דרום (24)</option>
-            </select>
-        </div>
-        <div class="grid">
-            <div class="field"><label>גובה בניין (מ')</label><input type="number" id="hb" value="30"></div>
-            <div class="field"><label>L1 חזית (מ')</label><input type="number" id="l1" value="1.50"></div>
-        </div>
-        <div class="grid">
-            <div class="field"><label>L2 פינה (מ')</label><input type="number" id="l2" value="1.50"></div>
-            <div class="field"><label>L מפתח לוח (מ')</label><input type="number" id="l_val" value="1.00"></div>
-        </div>
-        <div class="grid">
-            <div class="field"><label>S שטח לוח (מ"ר)</label><input type="number" id="s_val" value="1.00"></div>
-            <div class="field"><label>S1 (מ')</label><input type="number" id="s1" value="0.00"></div>
-        </div>
-        <div class="field"><label>S2 (מ')</label><input type="number" id="s2" value="0.00"></div>
-        <div class="nav-buttons">
-            <button class="btn btn-prev" onclick="goToTab(1)">⬅ חזור</button>
-            <button class="btn btn-next" onclick="goToTab(3)">הבא ➔</button>
+    <div id="p2" class="page">
+        <div class="step-indicator">שלב 2 מתוך 4: פרטי המערכת</div>
+        <div class="field"><label>שם האתר</label><input type="text" id="s_name"></div>
+        <div class="field"><label>כתובת האתר</label><input type="text" id="s_addr"></div>
+        <div class="field"><label>תיאור המבנה</label><input type="text" id="b_desc"></div>
+        <div class="field"><label>תיאור הפריט</label><input type="text" id="i_desc"></div>
+        <div class="field"><label>מיקום הבדיקה</label><input type="text" id="t_loc"></div>
+        <div class="nav-btns">
+            <button class="btn btn-prev" onclick="showP(1)">⬅ חזור</button>
+            <button class="btn btn-next" onclick="showP(3)">הבא: חישובים ➔</button>
         </div>
     </div>
 
-    <div id="tab3" class="tab-content">
-        <div class="field"><label>בדיקה חזותית</label>
-            <select id="v1"><option value="מתאים">מתאים ✅</option><option value="לא מתאים">לא מתאים ❌</option></select>
+    <div id="p3" class="page">
+        <div class="step-indicator">שלב 3 מתוך 4: נתוני מדידה</div>
+        <div class="field">
+            <label>עיר / אזור רוח</label>
+            <select id="city"><option value="24">תל אביב (24)</option><option value="26">ירושלים (26)</option><option value="24">חיפה (24)</option></select>
         </div>
-        <div class="field"><label>בדיקה גיאומטרית</label>
-            <select id="v2"><option value="מתאים">מתאים ✅</option><option value="לא מתאים">לא מתאים ❌</option></select>
+        <div class="grid">
+            <div><label>L1 (מ')</label><input type="number" id="l1" value="1.50"></div>
+            <div><label>L2 (מ')</label><input type="number" id="l2" value="1.50"></div>
         </div>
-        <div class="field"><label>שלמות לוח מליא</label>
-            <select id="v3"><option value="מתאים">מתאים ✅</option><option value="לא מתאים">לא מתאים ❌</option></select>
+        <div class="grid">
+            <div><label>S שטח לוח</label><input type="number" id="s_v" value="1.00"></div>
+            <div><label>L מפתח לוח</label><input type="number" id="l_v" value="1.00"></div>
         </div>
-        <div class="field"><label>הערות
+        <div class="grid">
+            <div><label>S1 (מ')</label><input type="number" id="s1" value="0.00"></div>
+            <div><label>S2 (מ')</label><input type="number" id="s2" value="0.00"></div>
+        </div>
+        <div class="nav-btns">
+            <button class="btn btn-prev" onclick="showP(2)">⬅ חזור</button>
+            <button class="btn btn-next" onclick="showP(4)">הבא: תוצאות ➔</button>
+        </div>
+    </div>
+
+    <div id="p4" class="page">
+        <div class="step-indicator">שלב 4 מתוך 4: סיכום וייצוא</div>
+        <div class="field"><label>בדיקה חזותית</label><select id="v1"><option>מתאים</option><option>לא מתאים</option></select></div>
+        <div class="field"><label>בדיקה גיאומטרית</label><select id="v2"><option>מתאים</option><option>לא מתאים</option></select></div>
+        <div class="field"><label>שלמות לוח</label><select id="v3"><option
