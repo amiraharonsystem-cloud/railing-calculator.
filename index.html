@@ -2,89 +2,74 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>מפיק דוח מעקה - גרסה יציבה</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דוח מעקה רשמי</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        :root { --blue: #1a4a7a; --green: #27ae60; --bg: #f2f5f8; }
-        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 10px; direction: rtl; }
-        .container { max-width: 500px; margin: auto; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); border-top: 8px solid var(--blue); }
-        .header { padding: 15px; text-align: center; background: #fff; border-bottom: 1px solid #eee; border-radius: 15px 15px 0 0; }
-        .page { display: none; padding: 20px; min-height: 350px; }
-        .page.active { display: block; }
-        .field { margin-bottom: 12px; }
-        label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 4px; color: #444; }
-        input, select, textarea { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 10px; font-size: 16px; box-sizing: border-box; background: #fafafa; }
+        body { font-family: sans-serif; background: #f0f4f8; direction: rtl; padding: 15px; margin: 0; }
+        .form-box { background: white; max-width: 600px; margin: auto; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-top: 8px solid #1a4a7a; }
+        h2 { text-align: center; color: #1a4a7a; margin-bottom: 25px; }
+        .section-h { background: #eef2f7; padding: 10px; font-weight: bold; margin: 20px 0 10px; border-right: 4px solid #1a4a7a; border-radius: 4px; }
+        label { display: block; font-size: 13px; font-weight: bold; margin: 10px 0 5px; color: #333; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .nav-btns { display: flex; gap: 10px; margin-top: 20px; }
-        .btn { flex: 1; padding: 16px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .btn-next { background: var(--blue); color: white; }
-        .btn-prev { background: #e0e0e0; color: #333; }
-        .btn-submit { background: var(--green); color: white; width: 100%; margin-top: 15px; font-size: 18px; }
-        .step-indicator { font-size: 12px; color: #888; margin-bottom: 10px; text-align: center; }
+        .btn-submit { width: 100%; background: #27ae60; color: white; padding: 20px; border: none; border-radius: 10px; font-size: 20px; font-weight: bold; margin-top: 30px; cursor: pointer; box-shadow: 0 4px 0 #1e8449; }
+        .btn-submit:active { transform: translateY(2px); box-shadow: none; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h3 style="margin:0; color:var(--blue);">דוח מעקה - ת"י 1142</h3>
+<div class="form-box">
+    <h2>דוח בדיקת מעקה מרפסת</h2>
+    <p style="text-align: center; font-size: 12px; color: #666;">מלא את כל הפרטים ולחץ על הכפתור הירוק למטה</p>
+
+    <div class="section-h">1. פרטי הלקוח והזיהוי</div>
+    <div class="grid">
+        <div><label>דו"ח מס' *</label><input type="text" id="r_id" placeholder="חובה"></div>
+        <div><label>מבטל דו"ח מס'</label><input type="text" id="c_id"></div>
+    </div>
+    <div class="grid">
+        <div><label>קוד פרויקט</label><input type="text" id="p_code"></div>
+        <div><label>תאריך</label><input type="date" id="r_date"></div>
+    </div>
+    <label>שם המזמין</label><input type="text" id="c_name">
+    <label>מען המזמין</label><input type="text" id="c_addr">
+    <label>נציג המזמין בבדיקה</label><input type="text" id="c_rep">
+
+    <div class="section-h">2. פרטים על המערכת</div>
+    <label>שם וכתובת האתר</label><input type="text" id="s_site">
+    <label>תיאור המבנה</label><input type="text" id="s_struct">
+    <label>תיאור הפריט שנבדק</label><input type="text" id="s_item">
+    <label>מיקום הבדיקה (קומה/דירה)</label><input type="text" id="s_loc">
+    <label>סוג הבדיקה</label>
+    <select id="s_type"><option>ראשונה</option><option>חוזרת</option></select>
+
+    <div class="section-h">3. נתוני מדידה (שלב א' ו-ב')</div>
+    <label>עיר לבדיקה</label>
+    <select id="city">
+        <option value="24">תל אביב-יפו (24)</option>
+        <option value="26">ירושלים (26)</option>
+        <option value="24">חיפה (24)</option>
+        <option value="24">אשדוד (24)</option>
+        <option value="24">באר שבע (24)</option>
+    </select>
+    <div class="grid">
+        <div><label>L1 (חזית)</label><input type="number" id="l1" value="1.50"></div>
+        <div><label>L2 (פינה)</label><input type="number" id="l2" value="1.50"></div>
+    </div>
+    <div class="grid">
+        <div><label>L מפתח לוח</label><input type="number" id="l_val" value="1.00"></div>
+        <div><label>S שטח לוח</label><input type="number" id="s_val" value="1.00"></div>
+    </div>
+    <div class="grid">
+        <div><label>S1 (מ')</label><input type="number" id="s1" value="0.00"></div>
+        <div><label>S2 (מ')</label><input type="number" id="s2" value="0.00"></div>
     </div>
 
-    <div id="p1" class="page active">
-        <div class="step-indicator">שלב 1 מתוך 4: פרטי הזמנה</div>
-        <div class="grid">
-            <div class="field"><label>דו"ח מס' *</label><input type="text" id="r_id"></div>
-            <div class="field"><label>מבטל דו"ח</label><input type="text" id="c_id"></div>
-        </div>
-        <div class="field"><label>שם המזמין</label><input type="text" id="c_name"></div>
-        <div class="field"><label>מען המזמין</label><input type="text" id="c_addr"></div>
-        <div class="field"><label>נציג המזמין</label><input type="text" id="c_rep"></div>
-        <div class="field"><label>קוד פרויקט</label><input type="text" id="p_code"></div>
-        <div class="nav-btns">
-            <button class="btn btn-next" onclick="showP(2)">הבא: פרטי אתר ➔</button>
-        </div>
+    <div class="section-h">4. תוצאות בדיקה בשטח</div>
+    <div class="grid">
+        <div><label>חזותית</label><select id="v1"><option>מתאים ✅</option><option>לא מתאים ❌</option></select></div>
+        <div><label>גיאומטרית</label><select id="v2"><option>מתאים ✅</option><option>לא מתאים ❌</option></select></div>
     </div>
-
-    <div id="p2" class="page">
-        <div class="step-indicator">שלב 2 מתוך 4: פרטי המערכת</div>
-        <div class="field"><label>שם האתר</label><input type="text" id="s_name"></div>
-        <div class="field"><label>כתובת האתר</label><input type="text" id="s_addr"></div>
-        <div class="field"><label>תיאור המבנה</label><input type="text" id="b_desc"></div>
-        <div class="field"><label>תיאור הפריט</label><input type="text" id="i_desc"></div>
-        <div class="field"><label>מיקום הבדיקה</label><input type="text" id="t_loc"></div>
-        <div class="nav-btns">
-            <button class="btn btn-prev" onclick="showP(1)">⬅ חזור</button>
-            <button class="btn btn-next" onclick="showP(3)">הבא: חישובים ➔</button>
-        </div>
-    </div>
-
-    <div id="p3" class="page">
-        <div class="step-indicator">שלב 3 מתוך 4: נתוני מדידה</div>
-        <div class="field">
-            <label>עיר / אזור רוח</label>
-            <select id="city"><option value="24">תל אביב (24)</option><option value="26">ירושלים (26)</option><option value="24">חיפה (24)</option></select>
-        </div>
-        <div class="grid">
-            <div><label>L1 (מ')</label><input type="number" id="l1" value="1.50"></div>
-            <div><label>L2 (מ')</label><input type="number" id="l2" value="1.50"></div>
-        </div>
-        <div class="grid">
-            <div><label>S שטח לוח</label><input type="number" id="s_v" value="1.00"></div>
-            <div><label>L מפתח לוח</label><input type="number" id="l_v" value="1.00"></div>
-        </div>
-        <div class="grid">
-            <div><label>S1 (מ')</label><input type="number" id="s1" value="0.00"></div>
-            <div><label>S2 (מ')</label><input type="number" id="s2" value="0.00"></div>
-        </div>
-        <div class="nav-btns">
-            <button class="btn btn-prev" onclick="showP(2)">⬅ חזור</button>
-            <button class="btn btn-next" onclick="showP(4)">הבא: תוצאות ➔</button>
-        </div>
-    </div>
-
-    <div id="p4" class="page">
-        <div class="step-indicator">שלב 4 מתוך 4: סיכום וייצוא</div>
-        <div class="field"><label>בדיקה חזותית</label><select id="v1"><option>מתאים</option><option>לא מתאים</option></select></div>
-        <div class="field"><label>בדיקה גיאומטרית</label><select id="v2"><option>מתאים</option><option>לא מתאים</option></select></div>
-        <div class="field"><label>שלמות לוח</label><select id="v3"><option
+    <label>שלמות לוח מליא</label><select id="v3"><option>מתאים ✅</option><option>לא מתאים ❌</option></select>
+    <label>הערות לדו"ח</label><textarea id="notes" rows="3"></textarea>
