@@ -3,55 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת בדיקת מעקות - גרסה מלאה</title>
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <title>מערכת בדיקת מעקה - ת"י 1142</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        :root { --blue: #1a4a7a; --green: #27ae60; --bg: #f0f2f5; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); margin: 0; padding: 10px; direction: rtl; }
-        .wrapper { background: white; width: 100%; max-width: 500px; margin: auto; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: var(--blue); margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .section { background: #fdfdfd; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #e0e4e8; }
-        .section-title { font-weight: bold; color: var(--blue); margin-bottom: 12px; font-size: 16px; display: block; }
-        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #555; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; margin-bottom: 10px; -webkit-appearance: none; background-color: white; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; direction: rtl; padding: 20px; display: flex; justify-content: center; }
+        .form-container { background: white; width: 100%; max-width: 500px; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        h2 { text-align: center; color: #1a4a7a; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 10px; background: #fafafa; }
+        .section-title { font-weight: bold; margin-bottom: 10px; display: block; color: #1a4a7a; }
+        label { display: block; margin-top: 10px; font-size: 14px; font-weight: 600; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn { width: 100%; padding: 18px; background: var(--green); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .status-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .status-row select { width: auto; margin: 0; padding: 5px; }
+        .btn-submit { width: 100%; background: #27ae60; color: white; padding: 18px; border: none; border-radius: 10px; font-size: 20px; font-weight: bold; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 0 #1e8449; }
+        .btn-submit:active { transform: translateY(2px); box-shadow: none; }
     </style>
 </head>
 <body>
 
-<div class="wrapper">
-    <h2>תעודת בדיקת מעקה - ת"י 1142</h2>
+<div class="form-container">
+    <h2>דוח בדיקת מעקה</h2>
 
     <div class="section">
-        <span class="section-title">פרטי פרויקט וזיהוי</span>
-        <label>מספר דוח / פרויקט *</label>
-        <input type="text" id="proj_id" placeholder="למשל: 505/2025">
-        <label>שם האתר / המזמין</label>
-        <input type="text" id="site_name" placeholder="שם הלקוח">
-        <label>מיקום הבדיקה המדויק</label>
-        <input type="text" id="loc" placeholder="קומה, דירה, חזית">
+        <span class="section-title">פרטי פרויקט</span>
+        <label>מספר דוח/פרויקט *</label>
+        <input type="text" id="report_num" placeholder="חובה">
+        <label>שם האתר / לקוח</label>
+        <input type="text" id="site_name">
+        <label>מיקום הבדיקה</label>
+        <input type="text" id="location_info" placeholder="קומה / חזית">
     </div>
 
     <div class="section">
         <span class="section-title">נתוני חישוב הנדסי</span>
-        <label>בחר עיר לבדיקה *</label>
-        <select id="city_select">
+        <label>בחר עיר *</label>
+        <select id="city">
             <option value="תל אביב-יפו">תל אביב-יפו</option>
             <option value="ירושלים">ירושלים</option>
             <option value="חיפה">חיפה</option>
-            <option value="אשדוד">אשדוד</option>
-            <option value="באר שבע">באר שבע</option>
             <option value="ראשון לציון">ראשון לציון</option>
             <option value="פתח תקווה">פתח תקווה</option>
+            <option value="אשדוד">אשדוד</option>
             <option value="נתניה">נתניה</option>
-            <option value="חולון">חולון</option>
             <option value="בני ברק">בני ברק</option>
-            <option value="רמת גן">רמת גן</option>
-            <option value="אשקלון">אשקלון</option>
-            <option value="רחובות">רחובות</option>
-            <option value="בית שמש">בית שמש</option>
-            <option value="כפר סבא">כפר סבא</option>
-            <option value="חדרה">חדרה</option>
+            <option value="חולון">חולון</option>
+            <option value="באר שבע">באר שבע</option>
+        </select>
+        <div class="grid">
+            <div><label>גובה בניין (מ')</label><input type="number" id="hb" value="30"></div>
+            <div><label>גובה מעקה (מ')</label><input type="number" id="hr" value="1.05"></div>
+        </div>
+        <div class="grid">
+            <div><label>L1 חזית (מ')</label><input type="number" id="l1" value="1.50"></div>
+            <div><label>L2 פינה (מ')</label><input type="number" id="l2" value="1.50"></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <span class="section-title">תוצאות בדיקת שטח</span>
+        <label>בדיקה חזותית</label>
+        <select id="res_visual"><option value="מתאים">מתאים ✅</option><option value="לא מתאים">לא מתאים ❌</option></select>
+        <label>בדיקה גיאומטרית</label>
+        <select id="res_geo"><option value="מתאים">מתאים ✅</option><option value="לא מתאים">לא מתאים ❌</option></select>
+        <label>הערות</label>
+        <textarea id="notes" rows="2"></textarea>
+    </div>
+
+    <button type="button" class="btn-submit" onclick="downloadExcel()">📊 הפק אקסל עכשיו</button>
+</div>
+
+<script>
+    const CITY_WINDS = {"תל אביב-יפו":24,"ירושלים":26,"חיפה":24,"ראשון לציון":24,"פתח תקווה":24,"אשדוד":24,"נתניה":24,"בני ברק":24,"חולון":24,"באר שבע":24};
+
+    function downloadExcel() {
+        try {
+            const reportId = document.getElementById('report_num').value;
+            if(!reportId) { alert("אנא הזן מספר דוח"); return; }
+
+            const cityName = document.getElementById('city').value;
+            const vb = CITY_WINDS[cityName] || 24;
+            const hb = parseFloat(document.getElementById('hb').value);
+            const hr = parseFloat(document.getElementById('hr').value);
+            const l1 = parseFloat(document.getElementById('l1').value);
+            const l2 = parseFloat(document.getElementById('l2').value);
+
+            // נוסחאות מהאקסל המקורי
+            const ze = Math.max(hb + hr, 2.0);
+            const logZ = Math.log(ze / 1.0);
+            const ce = (0.234 * logZ) * (1 + 7 / logZ);
+            const we = 0.613 * Math.pow(vb, 2) * ce * 1.8;
+            const Fser = Math.ceil(Math.max(we * hr, 750 + ((we * hr) / 2)));
+
+            const data = [
+                ["תעודת בדיקת מעקה - תקן 1142"],
+                ["מספר דוח:", reportId],
+                ["תאריך:", new Date().toLocaleDateString('he-IL')],
+                ["שם האתר:", document.getElementById('site_name').value],
+                ["מיקום בדיקה:", document.getElementById('location_info').value],
+                [""],
+                ["נתונים הנדסיים:"],
+                ["עיר:", cityName, "מהירות רוח (Vb):", vb],
+                ["לחץ רוח (We):", we.toFixed(2), "עומס שירות (Fser):", Fser],
+                [""],
+                ["תוצאות בדיקה:"],
+                ["חזותית:", document.getElementById('res_visual').value],
+                ["גיאומטרית:", document.getElementById('res_geo').value],
+                [""],
+                ["עומס ניצב שדה:", Math.ceil(Fser * l1 * 0.75), "ניוטון"],
+                ["עומס ניצב פינה:", Math.ceil(Fser * (0.5 * l2 + 0.125 * l1)), "ניוטון"],
+                ["הערות:", document.getElementById('notes').value]
+            ];
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "דוח");
+
+            // הורדה
+            XLSX.writeFile(wb, "Report_" + reportId + ".xlsx");
+        } catch (e) {
+            alert("שגיאה ביצירת הקובץ: " + e.message);
+        }
+    }
+</script>
+
+</body>
+</html>
