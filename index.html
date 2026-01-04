@@ -1,97 +1,394 @@
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>טופס בדיקת מעקה</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <style>
-        body { font-family: sans-serif; background: #f0f4f8; direction: rtl; padding: 10px; }
-        .form-card { background: white; max-width: 500px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #1a4a7a; }
-        label { display: block; font-weight: bold; margin-top: 15px; font-size: 14px; }
-        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .section-title { background: #eef2f7; padding: 8px; margin-top: 20px; font-weight: bold; border-right: 4px solid #1a4a7a; }
-        .btn-send { width: 100%; background: #27ae60; color: white; padding: 18px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; margin-top: 25px; cursor: pointer; }
-    </style>
+  <meta charset="utf-8" />
+  <title>תעודת בדיקת מעקה - גרסת ווב</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- טעינת XlsxPopulate מן CDN (שמירה על עיצוב ושימוש ב-find/definedName) -->
+  <!-- אפשר גם SheetJS (xlsx.full.min.js) אם מעדיפים API אחר; כאן נשתמש ב-XlsxPopulate -->
+  https://cdnjs.cloudflare.com/ajax/libs/xlsx-populate/1.21.0/xlsx-populate.min.js</script>
+  <!-- מקורות ל-CDN וליכולות כתיבה/יצוא בדפדפן: docs ו-jsDelivr -->
+  <!-- ראה: https://cdnjs.com/libraries/xlsx-populate ; https://github.com/dtjohnson/xlsx-populate ; https://www.jsdelivr.com/package/npm/xlsx -->
+  <!-- ↑ מקורות: [1](https://cdnjs.com/libraries/xlsx-populate)[2](https://github.com/dtjohnson/xlsx-populate)[4](https://www.jsdelivr.com/package/npm/xlsx) -->
+  <style>
+    body { font-family: "Segoe UI", Arial, sans-serif; background:#f8f9fa; color:#222; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    .tabs { display:flex; gap:8px; margin: 16px 0; flex-wrap:wrap; }
+    .tabs button { background:#fff; border:1px solid #ddd; padding:10px 18px; border-radius:8px; cursor:pointer; }
+    .tabs button.active { background:#2980b9; color:#fff; border-color:#2980b9; }
+    .tab { display:none; background:#fff; border:1px solid #ddd; border-radius:10px; padding:16px; }
+    .tab.active { display:block; }
+    .grid { display:grid; grid-template-columns: repeat(2, minmax(280px, 1fr)); gap:14px 24px; align-items:center; }
+    .grid label { font-weight:600; }
+    .grid input, .grid select, .grid textarea {
+      width:100%; font-size:16px; padding:8px; border:1px solid #ccc; border-radius:8px; box-sizing:border-box; text-align:right;
+    }
+    .grid textarea { min-height: 80px; }
+    .actions { margin-top:18px; display:flex; gap:12px; flex-wrap:wrap; }
+    .actions button { background:#27ae60; color:#fff; border:none; padding:12px 18px; border-radius:8px; font-weight:700; cursor:pointer; }
+    .actions button.secondary { background:#2980b9; }
+    .note { font-size:13px; color:#555; margin-top:8px; }
+    .mono { font-family: "Courier New", monospace; background:#fbfbfb; border:1px dashed #ccc; padding:12px; border-radius:8px; white-space:pre-wrap; }
+  </style>
 </head>
 <body>
+  <h1>תעודת בדיקת מעקה - גרסת ווב</h1>
+  <div class="tabs" id="tabs">
+    <button data-tab="t1" class="active">פרטי לקוח והזמנה</button>
+    <button data-tab="t2">פרטי מערכת</button>
+    <button data-tab="t3">חישובים</button>
+    <button data-tab="t4">תוצאות ודוח</button>
+    <button data-tab="t5">אקסל (תבנית ויצוא)</button>
+  </div>
 
-<div class="form-card">
-    <h2>תעודת בדיקת מעקה</h2>
-
-    <div class="section-title">פרטים כלליים</div>
+  <!-- טאב 1: פרטי לקוח והזמנה -->
+  <section class="tab active" id="t1">
     <div class="grid">
-        <div><label>דו"ח מס'</label><input type="text" id="r_no"></div>
-        <div><label>מבטל דו"ח</label><input type="text" id="c_no"></div>
+      <label>תאריך בדיקה</label> <input type="date" id="inspectionDate" />
+      <label>שם האתר</label> <input type="text" id="siteName" placeholder="שם אתר / לקוח" />
+      <label>קוד/מספר פרויקט *</label> <input type="text" id="projectId" placeholder="מספר פרויקט" />
+      <label>שם המזמין</label> <input type="text" id="customerName" placeholder="שם המזמין" />
+      <label>מען המזמין</label> <input type="text" id="customerAddress" placeholder="מען" />
+      <label>נציג המזמין בבדיקה</label> <input type="text" id="customerRep" placeholder="שם הנציג" />
+      <label>כתובת האתר</label> <input type="text" id="siteAddress" placeholder="כתובת האתר" />
+      <label>הערות</label> <textarea id="notes" placeholder="הערות"></textarea>
+      <label>שם הבודק</label> <input type="text" id="inspectorName" value="אמיר אהרון" />
+      <label>שם המאשר ותפקידו</label> <input type="text" id="approverTitle" value="מנהל מערך מערכות בניין - אינג' אלברט גורודניצקי" />
     </div>
-    <label>שם המזמין</label><input type="text" id="c_name">
-    <label>כתובת האתר</label><input type="text" id="s_addr">
-    <label>קוד פרויקט</label><input type="text" id="p_code">
+  </section>
 
-    <div class="section-title">נתוני מדידה (מ')</div>
+  <!-- טאב 2: פרטי מערכת -->
+  <section class="tab" id="t2">
     <div class="grid">
-        <div><label>L1 (חזית)</label><input type="number" id="l1" value="1.50"></div>
-        <div><label>L2 (פינה)</label><input type="number" id="l2" value="1.50"></div>
+      <label>סוג מעקה *</label>
+      <select id="railingType">
+        <option value="">בחר</option>
+        <option>מעקה עם לוח מילא</option>
+        <option>מעקה פלדה</option>
+      </select>
+
+      <label>עיר *</label>
+      <select id="city"></select>
+
+      <label>דרגת חספוס פני השטח</label>
+      <select id="terrain"></select>
+
+      <label>גובה בניין (מ')</label>
+      <input type="number" step="0.01" id="hb" value="30.00" />
+
+      <label>גובה מעקה hr (מ')</label>
+      <input type="number" step="0.01" id="hr" value="1.05" />
+
+      <label>מפתח L1 (מ')</label>
+      <input type="number" step="0.01" id="l1" value="1.50" />
+
+      <label>מפתח L2 (מ')</label>
+      <input type="number" step="0.01" id="l2" value="1.50" />
+
+      <label>אורך לוח מילא (מ')</label>
+      <input type="number" step="0.01" id="pw" value="0.99" />
+
+      <label>גובה לוח מילא (מ')</label>
+      <input type="number" step="0.01" id="ph" value="0.99" />
+
+      <label>תיאור המבנה</label>
+      <input type="text" id="structureDesc" placeholder="תיאור המבנה" />
+
+      <label>תיאור הפריט שנבדק</label>
+      <input type="text" id="itemDesc" placeholder="תיאור הפריט" />
+
+      <label>מיקום הבדיקה</label>
+      <input type="text" id="inspectionLocation" placeholder="מיקום הבדיקה" />
     </div>
+
+    <p class="note">ערים, מהירויות רוח (vb) וחספוס שטח תואמים לקוד המקורי שלך.</p>
+    <div class="actions">
+      <button class="secondary" onclick="doCalc()">בצע חישוב</button>
+    </div>
+  </section>
+
+  <!-- טאב 3: חישובים -->
+  <section class="tab" id="t3">
+    <div class="mono" id="calcOutput">עדיין לא בוצע חישוב.</div>
+    <div class="actions">
+      <button class="secondary" onclick="doCalc()">חשב מחדש</button>
+    </div>
+    <p class="note">
+      החישוב מיישם את נוסחאות המדגם שלך (Python) אחד‑לאחד: עומס רוח We/Fw, בחירת Fser, וסעיפי העמסה (א׳, ב׳, ג׳, ד׳, ה׳).
+    </p>
+  </section>
+
+  <!-- טאב 4: תוצאות ודוח -->
+  <section class="tab" id="t4">
+    <div class="mono" id="reportArea">הדוח יופיע כאן לאחר חישוב.</div>
+    <div class="actions">
+      <button onclick="copyReport()">העתק דוח</button>
+    </div>
+  </section>
+
+  <!-- טאב 5: אקסל -->
+  <section class="tab" id="t5">
     <div class="grid">
-        <div><label>S שטח לוח</label><input type="number" id="s_val" value="1.00"></div>
-        <div><label>L מפתח לוח</label><input type="number" id="l_val" value="1.00"></div>
+      <label>טעינת תבנית אקסל</label>
+      <input type="file" id="excelTemplate" accept=".xlsx" />
+
+      <label>הגיליונות שיתווספו אוטומטית</label>
+      <input type="text" id="extraSheets" value="קלט,חישובים" />
     </div>
-    <div class="grid">
-        <div><label>S1</label><input type="number" id="s1" value="0.00"></div>
-        <div><label>S2</label><input type="number" id="s2" value="0.00"></div>
+    <p class="note">
+      הדף ישתמש ב‑XlsxPopulate כדי לפתוח את קובץ התבנית, למצוא תוויות (למשל: “תאריך בדיקה:”) ולהכניס את הערכים בתאים הצמודים.
+      ניתן גם להוסיף גיליונות חדשים לקובץ לפני ההורדה. (ראו יכולות בספרייה: Find/Replace, Defined Names, ניהול גיליונות) [2](https://github.com/dtjohnson/xlsx-populate)
+    </p>
+    <details>
+      <summary>התאמת מיפוי תוויות → תאים</summary>
+      <div class="mono" id="labelMapShow"></div>
+    </details>
+    <div class="actions">
+      <button class="secondary" onclick="plantIntoExcel()">שתול בתבנית והורד</button>
     </div>
-
-    <div class="section-title">נתוני עיר וחישוב</div>
-    <label>בחר עיר</label>
-    <select id="city">
-        <option value="24">תל אביב-יפו (24)</option>
-        <option value="26">ירושלים (26)</option>
-        <option value="24">חיפה (24)</option>
-        <option value="24">אשדוד (24)</option>
-        <option value="24">באר שבע (24)</option>
-        <option value="24">נתניה (24)</option>
-        <option value="26">צפת (26)</option>
-    </select>
-
-    <div class="section-title">תוצאות</div>
-    <label>סטטוס בדיקה</label>
-    <select id="v_res"><option>מתאים ✅</option><option>לא מתאים ❌</option></select>
-    <label>הערות</label><textarea id="notes" rows="3"></textarea>
-
-    <button class="btn-send" onclick="exportToExcel()">📊 הפק קובץ אקסל</button>
-</div>
+  </section>
 
 <script>
-    function exportToExcel() {
-        const id = document.getElementById('r_no').value;
-        if(!id) { alert("נא להזין מספר דוח"); return; }
+/* ---------------------- נתוני עזר (ערים/חספוס) ---------------------- */
+const CITY_MAP = {
+  "אבו גוש": 26, "אופקים": 24, "אור יהודה": 24, "אור עקיבא": 24, "אילת": 24, "אלעד": 24,
+  "אשדוד": 24, "אשקלון": 24, "באר שבע": 24, "בית שמש": 26, "בני ברק": 24, "בת ים": 24,
+  "גבעתיים": 24, "הרצליה": 24, "חדרה": 24, "חולון": 24, "חיפה": 24, "טבריה": 24,
+  "ירושלים": 26, "כפר סבא": 24, "מודיעין-מכבים-רעות": 26, "נתניה": 24, "פתח תקווה": 24,
+  "צפת": 28, "ראשון לציון": 24, "רחובות": 24, "רמת גן": 24, "תל אביב-יפו": 24
+};
+const TERRAIN_DATA = {
+  "דרגה 0: ים וחוף פתוח": { z0:0.003, kr:0.156 },
+  "דרגה I: שטח מישורי ללא מכשולים": { z0:0.01,  kr:0.170 },
+  "דרגה II: שטח פתוח עם מכשולים":   { z0:0.05,  kr:0.190 },
+  "דרגה III: אזורי מגורים ותעשייה":  { z0:0.3,   kr:0.215 },
+  "דרגה IV: שטחים עירוניים ובניינים":{ z0:1.0,   kr:0.234 }
+};
+window.addEventListener('DOMContentLoaded', () => {
+  const citySel = document.getElementById('city');
+  Object.keys(CITY_MAP).sort().forEach(c => {
+    const o=document.createElement('option'); o.textContent=c; citySel.appendChild(o);
+  });
+  const terrSel = document.getElementById('terrain');
+  Object.keys(TERRAIN_DATA).forEach(k => { const o=document.createElement('option'); o.textContent=k; terrSel.appendChild(o); });
+  terrSel.value = "דרגה IV: שטחים עירוניים ובניינים";
 
-        const rows = [
-            ["תעודת בדיקת מעקה במעטפת הבניין"],
-            ["דו''ח מס':", id, "מבטל דו''ח:", document.getElementById('c_no').value],
-            ["תאריך:", new Date().toLocaleDateString('he-IL'), "קוד פרויקט:", document.getElementById('p_code').value],
-            [""],
-            ["פרטי המזמין:", document.getElementById('c_name').value],
-            ["כתובת האתר:", document.getElementById('s_addr').value],
-            [""],
-            ["נתוני מדידה:"],
-            ["L1:", document.getElementById('l1').value, "L2:", document.getElementById('l2').value],
-            ["S שטח לוח:", document.getElementById('s_val').value, "L מפתח לוח:", document.getElementById('l_val').value],
-            ["S1:", document.getElementById('s1').value, "S2:", document.getElementById('s2').value],
-            [""],
-            ["תוצאה סופית:", document.getElementById('v_res').value],
-            ["הערות:", document.getElementById('notes').value]
-        ];
+  // טאבים
+  document.querySelectorAll('#tabs button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('#tabs button').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
 
-        const ws = XLSX.utils.aoa_to_sheet(rows);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Report");
-        XLSX.writeFile(wb, "Report_" + id + ".xlsx");
+  // הצגת מיפוי ברירת מחדל
+  document.getElementById('labelMapShow').textContent = JSON.stringify(LABEL_MAP, null, 2);
+});
+
+/* ---------------------- חישוב הנדסי (לפי הקוד שלך) ---------------------- */
+let lastCalc = null;
+function doCalc() {
+  try {
+    const railingType = document.getElementById('railingType').value;
+    if (!railingType) { alert("אנא בחר סוג מעקה"); return; }
+
+    const projId = (document.getElementById('projectId').value||"").trim();
+    if (!projId) { alert("אנא הזן מספר פרויקט"); return; }
+
+    const l1 = parseFloat(document.getElementById('l1').value);
+    const l2 = parseFloat(document.getElementById('l2').value);
+    const hr = parseFloat(document.getElementById('hr').value);
+
+    let Fser, fw=0, we=0, vb=0, ce=0, hb=0;
+    const unit = "נ׳/מ\"א";
+    const rle = "\u202b";
+
+    if (railingType === "מעקה פלדה") {
+      Fser = 750; fw = 0; we = 0;
+    } else {
+      const cityVal = document.getElementById('city').value;
+      if (!cityVal) { alert("אנא בחר עיר"); return; }
+      vb = CITY_MAP[cityVal] || 24;
+
+      const terr = TERRAIN_DATA[document.getElementById('terrain').value];
+      hb = parseFloat(document.getElementById('hb').value);
+
+      const z0 = terr.z0, kr = terr.kr;
+      const ze = Math.max(hb + hr, 2.0);
+      const ln = Math.log(ze / z0);
+      ce = (kr * ln) * (1 + 7 / ln);
+      we = 0.613 * (vb**2) * ce * 1.8;
+      fw = we * hr;
+      Fser = Math.ceil(Math.max(fw, 750 + (fw/2)));
     }
-</script>
 
+    // סעיפי העמסה
+    const res_b = Math.ceil(Fser * l1 * 0.75);
+    const res_a = Math.ceil(res_b / 2);
+    const res_g = Math.ceil(0.5 * Fser * (0.5 * l2 + 0.5 * l1));
+    const res_d = Math.ceil(Fser * (0.5 * l2 + 0.125 * l1));
+    const res_h = Math.ceil(Fser * (0.5 * l2 + 0.5 * l1));
+
+    // תצוגת חישוב
+    let res = "========================================================================\n";
+    res += `               דוח תוצאות חישוב הנדסי - ${railingType}               \n`;
+    res += "========================================================================\n\n";
+    const dateStr = document.getElementById('inspectionDate').value || new Date().toLocaleDateString('he-IL');
+    res += `${rle}תאריך: ${dateStr} | פרויקט: ${projId}\n`;
+    if (railingType === "מעקה עם לוח מילא") {
+      res += `${rle}מיקום: ${document.getElementById('city').value} | גובה בניין: ${document.getElementById('hb').value} מ׳\n`;
+      res += `${rle}עומס רוח מחושב (Fw): ${fw.toFixed(2)} ${unit}\n`;
+    } else {
+      res += `${rle}סוג מעקה פלדה - חישוב על פי עומס שירות בסיסי 750 ${unit}\n`;
+    }
+    res += `${rle}גיאומטריה: מפתח א׳ = ${l1.toFixed(2)} מ׳, מפתח ב׳ = ${l2.toFixed(2)} מ׳\n`;
+    res += `${rle}>> העומס הנבחר לחישוב (Fser): ${Fser} ${unit}\n\n`;
+    res += `${rle}עומסים מרוכזים על ניצבים:\n`;
+    res += "------------------------------------------------------------------------\n";
+    res += `${rle}סעיף א׳ (חצי עומס): ${res_a} ${unit}\n`;
+    res += `${rle}סעיף ב׳ (עומס מלא): ${res_b} ${unit}\n`;
+    res += `${rle}סעיף ג׳ (ניצב ביניים): ${res_g} ${unit}\n`;
+    res += `${rle}סעיף ד׳ (ניצב פינה): ${res_d} ${unit}\n`;
+    res += `${rle}סעיף ה׳ (ניצב קצה): ${res_h} ${unit}\n`;
+
+    document.getElementById('calcOutput').textContent = res;
+    lastCalc = {
+      railingType, projId, l1, l2, hr, fw, we, Fser, res_a, res_b, res_g, res_d, res_h,
+      dateStr, city: document.getElementById('city').value,
+      hb, terrain: document.getElementById('terrain').value
+    };
+
+    // דוח מסכם קצר (לטאב "תוצאות ודוח")
+    const report = buildReportText(lastCalc);
+    document.getElementById('reportArea').textContent = report;
+    // מעבר לטאב התוצאות לנוחות
+    document.querySelector('#tabs button[data-tab="t4"]').click();
+  } catch (err) {
+    alert("וודא שכל השדות מולאו כראוי: " + err);
+  }
+}
+
+function buildReportText(c) {
+  const u = 'נ׳/מ\"א';
+  const rle = "\u202b";
+  let t = "תעודת בדיקת מעקה במעטפת הבניין\n";
+  t += "==========================================\n";
+  t += `${rle}תאריך בדיקה: ${c?.dateStr || ''}\n`;
+  t += `${rle}שם האתר: ${document.getElementById('siteName').value}\n`;
+  t += `${rle}קוד פרויקט: ${c?.projId || ''}\n\n`;
+  t += "1. פרטי הלקוח וזיהוי ההזמנה:\n";
+  t += `${rle}שם המזמין: ${document.getElementById('customerName').value}\n`;
+  t += `${rle}מען המזמין: ${document.getElementById('customerAddress').value}\n`;
+  t += `${rle}נציג המזמין בבדיקה: ${document.getElementById('customerRep').value}\n`;
+  t += `${rle}כתובת האתר: ${document.getElementById('siteAddress').value}\n\n`;
+  t += "2. פרטים על המערכת שנבדקה:\n";
+  t += `${rle}תיאור המבנה: ${document.getElementById('structureDesc').value}\n`;
+  t += `${rle}תיאור הפריט שנבדק: ${document.getElementById('itemDesc').value}\n`;
+  t += `${rle}מיקום הבדיקה: ${document.getElementById('inspectionLocation').value}\n`;
+  t += `${rle}סוג הבדיקה: בדיקה חזותית ובדיקה גיאומטרית\n\n`;
+  t += "3. נתוני הבדיקה ותוצאות (סעיפים 10.3 ת\"י 1142):\n";
+  t += `${rle}Fser=${c.Fser} ${u} | L1=${c.l1.toFixed(2)}m | L2=${c.l2.toFixed(2)}m | hr=${c.hr.toFixed(2)}m\n`;
+  if (c.railingType === "מעקה עם לוח מילא") {
+    t += `${rle}עיר=${c.city} | hb=${c.hb}m | We=${c.we.toFixed(2)} נ׳/מ\"ר | Fw=${c.fw.toFixed(2)} ${u}\n`;
+  } else {
+    t += `${rle}מעקה פלדה: עומס שירות בסיסי 750 ${u}\n`;
+  }
+  t += `${rle}סעיף א׳=${c.res_a} | סעיף ב׳=${c.res_b} | סעיף ג׳=${c.res_g} | סעיף ד׳=${c.res_d} | סעיף ה׳=${c.res_h}\n\n`;
+  t += "4. מסקנה:\n";
+  t += `${rle}שם הבודק: ${document.getElementById('inspectorName').value}\n`;
+  t += `${rle}שם המאשר ותפקידו: ${document.getElementById('approverTitle').value}\n`;
+  t += `${rle}הערות: ${document.getElementById('notes').value}\n`;
+  return t;
+}
+
+function copyReport(){
+  const txt = document.getElementById('reportArea').textContent;
+  navigator.clipboard.writeText(txt).then(()=>alert("הדוח הועתק ללוח"));
+}
+
+/* ---------------------- מיפוי תוויות לגיליון האקסל ---------------------- */
+/* הברירת מחדל: חיפוש תווית בגיליון (Sheet 0) והצבת הערך בתא הצמוד לימינה (offsetCol=+1).
+   ניתן להרחיב לשמות מוגדרים (Defined Names) אם קיימים בתבנית.  [2](https://github.com/dtjohnson/xlsx-populate) */
+const LABEL_MAP = [
+  { label:"תאריך בדיקה:", value:()=>document.getElementById('inspectionDate').value || new Date().toLocaleDateString('he-IL'), offsetCol:1 },
+  { label:"שם האתר:",     value:()=>document.getElementById('siteName').value, offsetCol:1 },
+  { label:"קוד פרויקט:",  value:()=>document.getElementById('projectId').value, offsetCol:1 },
+
+  // עמוד 2–3 (לפי התבנית שהעלית): נוסיף ערכים נגזרים
+  { label:"חישוב עומס הרוח על האלמנט הנבדק Fw -", value:()=> (lastCalc ? `${lastCalc.fw.toFixed(2)} נ׳/מ\"א` : ""), offsetCol:1 },
+  { label:"עומס רוח על אזן עליון (נ' למטר אורך)",  value:()=> (lastCalc ? `${lastCalc.Fser} נ׳/מ\"א` : ""), offsetCol:1 },
+
+  // חתימות
+  { label:"שם הבודק:",    value:()=>document.getElementById('inspectorName').value, offsetCol:1 },
+  { label:"שם המאשר ותפקידו:", value:()=>document.getElementById('approverTitle').value, offsetCol:1 },
+];
+
+/* פונקציית עזר: מאתר כל הופעת תווית ומציב את הערך בתא השכן (אותה שורה, +offsetCol עמודות) */
+function setNextToLabel(sheet, labelText, value, offsetCol) {
+  const matches = sheet.find(labelText) || []; // Find and Replace API של XlsxPopulate  [2](https://github.com/dtjohnson/xlsx-populate)
+  matches.forEach(cell => {
+    const r = cell.rowNumber(); const c = cell.columnNumber();
+    sheet.cell(r, c + (offsetCol||1)).value(value);
+  });
+}
+
+/* ---------------------- שתילה בתבנית והורדה ---------------------- */
+async function plantIntoExcel(){
+  try {
+    if (!lastCalc) { alert("בצע חישוב לפני שתילה בקובץ"); return; }
+    const file = document.getElementById('excelTemplate').files?.[0];
+    if (!file) { alert("אנא טען קובץ תבנית .xlsx"); return; }
+
+    const wb = await XlsxPopulate.fromDataAsync(file); // טעינת הקובץ בדפדפן  [2](https://github.com/dtjohnson/xlsx-populate)
+    const sheet0 = wb.sheet(0);
+
+    // שתילה לפי תוויות
+    LABEL_MAP.forEach(m => setNextToLabel(sheet0, m.label, m.value(), m.offsetCol));
+
+    // הוספת גיליונות נוספים עם נתוני קלט וחישובים
+    const extra = (document.getElementById('extraSheets').value||"").split(',').map(s=>s.trim()).filter(Boolean);
+    extra.forEach((name, idx) => {
+      const sh = wb.addSheet(name);
+      if (name.includes("קלט")) {
+        sh.cell("A1").value("קלט");
+        sh.cell("A3").value("סוג מעקה"); sh.cell("B3").value(lastCalc.railingType);
+        sh.cell("A4").value("עיר"); sh.cell("B4").value(lastCalc.city);
+        sh.cell("A5").value("גובה בניין hb"); sh.cell("B5").value(lastCalc.hb);
+        sh.cell("A6").value("גובה מעקה hr"); sh.cell("B6").value(lastCalc.hr);
+        sh.cell("A7").value("L1"); sh.cell("B7").value(lastCalc.l1);
+        sh.cell("A8").value("L2"); sh.cell("B8").value(lastCalc.l2);
+      } else if (name.includes("חישובים")) {
+        sh.cell("A1").value("חישובים");
+        sh.cell("A3").value("Fser"); sh.cell("B3").value(lastCalc.Fser);
+        sh.cell("A4").value("We (נ׳/מ\"ר)"); sh.cell("B4").value(lastCalc.we.toFixed(2));
+        sh.cell("A5").value("Fw (נ׳/מ\"א)"); sh.cell("B5").value(lastCalc.fw.toFixed(2));
+        sh.cell("A7").value("סעיף א׳"); sh.cell("B7").value(lastCalc.res_a);
+        sh.cell("A8").value("סעיף ב׳"); sh.cell("B8").value(lastCalc.res_b);
+        sh.cell("A9").value("סעיף ג׳"); sh.cell("B9").value(lastCalc.res_g);
+        sh.cell("A10").value("סעיף ד׳"); sh.cell("B10").value(lastCalc.res_d);
+        sh.cell("A11").value("סעיף ה׳"); sh.cell("B11").value(lastCalc.res_h);
+      }
+    });
+
+    // הורדה – יצוא לקובץ XLSX ישירות מהדפדפן
+    const outName = `תעודה_${lastCalc.projId}_${lastCalc.city || 'פלדה'}_${new Date().toLocaleDateString('he-IL')}.xlsx`;
+    const blob = await wb.outputAsync(); // הורדת Blob והפעלת שמירה
+    // writeFile / יצירת קישור דפדפן להורדה – תואם לטכניקות שמוזכרות בתיעוד SheetJS/XlsxPopulate  [5](https://docs.sheetjs.com/docs/solutions/output/)[2](https://github.com/dtjohnson/xlsx-populate)
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = outName;
+    document.body.appendChild(a); a.click();
+    URL.revokeObjectURL(url); a.remove();
+
+    alert("הקובץ נוצר בהצלחה והורד.");
+  } catch (e) {
+    alert("שגיאה בעת שתילה/הורדה: " + e);
+  }
+}
+</script>
 </body>
 </html>
+``
+
