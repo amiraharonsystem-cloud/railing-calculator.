@@ -1,6 +1,6 @@
 
 {
-  "name": "Linux VM Environment",
+  "name": "Linux VM with Docker",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {},
