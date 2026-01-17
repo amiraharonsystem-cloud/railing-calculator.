@@ -8,20 +8,31 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// פתרון הבעיה: הגדרת נתיב מוחלט לתיקיית public
-const publicPath = path.resolve(__dirname, 'public');
+// פתרון סופי לבעיית הנתיבים - בודק איפה אנחנו נמצאים
+const rootDir = process.cwd();
+const publicPath = path.join(rootDir, 'public');
+
+// משרת קבצים סטטיים
 app.use(express.static(publicPath));
 
-const FILE_PATH = path.join(__dirname, 'maake_reports.xlsx');
+const FILE_PATH = path.join(rootDir, 'maake_reports.xlsx');
 
-// פותר את שגיאת "Cannot GET /"
+// דף הבית - מנסה למצוא את הקובץ בכמה דרכים
 app.get('/', (req, res) => {
-    const indexPath = path.join(publicPath, 'index.html');
-    if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-    } else {
-        res.status(404).send("Error: index.html not found in public folder");
+    const locations = [
+        path.join(publicPath, 'index.html'),
+        path.join(rootDir, 'public', 'index.html'),
+        path.join(__dirname, 'public', 'index.html')
+    ];
+
+    for (let loc of locations) {
+        if (fs.existsSync(loc)) {
+            return res.sendFile(loc);
+        }
     }
+    
+    // אם הגענו לכאן, הקובץ באמת לא נמצא
+    res.status(404).send(`Error: index.html not found. Locations searched: ${locations.join(', ')}`);
 });
 
 app.post('/add-row', async (req, res) => {
