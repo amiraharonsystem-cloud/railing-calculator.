@@ -15,43 +15,42 @@ app.post('/generate-excel', async (req, res) => {
         await workbook.xlsx.readFile(path.join(__dirname, 'template.xlsx'));
         const ws = workbook.getWorksheet(1);
 
-        // --- סעיף 1: פרטי המזמין והאתר ---
+        // --- עמוד 1: זיהוי (שורות 1-14) ---
         ws.getCell('L3').value = d.testDate;
         ws.getCell('C4').value = d.siteName;
         ws.getCell('L4').value = d.projectId;
         ws.getCell('C7').value = d.clientName;
         ws.getCell('L7').value = d.clientRep;
         ws.getCell('C8').value = d.siteAddress;
-        ws.getCell('C10').value = d.structureDesc;
+        ws.getCell('C10').value = d.structure;
         ws.getCell('C11').value = d.itemDesc;
-        ws.getCell('C12').value = d.location;
-        ws.getCell('C13').value = d.planningStatus; 
-        ws.getCell('C14').value = d.calcStatus;
+        ws.getCell('C12').value = d.testLoc;
+        ws.getCell('C13').value = d.planning;    // "הוגש" או "לא הוגש"
+        ws.getCell('C14').value = d.engineering; // "הוגש" או "לא הוגש"
 
-        // --- סעיף 2: נתונים הנדסיים (מדידות) ---
+        // --- עמוד 2: מדידות טכניות (שורות 22-26) ---
         ws.getCell('L22').value = d.L1;
         ws.getCell('L24').value = d.L2;
         ws.getCell('L26').value = d.L_fill;
 
-        // --- סעיף 3: עומסים ובדיקות ---
-        ws.getCell('L30').value = d.ws_load;
+        // --- עמוד 3: עומסים ותוצאות (שורות 30-138) ---
+        ws.getCell('L30').value = d.ws;
         ws.getCell('L31').value = d.half_ws;
-        ws.getCell('G35').value = d.res1033;
+        ws.getCell('G35').value = d.res1033; // "עמד" או "לא עמד"
         ws.getCell('G36').value = d.res1034;
         ws.getCell('G37').value = d.res1035;
-
-        // --- סיכום ---
+        
         ws.getCell('C40').value = d.comments;
-        ws.getCell('C42').value = d.inspectorName;
+        ws.getCell('C42').value = d.inspector;
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', `attachment; filename=Report.xlsx`);
+        res.setHeader('Content-Disposition', 'attachment; filename=Report.xlsx');
         const buffer = await workbook.xlsx.writeBuffer();
         res.send(buffer);
     } catch (error) {
-        res.status(500).send("שגיאה: וודא שקובץ template.xlsx נמצא בשרת");
+        res.status(500).send("שגיאה: הקובץ template.xlsx חייב להיות ב-GitHub");
     }
 });
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, '0.0.0.0', () => console.log('Ready'));
+app.listen(PORT, '0.0.0.0');
