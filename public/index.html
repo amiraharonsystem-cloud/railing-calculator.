@@ -2,90 +2,85 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>הזנה מלאה - 138 שורות</title>
+    <title>מילוי דו"ח מלא - כל התאים</title>
     <style>
-        body { font-family: sans-serif; background: #f0f0f0; direction: rtl; margin: 0; }
-        .tabs { display: flex; background: #333; position: sticky; top: 0; z-index: 100; }
+        body { font-family: sans-serif; margin: 0; background: #f4f4f4; }
+        .tabs { display: flex; background: #333; sticky; top: 0; }
         .tab-btn { flex: 1; padding: 15px; color: white; border: none; background: none; cursor: pointer; font-weight: bold; }
         .tab-btn.active { background: #27ae60; }
-        .container { max-width: 800px; margin: 20px auto; background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .container { max-width: 1000px; margin: 20px auto; background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .section { display: none; }
         .section.active { display: block; }
-        .field { margin-bottom: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; color: #444; }
-        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #333; font-size: 16px; box-sizing: border-box; border-radius: 4px; }
-        .submit-btn { width: 100%; padding: 25px; background: #27ae60; color: white; border: none; font-size: 24px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background: #f8f9fa; }
+        input, select { width: 90%; padding: 8px; border: 1px solid #ccc; }
+        .full-btn { width: 100%; padding: 20px; background: #27ae60; color: white; border: none; font-size: 20px; font-weight: bold; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="tabs">
-    <button class="tab-btn active" onclick="showTab(0)">פרטי זיהוי ואתר</button>
-    <button class="tab-btn" onclick="showTab(1)">מדידות וגיאומטריה</button>
-    <button class="tab-btn" onclick="showTab(2)">תוצאות וסיכום</button>
+    <button class="tab-btn active" onclick="setTab(0)">פרטי זיהוי</button>
+    <button class="tab-btn" onclick="setTab(1)">מדידות וגיאומטריה</button>
+    <button class="tab-btn" onclick="setTab(2)">טבלת בדיקות 10.3.4</button>
+    <button class="tab-btn" onclick="setTab(3)">סיכום</button>
 </div>
 
 <div class="container">
     <div id="s0" class="section active">
-        <div class="field"><label>תאריך בדיקה</label><input type="date" id="L3"></div>
-        <div class="field"><label>שם האתר</label><input type="text" id="C4"></div>
-        <div class="field"><label>קוד פרויקט</label><input type="text" id="L4"></div>
-        <div class="field"><label>שם המזמין</label><input type="text" id="C7"></div>
-        <div class="field"><label>נציג המזמין</label><input type="text" id="L7"></div>
-        <div class="field"><label>כתובת האתר</label><input type="text" id="C8"></div>
-        <div class="field"><label>תיאור המבנה</label><input type="text" id="C10"></div>
-        <div class="field"><label>תיאור הפריט</label><input type="text" id="C11"></div>
-        <div class="field"><label>מיקום הבדיקה</label><input type="text" id="C12"></div>
-        <div class="field">
-            <label>תכנון המעקה</label>
-            <select id="C13"><option value="לא הוגש">לא הוגש</option><option value="הוגש">הוגש</option></select>
-        </div>
-        <div class="field">
-            <label>חישוב הנדסי</label>
-            <select id="C14"><option value="לא הוגש">לא הוגש</option><option value="הוגש">הוגש</option></select>
-        </div>
+        <h3>פרטי זיהוי (שורות 3-14)</h3>
+        <table>
+            <tr><td>תאריך בדיקה (L3)</td><td><input type="date" id="L3"></td></tr>
+            <tr><td>שם האתר (C4)</td><td><input type="text" id="C4"></td></tr>
+            <tr><td>קוד פרויקט (L4)</td><td><input type="text" id="L4"></td></tr>
+            <tr><td>שם המזמין (C7)</td><td><input type="text" id="C7"></td></tr>
+            <tr><td>תיאור הפריט (C11)</td><td><input type="text" id="C11"></td></tr>
+        </table>
     </div>
 
     <div id="s1" class="section">
-        <div class="field"><label>L1 - מרחק בין ניצבים</label><input type="text" id="L22"></div>
-        <div class="field"><label>L2 - מפתח שדה סמוך</label><input type="text" id="L24"></div>
-        <div class="field"><label>L - מפתח לוח מליא</label><input type="text" id="L26"></div>
-        <div class="field"><label>עומס רוח ws</label><input type="text" id="L30"></div>
-        <div class="field"><label>מחצית עומס רוח 0.5ws</label><input type="text" id="L31"></div>
+        <h3>נתוני מדידה (שורות 22-31)</h3>
+        <table>
+            <tr><td>L1 - מרחק ניצבים</td><td><input type="text" id="L22"></td></tr>
+            <tr><td>L2 - מפתח סמוך</td><td><input type="text" id="L24"></td></tr>
+            <tr><td>עומס רוח ws</td><td><input type="text" id="L30"></td></tr>
+        </table>
     </div>
 
     <div id="s2" class="section">
-        <div class="field">
-            <label>סעיף 10.3.3 - עומס מרוכז</label>
-            <select id="G35"><option value="עמד">עמד</option><option value="לא עמד">לא עמד</option></select>
-        </div>
-        <div class="field">
-            <label>סעיף 10.3.4 - עומס מפורס</label>
-            <select id="G36"><option value="עמד">עמד</option><option value="לא עמד">לא עמד</option></select>
-        </div>
-        <div class="field">
-            <label>סעיף 10.3.5 - לוח מליא</label>
-            <select id="G37"><option value="עמד">עמד</option><option value="לא עמד">לא עמד</option></select>
-        </div>
-        <div class="field"><label>הערות הבודק</label><textarea id="C40" rows="4"></textarea></div>
-        <div class="field"><label>שם הבודק</label><input type="text" id="C42"></div>
+        <h3>פירוט בדיקות ותזוזות (סעיף 10.3.4)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>סעיף</th>
+                    <th>תאור הבדיקה</th>
+                    <th>תזוזה אופקית (I)</th>
+                    <th>תזוזה שיורית (J)</th>
+                    <th>תוצאה (L)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>10.3.4 א</td><td>מחצית העומס</td><td><input id="I107"></td><td><input id="J107"></td><td><select id="L107"><option value="עמד">עמד</option><option value="לא עמד">לא עמד</option></select></td></tr>
+                <tr><td>10.3.4 ב</td><td>העומס המרוכז המלא</td><td><input id="I108"></td><td><input id="J108"></td><td><select id="L108"><option value="עמד">עמד</option><option value="לא עמד">לא עמד</option></select></td></tr>
+                <tr><td>10.3.4 ג</td><td>העמסה של ניצב</td><td><input id="I110"></td><td><input id="J110"></td><td><select id="L110"><option value="עמד">עמד</option><option value="לא עמד">לא עמד</option></select></td></tr>
+            </tbody>
+        </table>
     </div>
 
-    <button class="submit-btn" onclick="save()">💾 הפק אקסל (שורה 3 עד 138)</button>
+    <button class="full-btn" onclick="generate()">💾 הפק אקסל מלא (כל התאים)</button>
 </div>
 
 <script>
-    function showTab(n) {
+    function setTab(i) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('s'+n).classList.add('active');
-        document.querySelectorAll('.tab-btn')[n].classList.add('active');
+        document.getElementById('s'+i).classList.add('active');
+        document.querySelectorAll('.tab-btn')[i].classList.add('active');
     }
-
-    async function save() {
+    async function generate() {
         const data = {};
-        document.querySelectorAll('input, select, textarea').forEach(el => data[el.id] = el.value);
+        document.querySelectorAll('input, select').forEach(el => data[el.id] = el.value);
         const res = await fetch('/generate-excel', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -95,7 +90,7 @@
             const blob = await res.blob();
             const a = document.createElement('a');
             a.href = window.URL.createObjectURL(blob);
-            a.download = `Report_${data.L4 || 'Final'}.xlsx`;
+            a.download = "Report.xlsx";
             a.click();
         }
     }
