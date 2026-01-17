@@ -14,12 +14,17 @@ app.post('/generate-excel', async (req, res) => {
 
         Object.keys(cells).forEach(addr => {
             const val = cells[addr];
-            if (val !== "") {
+            if (val !== undefined && val !== "") {
                 const cell = ws.getCell(addr);
-                cell.value = isNaN(val) ? val : Number(val);
+                // הזרקה חכמה: מספרים כמספרים לשמירה על נוסחאות
+                cell.value = (isNaN(val) || val.trim() === "") ? val : Number(val);
             }
         });
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.send(await workbook.xlsx.writeBuffer());
-    } catch (e) { res.status(500).send(e.message); }
+    } catch (e) {
+        res.status(500).send("Error: " + e.message);
+    }
 });
 app.listen(3000);
