@@ -1,28 +1,40 @@
 const express = require('express');
 const ExcelJS = require('exceljs');
+const bodyParser = require('body-parser');
 const path = require('path');
+
 const app = express();
-app.use(express.json({ limit: '50mb' }));
+app.use(bodyParser.json());
 app.use(express.static('public'));
 
 app.post('/generate-excel', async (req, res) => {
     try {
         const { cells } = req.body;
         const workbook = new ExcelJS.Workbook();
+        
+        // טעינת תבנית האקסל המקורית
         await workbook.xlsx.readFile(path.join(__dirname, 'template.xlsx'));
-        const ws = workbook.getWorksheet(1);
+        const worksheet = workbook.getWorksheet(1);
 
+        // הזרקת כל השדות לפי הכתובות שנשלחו מהממשק
+        // זה כולל את שורות 2-14, 53-64 (גאומטריה), 100-117 (עומסים) ו-123-145 (מליא וסיכום)
         Object.keys(cells).forEach(addr => {
-            const val = cells[addr];
-            if (val !== undefined && val !== "") {
-                const cell = ws.getCell(addr);
-                // הזרקת מספרים כמספרים לשמירה על נוסחאות האקסל
-                cell.value = (isNaN(val) || val.trim() === "") ? val : Number(val);
-            }
+            const cell = worksheet.getCell(addr);
+            cell.value = cells[addr];
         });
 
+        // הגדרת כותרות התגובה להורדת קובץ
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.send(await workbook.xlsx.writeBuffer());
-    } catch (e) { res.status(500).send("Error: " + e.message); }
+        res.setHeader('Content-Disposition', 'attachment; filename=report.xlsx');
+
+        await workbook.xlsx.write(res);
+        res.end();
+
+    } catch (error) {
+        console.error('Error generating excel:', error);
+        res.status(500).send('שגיאה ביצירת הקובץ');
+    }
 });
-app.listen(3000);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
