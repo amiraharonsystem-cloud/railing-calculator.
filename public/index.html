@@ -2,123 +2,123 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>מערכת ניהול דוחות ת"י 1142 - גרסה מלאה</title>
+    <title>מערכת דיגיטלית לבדיקת מעקות</title>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Assistant', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; color: #1c1e21; }
-        .container { max-width: 1200px; margin: auto; }
+        :root { --primary: #1a73e8; --bg: #f8f9fa; --text: #202124; --border: #dadce0; }
+        body { font-family: 'Assistant', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.6; }
+        .container { max-width: 1000px; margin: auto; }
         
-        /* Header */
-        .page-header { background: #fff; padding: 30px; border-radius: 15px; margin-bottom: 30px; border-bottom: 5px solid #1a73e8; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .page-header h1 { margin: 0; color: #1a73e8; font-size: 2.2rem; }
+        .main-header { text-align: center; margin-bottom: 40px; }
+        .main-header h1 { font-size: 2.5rem; font-weight: 800; color: var(--primary); margin-bottom: 10px; }
 
-        /* Card System */
-        .card { background: #fff; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        .card-title { font-size: 1.4rem; font-weight: 700; color: #1565c0; margin-bottom: 20px; border-bottom: 2px solid #e3f2fd; padding-bottom: 10px; }
+        .card { background: white; border-radius: 16px; padding: 35px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+        .card-h { font-size: 1.6rem; font-weight: 700; color: var(--primary); margin-bottom: 25px; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; }
 
-        /* Form Layout */
-        .form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
         .field { display: flex; flex-direction: column; }
-        .field.span-2 { grid-column: span 2; }
-        .field.span-4 { grid-column: span 4; }
+        .field.full { grid-column: span 2; }
+        
+        label { font-weight: 600; font-size: 1.2rem; margin-bottom: 10px; color: #3c4043; }
+        input, select, textarea { 
+            padding: 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1.2rem; 
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); outline: none; background: #fff;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(26,115,232,0.1); background: #fff; }
 
-        label { font-weight: 600; margin-bottom: 8px; color: #444; font-size: 1.1rem; }
-        input, select, textarea { padding: 12px; border: 2px solid #dfe1e5; border-radius: 8px; font-size: 1.1rem; outline: none; transition: 0.2s; }
-        input:focus { border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,0.1); }
+        .sub-title { font-weight: 700; font-size: 1.3rem; margin: 15px 0 5px 0; color: #5f6368; grid-column: span 2; }
 
-        .section-label { grid-column: span 4; background: #f8f9fa; padding: 10px 15px; border-right: 5px solid #1a73e8; font-weight: bold; margin: 10px 0; }
-
-        /* Action Bar */
-        .action-bar { position: sticky; bottom: 20px; text-align: center; margin-top: 40px; }
-        .btn-main { background: #2e7d32; color: #fff; border: none; padding: 18px 100px; font-size: 1.5rem; font-weight: 700; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 20px rgba(46,125,50,0.3); }
-        .btn-main:hover { background: #1b5e20; transform: translateY(-2px); }
+        .footer { position: sticky; bottom: 30px; text-align: center; margin-top: 50px; }
+        .btn-submit { 
+            background: #2e7d32; color: white; border: none; padding: 20px 100px; font-size: 1.6rem; 
+            font-weight: 700; border-radius: 60px; cursor: pointer; box-shadow: 0 10px 30px rgba(46,125,50,0.3);
+            transition: transform 0.2s;
+        }
+        .btn-submit:hover { transform: translateY(-3px); background: #1b5e20; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="page-header">
-        <h1>תעודת בדיקת מעקה במעטפת הבניין</h1>
-        <p>מילוי נתונים עבור ת"י 1142 - גרסה הנדסית מלאה</p>
+    <div class="main-header">
+        <h1>דוח בדיקת מעקה</h1>
+        <p>ת"י 1142 - הזנת נתוני בדיקה והפקת דוח</p>
     </div>
 
     <div class="card">
-        <div class="card-title">1. פרטי זיהוי ומינהלה (שורות 1-20)</div>
-        <div class="form-grid">
-            <div class="field"><label>מס' דו"ח (L2)</label><input data-addr="L2"></div>
-            <div class="field"><label>תאריך בדיקה (L3)</label><input data-addr="L3" type="date"></div>
-            <div class="field"><label>קוד פרויקט (L4)</label><input data-addr="L4"></div>
-            <div class="field"><label>בדיקה חוזרת? (L10)</label>
-                <select data-addr="L10"><option value="ראשונה">ראשונה</option><option value="חוזרת">חוזרת</option></select>
+        <div class="card-h">פרטי הפרויקט והמזמין</div>
+        <div class="grid">
+            <div class="field"><label>מספר דו"ח</label><input data-addr="L2" placeholder="לדוגמה: 2024-001"></div>
+            <div class="field"><label>תאריך הבדיקה</label><input data-addr="L3" type="date"></div>
+            <div class="field full"><label>שם המזמין</label><input data-addr="L7"></div>
+            <div class="field full"><label>כתובת האתר</label><input data-addr="L8"></div>
+            <div class="field"><label>מקום הבדיקה במבנה</label><input data-addr="L14" placeholder="קומה, מרפסת וכו'"></div>
+            <div class="field"><label>סוג בדיקה</label>
+                <select data-addr="L10"><option>ראשונה</option><option>חוזרת</option></select>
             </div>
-
-            <div class="section-label">פרטי המזמין והמבנה</div>
-            <div class="field span-2"><label>שם המזמין (L7)</label><input data-addr="L7"></div>
-            <div class="field span-2"><label>כתובת האתר/המבנה (L8)</label><input data-addr="L8"></div>
-            <div class="field span-2"><label>תיאור המבנה (L12)</label><input data-addr="L12" placeholder="לדוגמה: בניין מגורים 12 קומות"></div>
-            <div class="field span-2"><label>מקום הבדיקה (L14)</label><input data-addr="L14" placeholder="מרפסות חזית צפונית"></div>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-header card-title">2. תיאור המעקה ומרכיביו (שורות 45-75)</div>
-        <div class="form-grid">
-            <div class="field span-2"><label>דגם המעקה (L15)</label><input data-addr="L15"></div>
-            <div class="field"><label>גובה מעקה (L16)</label><input data-addr="L16" type="number" step="0.1"></div>
+        <div class="card-h">תיאור המעקה והחומרים</div>
+        <div class="grid">
+            <div class="field full"><label>דגם המעקה</label><input data-addr="L15"></div>
             
-            <div class="section-label">פרטי חומרים</div>
-            <div class="field"><label>חומר ניצב (C45)</label><input data-addr="C45"></div>
-            <div class="field"><label>גמר ניצב (F45)</label><input data-addr="F45"></div>
-            <div class="field"><label>סוג זכוכית (G70)</label><input data-addr="G70"></div>
-            <div class="field"><label>עובי זכוכית (G67)</label><input data-addr="G67"></div>
+            <div class="sub-title">פרופיל ניצב</div>
+            <div class="field"><label>סוג חומר</label><input data-addr="C45"></div>
+            <div class="field"><label>גמר (צבע/ציפוי)</label><input data-addr="F45"></div>
+            
+            <div class="sub-title">זכוכית</div>
+            <div class="field"><label>סוג ועיבוד</label><input data-addr="G70"></div>
+            <div class="field"><label>עובי (מ"מ)</label><input data-addr="G67" type="number" step="0.1"></div>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title">3. תוצאות בדיקה - עומסים (סעיף 10.3.4)</div>
-        <div class="form-grid">
-            <div class="section-label">סעיף 10.3.4 א' - עומס אופקי (שירות)</div>
-            <div class="field"><label>עומס מופעל N (G107)</label><input data-addr="G107"></div>
-            <div class="field"><label>תזוזה I (I107)</label><input data-addr="I107"></div>
-            <div class="field"><label>שיורית J (J107)</label><input data-addr="J107"></div>
-            <div class="field"><label>מסקנה (L107)</label>
-                <select data-addr="L107"><option value="מתאים">מתאים ✅</option><option value="לא מתאים">לא מתאים ❌</option></select>
-            </div>
-
-            <div class="section-label">סעיף 10.3.4 ג' - עומס ניצב</div>
-            <div class="field"><label>עומס מופעל N (G111)</label><input data-addr="G111"></div>
-            <div class="field"><label>מסקנה (L111)</label><select data-addr="L111"><option value="מתאים">מתאים</option></select></div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">4. סיכום וממצאים חזותיים</div>
-        <div class="form-grid">
-            <div class="field span-4">
-                <label>ממצאים חזותיים 10.3.1 (I137)</label>
-                <textarea data-addr="I137" rows="3" placeholder="פרט ממצאים לגבי חיבורים, עיגונים, סדקים..."></textarea>
-            </div>
-            <div class="field span-2">
-                <label>מסקנה סופית של המעבדה (L138)</label>
-                <select data-addr="L138" style="background: #e8f5e9; font-weight: bold; border-color: #2e7d32;">
-                    <option value="מתאים">המעקה עומד בדרישות ת"י 1142</option>
-                    <option value="לא מתאים">המעקה אינו עומד בדרישות</option>
+        <div class="card-h">תוצאות בדיקת עומסים</div>
+        <div class="grid">
+            <div class="sub-title">בדיקת עומס אופקי (10.3.4 א')</div>
+            <div class="field"><label>עומס מופעל (N)</label><input data-addr="G107" type="number"></div>
+            <div class="field"><label>תזוזה תחת עומס (מ"מ)</label><input data-addr="I107" type="number" step="0.01"></div>
+            
+            <div class="sub-title">בדיקת עומס משולב (10.3.4 ד')</div>
+            <div class="field"><label>עומס מופעל (N)</label><input data-addr="G113" type="number"></div>
+            <div class="field"><label>תזוזה שיורית (מ"מ)</label><input data-addr="J113" type="number" step="0.01"></div>
+            
+            <div class="field full" style="margin-top:20px;">
+                <label>מסקנה לבדיקת עומסים</label>
+                <select data-addr="L107">
+                    <option value="מתאים">עומד בדרישות</option>
+                    <option value="לא מתאים">אינו עומד בדרישות</option>
                 </select>
             </div>
-            <div class="field span-2">
-                <label>שם הבודק / חותמת (L145)</label>
-                <input data-addr="L145">
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-h">סיכום וממצאים חזותיים</div>
+        <div class="field full">
+            <label>ממצאים חזותיים (חיבורים, עיגונים, סדקים)</label>
+            <textarea data-addr="I137" rows="4" placeholder="הקלד כאן את ממצאי הבדיקה החזותית..."></textarea>
+        </div>
+        <div class="grid" style="margin-top:25px;">
+            <div class="field full">
+                <label>שורה תחתונה - מסקנה סופית</label>
+                <select data-addr="L138" style="background: #e8f5e9; font-weight: 700; border-color: #2e7d32;">
+                    <option value="מתאים">המעקה תקין ועומד בדרישות ת"י 1142</option>
+                    <option value="לא מתאים">המעקה אינו תקין ואינו עומד בדרישות</option>
+                </select>
             </div>
         </div>
     </div>
 
-    <div class="action-bar">
-        <button class="btn-main" onclick="generate()">💾 הפק אקסל הנדסי מלא (1:1)</button>
+    <div class="footer">
+        <button class="btn-submit" onclick="generateExcel()">הפק דוח אקסל מקצועי</button>
     </div>
 </div>
 
 <script>
-    async function generate() {
+    async function generateExcel() {
         const cells = {};
         document.querySelectorAll('[data-addr]').forEach(el => cells[el.getAttribute('data-addr')] = el.value);
         
@@ -130,10 +130,10 @@
 
         if(res.ok) {
             const blob = await res.blob();
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `Report_Full_1142_${new Date().toLocaleDateString()}.xlsx`;
-            a.click();
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Report_1142_${new Date().toLocaleDateString('he-IL')}.xlsx`;
+            link.click();
         }
     }
 </script>
