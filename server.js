@@ -1,40 +1,45 @@
 const express = require('express');
-const ExcelJS = require('exceljs');
 const bodyParser = require('body-parser');
+const ExcelJS = require('exceljs');
 const path = require('path');
-
 const app = express();
+
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
 app.post('/generate-excel', async (req, res) => {
     try {
-        const { cells } = req.body;
+        const { cells, fileName } = req.body;
         const workbook = new ExcelJS.Workbook();
         
-        // טעינת תבנית האקסל המקורית
-        await workbook.xlsx.readFile(path.join(__dirname, 'template.xlsx'));
-        const worksheet = workbook.getWorksheet(1);
+        // טעינת התבנית הקיימת מהשרת
+        const templatePath = path.join(__dirname, 'template.xlsx');
+        await workbook.xlsx.readFile(templatePath);
+        
+        const worksheet = workbook.getWorksheet(1); // עובד על הגיליון הראשון
 
-        // הזרקת כל השדות לפי הכתובות שנשלחו מהממשק
-        // זה כולל את שורות 2-14, 53-64 (גאומטריה), 100-117 (עומסים) ו-123-145 (מליא וסיכום)
+        // לולאה שעוברת על כל הכתובות שנשלחו ושותלת אותן באקסל
         Object.keys(cells).forEach(addr => {
             const cell = worksheet.getCell(addr);
             cell.value = cells[addr];
+            
+            // שמירה על העיצוב המקורי של התא (גבולות ופונט)
+            cell.alignment = { vertical: 'middle', horizontal: 'center' };
         });
 
-        // הגדרת כותרות התגובה להורדת קובץ
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', 'attachment; filename=report.xlsx');
+        res.setHeader('Content-Disposition', `attachment; filename=${encodeURIComponent(fileName)}`);
 
         await workbook.xlsx.write(res);
         res.end();
 
     } catch (error) {
-        console.error('Error generating excel:', error);
+        console.error('Error generating Excel:', error);
         res.status(500).send('שגיאה ביצירת הקובץ');
     }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
