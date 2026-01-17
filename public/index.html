@@ -3,101 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת דוחות מעקה</title>
+    <title>מערכת דוחות מעקה - מלא</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f4f8; margin: 0; padding: 15px; }
-        .app-container { max-width: 600px; margin: auto; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: #1a73e8; color: white; padding: 20px; text-align: center; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #e9ecef; margin: 0; padding: 10px; }
+        .container { max-width: 650px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .header { background: #2c3e50; color: white; padding: 15px; text-align: center; border-radius: 12px 12px 0 0; }
         .section { padding: 20px; border-bottom: 1px solid #eee; }
-        .section-title { font-weight: bold; color: #1a73e8; margin-bottom: 15px; display: block; border-right: 4px solid #1a73e8; padding-right: 10px; }
-        label { display: block; margin-bottom: 5px; font-size: 14px; color: #555; }
-        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 18px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #218838; }
-        .download-area { display: none; text-align: center; padding: 20px; background: #e8f5e9; }
+        .section-title { font-weight: bold; color: #2980b9; font-size: 1.1em; display: block; margin-bottom: 15px; background: #f8f9fa; padding: 5px 10px; border-right: 5px solid #2980b9; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; color: #333; }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { width: 100%; padding: 20px; background: #17a2b8; color: white; border: none; border-radius: 8px; font-size: 20px; font-weight: bold; cursor: pointer; }
+        #downloadArea { display: none; margin-top: 20px; padding: 20px; background: #d4edda; border-radius: 8px; text-align: center; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="header">
-        <h1>הפקת דו"ח בדיקה</h1>
+<div class="container">
+    <div class="header"><h1>דו"ח בדיקת מעקה</h1></div>
+
+    <div class="section">
+        <span class="section-title">כללי</span>
+        <div class="grid">
+            <div><label>תאריך בדיקה</label><input type="date" id="testDate"></div>
+            <div><label>קוד פרויקט</label><input type="text" id="projectId"></div>
+        </div>
+        <label>שם האתר</label><input type="text" id="siteName">
+        <label>כתובת האתר</label><input type="text" id="siteAddress">
     </div>
 
     <div class="section">
-        <span class="section-title">פרטי פרויקט ולקוח</span>
-        <label>תאריך בדיקה</label>
-        <input type="date" id="testDate">
-        <label>קוד פרויקט</label>
-        <input type="text" id="projectId" placeholder="למשל: 140407">
-        <label>שם האתר</label>
-        <input type="text" id="siteName" placeholder="כתובת האתר">
-        <label>שם המזמין</label>
-        <input type="text" id="clientName">
-        <label>נציג המזמין בבדיקה</label>
-        <input type="text" id="clientRep">
+        <span class="section-title">1. פרטי הלקוח</span>
+        <label>שם המזמין</label><input type="text" id="clientName">
+        <label>נציג המזמין בבדיקה</label><input type="text" id="clientRep">
     </div>
 
     <div class="section">
-        <span class="section-title">תיאור הבדיקה</span>
-        <label>תיאור המבנה</label>
-        <input type="text" id="structure" value="בנין מגורים">
-        <label>פריט נבדק</label>
-        <input type="text" id="itemDesc" value="מעקה במרפסת שמש עשוי אלומניום">
-        <label>מיקום (קומה / דירה)</label>
-        <input type="text" id="location">
+        <span class="section-title">2. תיאור המבנה והפריט</span>
+        <label>תיאור המבנה</label><input type="text" id="structure" value="בנין מגורים">
+        <label>תיאור הפריט</label><input type="text" id="itemDesc" value="מעקה במרפסת שמש עשוי אלומניום">
+        <label>מיקום הבדיקה</label><input type="text" id="location" placeholder="קומה / דירה">
+        <label>תכנון המעקה</label>
+        <select id="planningStatus">
+            <option value="הוגש">הוגש</option>
+            <option value="לא הוגש">לא הוגש</option>
+        </select>
     </div>
 
     <div class="section">
-        <span class="section-title">נתונים הנדסיים (מדידות)</span>
-        <label>מרחק L1 (מטרים)</label>
-        <input type="number" step="0.01" id="L1" placeholder="המרחק בין הניצבים">
-        <label>מפתח סמוך L2 (מטרים)</label>
-        <input type="number" step="0.01" id="L2">
-        <label>מפתח לוח מליא L</label>
-        <input type="text" id="L_fill" value="-">
-        <label>עומס רוח (נ'/מ"ר)</label>
-        <input type="text" id="windLoad">
+        <span class="section-title">3. נתונים טכניים (L1, L2, L)</span>
+        <div class="grid">
+            <div><label>מרחק L1 (מ')</label><input type="number" step="0.01" id="L1"></div>
+            <div><label>מרחק L2 (מ')</label><input type="number" step="0.01" id="L2"></div>
+        </div>
+        <label>מפתח לוח מליא L</label><input type="text" id="L_fill" value="-">
+        <label>עומס רוח (נ'/מ"ר)</label><input type="text" id="windLoad">
     </div>
 
     <div class="section">
-        <label>הערות הבודק</label>
-        <textarea id="comments" rows="3"></textarea>
+        <span class="section-title">4. סיכום</span>
+        <label>הערות הבודק</label><textarea id="comments" rows="4"></textarea>
+        <label>שם הבודק</label><input type="text" id="inspectorName">
     </div>
 
     <div style="padding: 20px;">
-        <button onclick="submitData()">🚀 הפק דו"ח אקסל סופי</button>
+        <button onclick="submitForm()">✅ הפק דו"ח אקסל מלא</button>
     </div>
 
-    <div id="downloadArea" class="download-area">
-        <p style="color: #2e7d32; font-weight: bold;">הדו"ח נוצר בהצלחה!</p>
-        <a href="/download" style="color: #1a73e8; text-decoration: none; font-size: 18px;">⬇️ לחץ כאן להורדת הקובץ</a>
+    <div id="downloadArea">
+        <h3 style="color: #155724;">הדו"ח מוכן!</h3>
+        <a href="/download" style="font-size: 1.2em; font-weight: bold; color: #0056b3;">לחץ כאן להורדת האקסל המלא</a>
     </div>
 </div>
 
 <script>
-    async function submitData() {
-        const fields = ['testDate', 'projectId', 'siteName', 'clientName', 'clientRep', 'structure', 'itemDesc', 'location', 'L1', 'L2', 'L_fill', 'windLoad', 'comments'];
+    async function submitForm() {
+        const fields = ['testDate','projectId','siteName','siteAddress','clientName','clientRep','structure','itemDesc','location','planningStatus','L1','L2','L_fill','windLoad','comments','inspectorName'];
         const data = {};
         fields.forEach(f => data[f] = document.getElementById(f).value);
 
         const btn = document.querySelector('button');
-        btn.innerText = "מעבד...";
-        btn.disabled = true;
+        btn.innerText = "מעבד..."; btn.disabled = true;
 
-        try {
-            const res = await fetch('/generate-excel', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
-            if(res.ok) {
-                document.getElementById('downloadArea').style.display = 'block';
-                window.scrollTo(0, document.body.scrollHeight);
-            }
-        } catch(e) { alert("שגיאה בחיבור"); }
-        btn.innerText = "🚀 הפק דו"ח אקסל סופי";
-        btn.disabled = false;
+        const res = await fetch('/generate-excel', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+
+        if(res.ok) {
+            document.getElementById('downloadArea').style.display = 'block';
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+        btn.innerText = "✅ הפק דו"ח אקסל מלא"; btn.disabled = false;
     }
 </script>
 
