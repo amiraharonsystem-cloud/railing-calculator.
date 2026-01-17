@@ -9,10 +9,10 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static('public'));
 
-const FILE_PATH = path.join(__dirname, 'database.xlsx');
+const FILE_PATH = path.join(__dirname, 'reports_database.xlsx');
 
-app.post('/add-to-excel', async (req, res) => {
-    const { name, email, phone, city } = req.body;
+app.post('/add-row', async (req, res) => {
+    const data = req.body;
     const workbook = new ExcelJS.Workbook();
     let worksheet;
 
@@ -21,24 +21,30 @@ app.post('/add-to-excel', async (req, res) => {
             await workbook.xlsx.readFile(FILE_PATH);
             worksheet = workbook.getWorksheet(1);
         } else {
-            worksheet = workbook.addWorksheet('Data');
+            worksheet = workbook.addWorksheet('בדיקות מעקה');
+            // הגדרת עמודות לפי קובץ האקסל המקורי שלך
             worksheet.columns = [
-                { header: 'שם מלא', key: 'name', width: 20 },
-                { header: 'אימייל', key: 'email', width: 25 },
-                { header: 'טלפון', key: 'phone', width: 15 },
-                { header: 'עיר', key: 'city', width: 15 }
+                { header: 'תאריך בדיקה', key: 'testDate', width: 15 },
+                { header: 'שם האתר', key: 'siteName', width: 25 },
+                { header: 'קוד פרויקט', key: 'projectId', width: 15 },
+                { header: 'שם המזמין', key: 'clientName', width: 25 },
+                { header: 'מיקום בדיקה', key: 'location', width: 20 },
+                { header: 'תיאור הפריט', key: 'itemDescription', width: 30 }
             ];
         }
-        worksheet.addRow({ name, email, phone, city });
+
+        worksheet.addRow(data);
         await workbook.xlsx.writeFile(FILE_PATH);
-        res.status(200).json({ message: 'נשמר בהצלחה!' });
-    } catch (e) { res.status(500).send('Error'); }
+        res.status(200).json({ message: 'הנתונים נוספו בהצלחה!' });
+    } catch (error) {
+        res.status(500).json({ message: 'שגיאה בשמירת הקובץ' });
+    }
 });
 
-app.get('/download-excel', (req, res) => {
+app.get('/download', (req, res) => {
     if (fs.existsSync(FILE_PATH)) res.download(FILE_PATH);
-    else res.status(404).send('No file yet');
+    else res.status(404).send('הקובץ לא קיים עדיין');
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
