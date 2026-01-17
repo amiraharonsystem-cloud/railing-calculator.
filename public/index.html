@@ -3,113 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת הפקת דוחות - הזנה מלאה</title>
+    <title>הזנת דו"ח הנדסי מלא</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f9fa; margin: 0; padding: 0; direction: rtl; }
-        .container { max-width: 900px; margin: 20px auto; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
-        .tabs { display: flex; background: #343a40; }
-        .tab-btn { flex: 1; padding: 15px; border: none; background: none; color: #fff; cursor: pointer; font-size: 16px; font-weight: bold; border-bottom: 3px solid transparent; }
-        .tab-btn.active { border-bottom: 3px solid #28a745; background: #495057; }
-        .content { padding: 30px; display: none; }
-        .content.active { display: block; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 8px; color: #333; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 4px; font-size: 16px; box-sizing: border-box; }
-        .btn-submit { width: 100%; padding: 20px; background: #28a745; color: white; border: none; font-size: 22px; font-weight: bold; cursor: pointer; border-radius: 0 0 8px 8px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; direction: rtl; margin: 0; }
+        .tab-nav { display: flex; background: #000; overflow-x: auto; }
+        .tab-nav button { flex: 1; padding: 15px; color: white; border: none; background: none; cursor: pointer; white-space: nowrap; font-weight: bold; }
+        .tab-nav button.active { background: #27ae60; }
+        .tab-content { display: none; padding: 20px; background: white; min-height: 80vh; max-width: 800px; margin: auto; }
+        .tab-content.active { display: block; }
+        .group { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #000; font-size: 16px; margin-bottom: 15px; }
+        .save-btn { width: 100%; padding: 25px; background: #27ae60; color: white; border: none; font-size: 24px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="tabs">
-        <button class="tab-btn active" onclick="showTab(0)">פרטי לקוח ואתר</button>
-        <button class="tab-btn" onclick="showTab(1)">נתונים הנדסיים</button>
-        <button class="tab-btn" onclick="showTab(2)">בדיקות ותוצאות</button>
-        <button class="tab-btn" onclick="showTab(3)">סיכום וחתימה</button>
-    </div>
-
-    <div class="content active">
-        <div class="grid">
-            <div class="form-group"><label>תאריך בדיקה</label><input type="date" id="testDate"></div>
-            <div class="form-group"><label>קוד פרויקט</label><input type="text" id="projectId"></div>
-        </div>
-        <div class="form-group"><label>שם האתר</label><input type="text" id="siteName"></div>
-        <div class="form-group"><label>כתובת האתר</label><input type="text" id="siteAddress"></div>
-        <div class="grid">
-            <div class="form-group"><label>שם המזמין</label><input type="text" id="clientName"></div>
-            <div class="form-group"><label>נציג המזמין</label><input type="text" id="clientRep"></div>
-        </div>
-        <div class="form-group"><label>תיאור המבנה</label><input type="text" id="structureDesc"></div>
-        <div class="form-group"><label>תיאור הפריט שנבדק</label><input type="text" id="itemDesc"></div>
-        <div class="form-group"><label>מיקום הבדיקה</label><input type="text" id="location"></div>
-        <div class="grid">
-            <div class="form-group">
-                <label>תכנון המעקה</label>
-                <select id="planningStatus"><option value="לא הוגש">לא הוגש</option><option value="הוגש">הוגש</option></select>
-            </div>
-            <div class="form-group">
-                <label>חישוב הנדסי</label>
-                <select id="calcStatus"><option value="לא הוגש">לא הוגש</option><option value="הוגש">הוגש</option></select>
-            </div>
-        </div>
-    </div>
-
-    <div class="content">
-        <div class="form-group"><label>מרחק בין ניצבים L1 (מ')</label><input type="text" id="L1"></div>
-        <div class="form-group"><label>מפתח שדה סמוך L2 (מ')</label><input type="text" id="L2"></div>
-        <div class="form-group"><label>מפתח שדה המועמס L (מ')</label><input type="text" id="L_fill"></div>
-    </div>
-
-    <div class="content">
-        <div class="grid">
-            <div class="form-group"><label>חישוב עומס רוח ws</label><input type="text" id="ws_load"></div>
-            <div class="form-group"><label>מחצית עומס רוח 0.5ws</label><input type="text" id="half_ws"></div>
-        </div>
-        <div class="form-group">
-            <label>10.3.3 העמסה אופקית בעומס מרוכז</label>
-            <select id="res1033"><option value="עמד בדרישות התקן">עמד בדרישות התקן</option><option value="לא עמד בדרישות התקן">לא עמד בדרישות התקן</option></select>
-        </div>
-        <div class="form-group">
-            <label>10.3.4 העמסה אופקית בעומס מפורס</label>
-            <select id="res1034"><option value="עמד בדרישות התקן">עמד בדרישות התקן</option><option value="לא עמד בדרישות התקן">לא עמד בדרישות התקן</option></select>
-        </div>
-        <div class="form-group">
-            <label>10.3.5 בדיקת לוח מליא</label>
-            <select id="res1035"><option value="עמד בדרישות התקן">עמד בדרישות התקן</option><option value="לא עמד בדרישות התקן">לא עמד בדרישות התקן</option></select>
-        </div>
-    </div>
-
-    <div class="content">
-        <div class="form-group"><label>הערות הבודק</label><textarea id="comments" rows="5"></textarea></div>
-        <div class="form-group"><label>שם הבודק</label><input type="text" id="inspectorName"></div>
-    </div>
-
-    <button class="btn-submit" onclick="generate()">💾 הפק דו"ח אקסל סופי</button>
+<div class="tab-nav">
+    <button class="active" onclick="tab(0)">1. זיהוי ואתר</button>
+    <button onclick="tab(1)">2. מדידות (L1/L2)</button>
+    <button onclick="tab(2)">3. עומסים ותוצאות</button>
 </div>
 
+<div class="tab-content active">
+    <div class="group">
+        <label>תאריך בדיקה</label><input type="date" id="testDate">
+        <label>שם האתר</label><input type="text" id="siteName">
+        <label>קוד פרויקט</label><input type="text" id="projectId">
+    </div>
+    <div class="group">
+        <label>שם המזמין</label><input type="text" id="clientName">
+        <label>נציג המזמין</label><input type="text" id="clientRep">
+        <label>תיאור המבנה</label><input type="text" id="structure">
+        <label>תיאור הפריט</label><input type="text" id="itemDesc">
+    </div>
+    <div class="group">
+        <label>תכנון המעקה</label>
+        <select id="planning"><option value="לא הוגש">לא הוגש</option><option value="הוגש">הוגש</option></select>
+        <label>חישוב הנדסי</label>
+        <select id="engineering"><option value="לא הוגש">לא הוגש</option><option value="הוגש">הוגש</option></select>
+    </div>
+</div>
+
+<div class="tab-content">
+    <div class="group">
+        <label>מרחק בין ניצבים L1 (מ')</label><input type="text" id="L1">
+        <label>מפתח שדה סמוך L2 (מ')</label><input type="text" id="L2">
+        <label>מפתח לוח מליא L (מ')</label><input type="text" id="L_fill">
+    </div>
+</div>
+
+<div class="tab-content">
+    <div class="group">
+        <label>עומס רוח ws</label><input type="text" id="ws">
+        <label>מחצית עומס רוח 0.5ws</label><input type="text" id="half_ws">
+    </div>
+    <div class="group">
+        <label>10.3.3 עומס מרוכז</label>
+        <select id="res1033"><option value="עמד">עמד</option><option value="לא עמד">לא עמד</option></select>
+        <label>10.3.4 עומס אופקי</label>
+        <select id="res1034"><option value="עמד">עמד</option><option value="לא עמד">לא עמד</option></select>
+        <label>10.3.5 לוח מליא</label>
+        <select id="res1035"><option value="עמד">עמד</option><option value="לא עמד">לא עמד</option></select>
+    </div>
+    <label>הערות הבודק</label><textarea id="comments" rows="4"></textarea>
+    <label>שם הבודק</label><input type="text" id="inspector">
+</div>
+
+<button class="save-btn" onclick="send()">💾 הפק אקסל סופי (138 שורות)</button>
+
 <script>
-    function showTab(index) {
-        const contents = document.querySelectorAll('.content');
-        const buttons = document.querySelectorAll('.tab-btn');
-        contents.forEach(c => c.classList.remove('active'));
-        buttons.forEach(b => b.classList.remove('active'));
-        contents[index].classList.add('active');
-        buttons[index].classList.add('active');
+    function tab(i) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content')[i].classList.add('active');
+        document.querySelectorAll('.tab-nav button')[i].classList.add('active');
     }
 
-    async function generate() {
+    async function send() {
         const data = {};
         document.querySelectorAll('input, select, textarea').forEach(el => data[el.id] = el.value);
-        
-        const response = await fetch('/generate-excel', {
+        const res = await fetch('/generate-excel', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
         });
-
-        if (response.ok) {
-            const blob = await response.blob();
+        if(res.ok) {
+            const blob = await res.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -118,6 +98,5 @@
         }
     }
 </script>
-
 </body>
 </html>
