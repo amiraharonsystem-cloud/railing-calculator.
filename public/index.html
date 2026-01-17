@@ -2,98 +2,108 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>מערכת דו"ח מעבדה מלאה - ת"י 1142</title>
+    <title>דו"ח מעבדה ת"י 1142 - גרסה מלאה</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; direction: rtl; padding: 20px; }
-        .container { max-width: 1000px; margin: auto; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
-        header { background: #2c3e50; color: white; padding: 20px; text-align: center; }
-        section { padding: 20px; border-bottom: 1px solid #eee; }
-        h2 { font-size: 16px; color: #2c3e50; border-right: 4px solid #27ae60; padding-right: 10px; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
-        .field { display: flex; flex-direction: column; }
-        label { font-size: 12px; font-weight: bold; margin-bottom: 5px; color: #666; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; font-size: 13px; }
-        th { background: #f9f9f9; }
-        .btn { background: #27ae60; color: white; padding: 20px; width: 100%; border: none; font-size: 18px; font-weight: bold; cursor: pointer; }
+        :root { --main: #1a2a3a; --accent: #27ae60; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; direction: rtl; margin: 0; padding: 20px; }
+        .container { max-width: 1100px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .nav-tabs { display: flex; background: var(--main); border-radius: 12px 12px 0 0; overflow: hidden; }
+        .nav-tabs button { flex: 1; padding: 18px; color: white; border: none; background: none; cursor: pointer; font-weight: bold; font-size: 15px; }
+        .nav-tabs button.active { background: var(--accent); }
+        .tab-content { padding: 30px; display: none; }
+        .tab-content.active { display: block; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .section-h { border-bottom: 2px solid #eee; margin: 25px 0 15px; padding-bottom: 5px; color: var(--main); font-weight: bold; }
+        label { display: block; font-size: 13px; color: #666; margin-bottom: 6px; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        .btn-gen { background: var(--accent); color: white; width: 100%; padding: 25px; border: none; border-radius: 0 0 12px 12px; font-size: 20px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header><h1>הפקת דו"ח מעבדה ת"י 1142 (גרסה מלאה)</h1></header>
+    <div class="nav-tabs">
+        <button class="active" onclick="openTab(0)">1. זיהוי ואתר</button>
+        <button onclick="openTab(1)">2. מפרט חומרים</button>
+        <button onclick="openTab(2)">3. זיגוג ורוח</button>
+        <button onclick="openTab(3)">4. חישובים ותוצאות</button>
+    </div>
 
-    <section>
-        <h2>1. פרטי הלקוח והאתר</h2>
+    <div class="tab-content active" id="tab0">
+        <div class="section-h">פרטי הזמנה ואתר</div>
         <div class="grid">
-            <div class="field"><label>תאריך בדיקה</label><input type="date" id="testDate"></div>
-            <div class="field"><label>קוד פרויקט</label><input type="text" id="projectId"></div>
-            <div class="field"><label>שם המזמין</label><input type="text" id="clientName"></div>
-            <div class="field"><label>מען המזמין</label><input type="text" id="clientAddress"></div>
-            <div class="field"><label>נציג המזמין</label><input type="text" id="presenterName"></div>
-            <div class="field"><label>שם האתר</label><input type="text" id="siteName"></div>
-            <div class="field"><label>כתובת האתר</label><input type="text" id="siteAddress"></div>
-            <div class="field"><label>מהות הבדיקה</label><select id="testType"><option>ראשונה</option><option>חוזרת</option></select></div>
+            <div><label>שם המזמין</label><input type="text" id="clientName"></div>
+            <div><label>מען המזמין</label><input type="text" id="clientAddress"></div>
+            <div><label>נציג המזמין</label><input type="text" id="presenterName"></div>
+            <div><label>קוד פרויקט</label><input type="text" id="projectId"></div>
+            <div><label>תאריך בדיקה</label><input type="date" id="testDate"></div>
+            <div><label>מהות הבדיקה</label><select id="testType"><option>ראשונה</option><option>חוזרת</option></select></div>
         </div>
-    </section>
-
-    <section>
-        <h2>2. הצהרות ותכנון (V/X)</h2>
+        <div class="section-h">סטטוס מסמכים</div>
         <div class="grid">
-            <div class="field"><label>תכנון מעקה</label><select id="planOk"><option>V - הוגש</option><option>X - לא הוגש</option></select></div>
-            <div class="field"><label>חישוב שלד</label><select id="engOk"><option>V - הוגש</option><option>X - לא הוגש</option></select></div>
-            <div class="field"><label>חישוב לוח מליא</label><select id="glassOk"><option>V - הוגש</option><option>X - לא הוגש</option></select></div>
+            <div><label>תכנון מעקה</label><select id="planStatus"><option>הוגש (V)</option><option>לא הוגש (X)</option></select></div>
+            <div><label>חישוב שלד</label><select id="engStatus"><option>הוגש (V)</option><option>לא הוגש (X)</option></select></div>
+            <div><label>חישוב לוח מליא</label><select id="glassStatus"><option>הוגש (V)</option><option>לא הוגש (X)</option></select></div>
         </div>
-    </section>
+    </div>
 
-    <section>
-        <h2>3. מפרט זכוכית (שורות 66-76)</h2>
+    <div class="tab-content" id="tab1">
+        <div class="section-h">פרופילים ועיגונים</div>
         <div class="grid">
-            <div class="field"><label>אורך לוח 'מ</label><input type="text" id="glassW"></div>
-            <div class="field"><label>גובה לוח 'מ</label><input type="text" id="glassH"></div>
-            <div class="field"><label>עובי (מ"מ)</label><input type="text" id="glassThick"></div>
-            <div class="field"><label>סימון יצרן</label><select id="glassMark"><option>קיים</option><option>לא קיים</option></select></div>
-            <div class="field"><label>סוג שמשה</label><input type="text" id="glassType"></div>
-            <div class="field"><label>חפיפה (מ"מ)</label><input type="text" id="overlap"></div>
-            <div class="field"><label>חומר אטם</label><input type="text" id="sealing"></div>
+            <div><label>סוג פרופיל ניצב</label><input type="text" id="profileType"></div>
+            <div><label>גמר (צבע/אנודייז)</label><input type="text" id="profileFinish"></div>
+            <div><label>סוג עיגון (בורג/עוגן)</label><input type="text" id="anchorType"></div>
+            <div><label>תיאור בורג העיגון</label><input type="text" id="anchorDesc"></div>
+            <div><label>סוג אזן עליון</label><input type="text" id="topRailType"></div>
+            <div><label>ברגי חיבור</label><input type="text" id="screwType"></div>
         </div>
-    </section>
+    </div>
 
-    <section>
-        <h2>4. ערכי העמסה וחישוב (P=Fser...)</h2>
+    <div class="tab-content" id="tab2">
+        <div class="section-h">מפרט לוח מליא (שורות 66-76)</div>
         <div class="grid">
-            <div class="field"><label>Fser (ק"נ/מ')</label><input type="text" id="Fser"></div>
-            <div class="field"><label>L1 (מ')</label><input type="text" id="L1"></div>
-            <div class="field"><label>L2 (מ')</label><input type="text" id="L2"></div>
-            <div class="field"><label>P מחושב (ק"נ)</label><input type="text" id="P_calc"></div>
-            <div class="field"><label>L מפתח מליא</label><input type="text" id="L_fill"></div>
+            <div><label>אורך לוח (מ')</label><input type="text" id="glassW"></div>
+            <div><label>גובה לוח (מ')</label><input type="text" id="glassH"></div>
+            <div><label>עובי (מ"מ)</label><input type="text" id="glassThick"></div>
+            <div><label>סוג שמשה</label><input type="text" id="glassType"></div>
+            <div><label>חפיפה למסגרת (מ"מ)</label><input type="text" id="overlap"></div>
+            <div><label>סימון יצרן</label><select id="glassMark"><option>קיים</option><option>לא קיים</option></select></div>
         </div>
-    </section>
-
-    <section>
-        <h2>5. חישובי רוח (סעיף 10.3.5 ג')</h2>
+        <div class="section-h">חישובי רוח (10.3.5 ג')</div>
         <div class="grid">
-            <div class="field"><label>We (לחץ רוח)</label><input type="text" id="We_calc"></div>
-            <div class="field"><label>S (שטח הלוח)</label><input type="text" id="S_area"></div>
-            <div class="field"><label>Ws (עומס כולל)</label><input type="text" id="Ws_total"></div>
+            <div><label>We - לחץ רוח (נ'/מ"ר)</label><input type="text" id="We_wind"></div>
+            <div><label>S - שטח הלוח (מ"ר)</label><input type="text" id="S_area"></div>
+            <div><label>Ws - עומס כולל (נ')</label><input type="text" id="Ws_total"></div>
         </div>
-    </section>
+    </div>
 
-    <section>
-        <h2>6. טבלת תוצאות</h2>
-        <table>
-            <tr><th>סעיף</th><th>תזוזה I</th><th>שיורית J</th><th>מסקנה</th></tr>
+    <div class="tab-content" id="tab3">
+        <div class="section-h">ערכים לחישוב (P=Fser)</div>
+        <div class="grid">
+            <div><label>Fser (ק"נ/מ')</label><input type="text" id="Fser"></div>
+            <div><label>L1 (מ')</label><input type="text" id="L1"></div>
+            <div><label>L2 (מ')</label><input type="text" id="L2"></div>
+            <div><label>P מחושב</label><input type="text" id="P_calc"></div>
+        </div>
+        <div class="section-h">טבלת סיכום תוצאות</div>
+        <table border="1" style="width:100%; border-collapse: collapse; text-align: center;">
+            <tr style="background:#eee"><th>סעיף</th><th>תזוזה I</th><th>שיורית J</th><th>מסקנה</th></tr>
             <tr><td>10.3.4 א'</td><td><input id="hor_a"></td><td><input id="res_a"></td><td><select id="stat_a"><option>עמד</option><option>לא עמד</option></select></td></tr>
             <tr><td>10.3.4 ב'</td><td><input id="hor_b"></td><td><input id="res_b"></td><td><select id="stat_b"><option>עמד</option><option>לא עמד</option></select></td></tr>
             <tr><td>10.3.5 ג'</td><td><input id="hor_c"></td><td><input id="res_c"></td><td><select id="stat_c"><option>עמד</option><option>לא עמד</option></select></td></tr>
         </table>
-    </section>
+    </div>
 
-    <button class="btn" onclick="generate()">הפק אקסל מלא (100% שדות)</button>
+    <button class="btn-gen" onclick="generate()">💾 הפק דו"ח מלא (3 עמודים)</button>
 </div>
 
 <script>
+    function openTab(i) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab'+i).classList.add('active');
+        event.target.classList.add('active');
+    }
     async function generate() {
         const d = {};
         document.querySelectorAll('input, select').forEach(el => d[el.id] = el.value);
@@ -105,7 +115,7 @@
         const blob = await res.blob();
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = "Railing_Report_Complete.xlsx";
+        a.download = "Full_Report_1142.xlsx";
         a.click();
     }
 </script>
