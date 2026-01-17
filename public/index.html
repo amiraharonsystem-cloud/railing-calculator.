@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת דוח ת"י 1142 - גרסה סופית ומלאה</title>
+    <title>מערכת דוח ת"י 1142 - גרסה מלאה ומורחבת</title>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Assistant', sans-serif; background: #f0f2f5; padding: 20px; direction: rtl; margin: 0; }
@@ -25,13 +25,19 @@
 <body>
 <div class="container">
     <div class="main-header"><h1>תעודת בדיקת מעקה במעטפת הבניין (ת"י 1142)</h1></div>
+    
     <div class="admin-grid">
         <div><b>מס' דוח:</b> <input id="reportNum" data-addr="L2"></div>
         <div><b>מס' פרויקט:</b> <input id="projectNum"></div>
         <div><b>שם אתר (עיר):</b> <input id="siteName" data-addr="L8"></div>
         <div><b>תאריך:</b> <input type="date" id="reportDate" data-addr="L3"></div>
-        <div style="grid-column: span 4;"><b>שם הבודק:</b> 
-            <select data-addr="D38"><option>אמיר אהרון</option><option>סרגיי אוסוקרקו</option><option>אנדריי רזיק</option></select>
+        <div style="grid-column: span 4;">
+            <b>שם הבודק:</b> 
+            <select data-addr="D38">
+                <option value="אמיר אהרון">אמיר אהרון</option>
+                <option value="סרגיי אוסוקרקו">סרגיי אוסוקרקו</option>
+                <option value="אנדריי רזיק">אנדריי רזיק</option>
+            </select>
         </div>
     </div>
 
@@ -42,7 +48,7 @@
         <tr><td>5.1.2</td><td class="req-text">איסור רכיבי טיפוס בין 10 ל-90 ס"מ</td><td><input data-addr="I57" class="num-field"></td><td><select data-addr="J57"><option>מתאים</option><option>לא מתאים</option></select></td><td><input data-addr="L57"></td></tr>
         <tr><td>5.1.4.1</td><td class="req-text">מרווחים בין רכיבי מעקה (כדור 10 ס"מ)</td><td><input data-addr="I58" class="num-field"></td><td><select data-addr="J58"><option>מתאים</option><option>לא מתאים</option></select></td><td><input data-addr="L58"></td></tr>
         <tr><td>6.1.4.2</td><td class="req-text">מרווח בין אחיזה למשטח (כדור 5 ס"מ)</td><td><input data-addr="I59" class="num-field"></td><td><select data-addr="J59"><option>מתאים</option><option>לא מתאים</option></select></td><td><input data-addr="L59"></td></tr>
-        <tr><td>6.2.1</td><td class="req-text">בית אחיזה - מבנה בטיחותי ונוחות אחיזה</td><td>-</td><td><select data-addr="J62"><option>מתאים</option><option>לא מתאים</option></select></td><td><input data-addr="L62"></td></tr>
+        <tr><td>6.2.1</td><td class="req-text">בית אחיזה - בטיחות ונוחות אחיזה</td><td>-</td><td><select data-addr="J62"><option>מתאים</option><option>לא מתאים</option></select></td><td><input data-addr="L62"></td></tr>
     </table>
 
     <div class="section-header">סעיף מס' 2: העמסה אופקית (107-117)</div>
@@ -50,11 +56,11 @@
         <tr><th>סעיף</th><th>שלב הבדיקה</th><th style="width:12%">ערך עומס</th><th style="width:15%">תזוזה אופקית</th><th style="width:15%">תזוזה שיורית</th><th>מסקנה</th></tr>
         <tr><td>10.3.4 א'</td><td class="req-text">מחצית העומס המרוכז (אוטומטי)</td><td><input id="halfLoad" data-addr="H107" class="num-field auto-calc" readonly></td><td><input id="h1_disp" data-addr="I107" class="num-field" oninput="calcSum()"></td><td><input data-addr="J107" class="num-field"></td><td><select data-addr="L107"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
         <tr><td>10.3.4 א'</td><td class="req-text">העומס המרוכז המלא</td><td><input id="fullLoad" data-addr="H108" class="num-field" oninput="updateHalf()"></td><td><input data-addr="I108" class="num-field"></td><td><input data-addr="J108" class="num-field"></td><td><select data-addr="L108"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
-        <tr><td>10.3.4 ג'</td><td class="req-text">העמסה של ניצב (שלב ביניים)</td><td><input data-addr="H110" class="num-field"></td><td><input id="h2_disp" data-addr="I110" class="num-field" oninput="calcSum()"></td><td><input data-addr="J110" class="num-field"></td><td><select data-addr="L110"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
+        <tr><td>10.3.4 ג'</td><td class="req-text">העמסה של ניצב (שלב ביניים)</td><td><input id="poleLoad" data-addr="H110" class="num-field"></td><td><input id="h2_disp" data-addr="I110" class="num-field" oninput="calcSum()"></td><td><input data-addr="J110" class="num-field"></td><td><select data-addr="L110"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
         <tr style="background:#e8f5e9;"><td>10.3.4 ד'</td><td class="req-text">סכום תזוזות אופקיות (א'+ג')</td><td>-</td><td colspan="2"><input id="totalDisp" data-addr="I114" class="num-field auto-calc" readonly></td><td><select data-addr="L114"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
     </table>
 
-    <div class="section-header">סעיף מס' 4: בדיקה חזותית (136-138)</div>
+    <div class="section-header">סעיף מס' 4: בדיקה חזותית לאחר העמסה (136-138)</div>
     <table>
         <tr><td class="req-text">אי-גילוי סדקים, עיוות או נזק בזמן העמסה</td><td><select data-addr="L136"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
         <tr><td class="req-text">שלמות חיבורים ועגינה לאחר הסרת העומס</td><td><select data-addr="L138"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
@@ -80,7 +86,11 @@
         const sName = document.getElementById('siteName').value || 'אתר';
         const date = document.getElementById('reportDate').value || 'תאריך';
         const fileName = `דוח_מעקה_פרויקט_${pNum}_${sName}_${date}.xlsx`;
-        const response = await fetch('/generate-excel', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ cells, fileName }) });
+        const response = await fetch('/generate-excel', { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({ cells, fileName }) 
+        });
         if (response.ok) {
             const blob = await response.blob();
             const link = document.createElement('a');
