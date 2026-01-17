@@ -16,15 +16,13 @@ app.post('/generate-excel', async (req, res) => {
             const val = cells[addr];
             if (val !== undefined && val !== "") {
                 const cell = ws.getCell(addr);
-                // הזרקה חכמה: מספרים כמספרים לשמירה על נוסחאות
+                // הזרקת מספרים כמספרים לשמירה על נוסחאות האקסל
                 cell.value = (isNaN(val) || val.trim() === "") ? val : Number(val);
             }
         });
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.send(await workbook.xlsx.writeBuffer());
-    } catch (e) {
-        res.status(500).send("Error: " + e.message);
-    }
+    } catch (e) { res.status(500).send("Error: " + e.message); }
 });
 app.listen(3000);
