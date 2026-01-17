@@ -2,144 +2,153 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>מערכת הנדסית 1142 - דוח מלא</title>
+    <title>מערכת 1142 - דוח הנדסי מלא</title>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Assistant', sans-serif; background: #f4f7f9; margin: 0; padding: 20px; color: #2c3e50; }
-        .wrapper { max-width: 1100px; margin: auto; }
-        .main-title { text-align: center; color: #1a73e8; font-size: 2.8rem; margin-bottom: 40px; font-weight: 800; }
+        body { font-family: 'Assistant', sans-serif; background: #f0f4f8; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1200px; margin: auto; }
+        .header { text-align: center; margin-bottom: 40px; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .header h1 { color: #1a73e8; margin: 0; font-size: 2.2rem; }
         
-        .card { background: white; border-radius: 15px; padding: 35px; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .card-header { font-size: 1.6rem; font-weight: 700; color: #1a237e; border-bottom: 3px solid #e8f0fe; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; }
+        .card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .card-h { font-size: 1.4rem; font-weight: 700; color: #1565c0; border-bottom: 2px solid #e3f2fd; padding-bottom: 10px; margin-bottom: 20px; }
         
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
         .field { display: flex; flex-direction: column; }
-        label { font-weight: 600; font-size: 1.15rem; margin-bottom: 8px; color: #444; }
+        .field.wide { grid-column: span 2; }
+        .field.full { grid-column: span 4; }
         
-        input, select, textarea { 
-            padding: 14px; border: 2px solid #dce1e8; border-radius: 10px; font-size: 1.1rem; outline: none; transition: 0.3s;
-        }
-        input:focus { border-color: #1a73e8; background: #fcfdfe; }
+        label { font-weight: 600; font-size: 1rem; margin-bottom: 5px; color: #555; }
+        input, select, textarea { padding: 10px; border: 1.5px solid #ced4da; border-radius: 6px; font-size: 1rem; outline: none; transition: 0.2s; }
+        input:focus { border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,0.1); }
         
-        .sub-section { grid-column: 1 / -1; background: #f8f9fa; padding: 15px; border-right: 5px solid #1a73e8; margin: 15px 0; font-weight: bold; font-size: 1.2rem; }
+        .sub-h { grid-column: span 4; background: #f8f9fa; padding: 8px 12px; border-right: 4px solid #1a73e8; font-weight: bold; margin-top: 10px; }
         
-        .footer-actions { position: sticky; bottom: 20px; text-align: center; padding: 20px; }
-        .btn-generate { 
-            background: #2e7d32; color: white; padding: 20px 100px; font-size: 1.6rem; font-weight: 700; 
-            border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 30px rgba(46,125,50,0.3);
-        }
-        .btn-generate:hover { background: #1b5e20; transform: scale(1.02); }
+        .footer { position: sticky; bottom: 20px; text-align: center; padding: 20px; z-index: 100; }
+        .btn { background: #2e7d32; color: white; padding: 15px 60px; font-size: 1.3rem; font-weight: 700; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 20px rgba(46,125,50,0.4); }
+        .btn:hover { background: #1b5e20; transform: scale(1.02); }
     </style>
 </head>
 <body>
 
-<div class="wrapper">
-    <div class="main-title">דוח מעבדה ת"י 1142</div>
+<div class="container">
+    <div class="header">
+        <h1>הזנת נתונים - ת"י 1142</h1>
+        <p>מילוי דוח בדיקה מלא והפקה לאקסל המקורי</p>
+    </div>
 
     <div class="card">
-        <div class="card-header"><span>1. פרטי זיהוי ומינהלה</span> <small style="font-size: 0.8rem; color:#999;">שורות 1-30</small></div>
+        <div class="card-h">1. פרטי זיהוי ומזמין (שורות 1-15)</div>
         <div class="grid">
             <div class="field"><label>מספר דו"ח (H2)</label><input data-addr="H2"></div>
             <div class="field"><label>תאריך (L3)</label><input data-addr="L3" type="date"></div>
+            <div class="field wide"><label>שם האתר (C4)</label><input data-addr="C4"></div>
             <div class="field"><label>קוד פרויקט (L4)</label><input data-addr="L4"></div>
-            <div class="field" style="grid-column: span 2;"><label>שם האתר (C4)</label><input data-addr="C4"></div>
-            <div class="field" style="grid-column: span 2;"><label>שם המזמין (C7)</label><input data-addr="C7"></div>
-            <div class="field" style="grid-column: span 2;"><label>מען המזמין (I7)</label><input data-addr="I7"></div>
+            <div class="field wide"><label>שם המזמין (C7)</label><input data-addr="C7"></div>
+            <div class="field wide"><label>מען המזמין (I7)</label><input data-addr="I7"></div>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-header"><span>2. ציוד המשתתף בבדיקה</span> <small style="font-size: 0.8rem; color:#999;">שורות 31-38</small></div>
+        <div class="card-h">2. פרטי מתקין וציוד בדיקה (שורות 16-38)</div>
         <div class="grid">
-            <div class="field"><label>מערכת הפעלת עומס (C32)</label><input data-addr="C32" value="בוכנה הידראולית"></div>
+            <div class="field wide"><label>שם המתקין (C17)</label><input data-addr="C17"></div>
+            <div class="field wide"><label>מען המתקין (I17)</label><input data-addr="I17"></div>
+            <div class="sub-h">ציוד מדידה</div>
             <div class="field"><label>מד כוח (C34)</label><input data-addr="C34"></div>
-            <div class="field"><label>מד תזוזה (C36)</label><input data-addr="C36"></div>
+            <div class="field"><label>מספר מכשיר (F34)</label><input data-addr="F34"></div>
             <div class="field"><label>תוקף כיול (L34)</label><input data-addr="L34" type="date"></div>
+            <div class="field"><label>מד תזוזה (C36)</label><input data-addr="C36"></div>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-header"><span>3. תיאור המעקה ומפרט</span> <small style="font-size: 0.8rem; color:#999;">שורות 40-78</small></div>
+        <div class="card-h">3. תיאור המעקה ומפרט (שורות 40-78)</div>
         <div class="grid">
-            <div class="sub-section">פרופיל ניצב</div>
+            <div class="sub-h">פרופיל ניצב</div>
             <div class="field"><label>חומר (C45)</label><input data-addr="C45"></div>
             <div class="field"><label>גמר (F45)</label><input data-addr="F45"></div>
             <div class="field"><label>דרישה (H45)</label><input data-addr="H45"></div>
-            <div class="field"><label>מסקנה (L45)</label>
+            <div class="field"><label>מסקנה</label>
                 <select data-addr="L45"><option value="מתאים">מתאים</option><option value="לא מתאים">לא מתאים</option></select>
             </div>
-
-            <div class="sub-section">זכוכית</div>
-            <div class="field"><label>סוג (G70)</label><input data-addr="G70"></div>
+            <div class="sub-h">זכוכית</div>
+            <div class="field wide"><label>סוג ועיבוד (G70)</label><input data-addr="G70"></div>
             <div class="field"><label>עובי (G67)</label><input data-addr="G67"></div>
-            <div class="field"><label>מסקנה (L70)</label><select data-addr="L70"><option>מתאים</option></select></div>
+            <div class="field"><label>מסקנה</label><select data-addr="L70"><option>מתאים</option></select></div>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-header"><span>4. תוצאות בדיקת עומסים (10.3.4)</span> <small style="font-size: 0.8rem; color:#999;">שורות 100-117</small></div>
+        <div class="card-h">4. חישובי עומס רוח Fw (שורות 80-85)</div>
         <div class="grid">
-            <div class="sub-section">10.3.4 א' - עומס אופקי שירות</div>
-            <div class="field"><label>עומס N (G107)</label><input data-addr="G107"></div>
-            <div class="field"><label>תזוזה מ"מ (I107)</label><input data-addr="I107"></div>
-            <div class="field"><label>שיורית (J107)</label><input data-addr="J107"></div>
-            <div class="field"><label>מסקנה (L107)</label><select data-addr="L107"><option>מתאים</option><option>לא מתאים</option></select></div>
+            <div class="field"><label>qb (F84)</label><input data-addr="F84"></div>
+            <div class="field"><label>Ce (K84)</label><input data-addr="K84"></div>
+            <div class="field"><label>CsCd (L84)</label><input data-addr="L84"></div>
+            <div class="field"><label>Cf (M84)</label><input data-addr="M84"></div>
+            <div class="field wide"><label>We (I82) [N/m²]</label><input data-addr="I82"></div>
+            <div class="field wide"><label>Fw (I84) [N]</label><input data-addr="I84" style="background: #e8f0fe; font-weight: bold;"></div>
+        </div>
+    </div>
 
-            <div class="sub-section">10.3.4 ג' - עומס ניצב</div>
-            <div class="field"><label>עומס N (G111)</label><input data-addr="G111"></div>
+    <div class="card">
+        <div class="card-h">5. תוצאות בדיקה (10.3.4) - כל הסעיפים</div>
+        <div class="grid">
+            <div class="sub-h">10.3.4 א' - עומס אופקי שירות</div>
+            <div class="field"><label>עומס G (G107)</label><input data-addr="G107"></div>
+            <div class="field"><label>תזוזה I (I107)</label><input data-addr="I107"></div>
+            <div class="field"><label>שיורית J (J107)</label><input data-addr="J107"></div>
+            <div class="field"><label>מסקנה (L107)</label><select data-addr="L107"><option>מתאים</option><option>לא מתאים</option></select></div>
+            
+            <div class="sub-h">10.3.4 ג' - עומס ניצב (111)</div>
+            <div class="field"><label>עומס (G111)</label><input data-addr="G111"></div>
             <div class="field"><label>תזוזה (I111)</label><input data-addr="I111"></div>
             <div class="field"><label>מסקנה (L111)</label><select data-addr="L111"><option>מתאים</option></select></div>
-
-            <div class="sub-section">10.3.4 ד' - עומס משולב</div>
-            <div class="field"><label>עומס N (G113)</label><input data-addr="G113"></div>
+            
+            <div class="sub-h">10.3.4 ד' - עומס משולב (113)</div>
+            <div class="field"><label>עומס (G113)</label><input data-addr="G113"></div>
             <div class="field"><label>שיורית (J113)</label><input data-addr="J113"></div>
             <div class="field"><label>מסקנה (L113)</label><select data-addr="L113"><option>מתאים</option></select></div>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-header"><span>5. מליא וסיכום סופי</span> <small style="font-size: 0.8rem; color:#999;">שורות 120-138</small></div>
+        <div class="card-h">6. מליא וסיכום (שורות 127-138)</div>
         <div class="grid">
-            <div class="field"><label>שטח מליא S (I127)</label><input data-addr="I127"></div>
-            <div class="field"><label>תוצאת בדיקה (I132)</label><input data-addr="I132"></div>
-            <div class="field"><label>מסקנה מליא (L133)</label><select data-addr="L133"><option>מתאים</option></select></div>
+            <div class="field"><label>שטח S (I127)</label><input data-addr="I127"></div>
+            <div class="field"><label>תוצאה (I132)</label><input data-addr="I132"></div>
+            <div class="field"><label>דרישה (K132)</label><input data-addr="K132"></div>
+            <div class="field"><label>מסקנה מליא</label><select data-addr="L133"><option>מתאים</option></select></div>
             
-            <div class="field" style="grid-column: span 3;">
-                <label>ממצאים חזותיים 10.3.1 (I137)</label>
-                <textarea data-addr="I137" rows="3"></textarea>
-            </div>
-            <div class="field" style="grid-column: span 1;">
-                <label>מסקנה סופית (L138)</label>
-                <select data-addr="L138" style="background: #e8f5e9; font-weight: bold;">
-                    <option value="מתאים">עומד בדרישות</option>
-                    <option value="לא מתאים">לא עומד בדרישות</option>
+            <div class="field full"><label>ממצאים חזותיים (I137)</label><textarea data-addr="I137" rows="3"></textarea></div>
+            <div class="field wide"><label>מסקנה סופית (L138)</label>
+                <select data-addr="L138" style="background:#e8f5e9; font-weight: bold;">
+                    <option value="מתאים">עומד בדרישות התקן</option>
+                    <option value="לא מתאים">אינו עומד בדרישות</option>
                 </select>
             </div>
         </div>
     </div>
 
-    <div class="footer-actions">
-        <button class="btn-generate" onclick="submitData()">💾 הפק אקסל הנדסי מלא (1:1)</button>
+    <div class="footer">
+        <button class="btn" onclick="generate()">💾 הפק אקסל הנדסי מלא (100%)</button>
     </div>
 </div>
 
 <script>
-    async function submitData() {
+    async function generate() {
         const cells = {};
         document.querySelectorAll('[data-addr]').forEach(el => cells[el.getAttribute('data-addr')] = el.value);
-        
         const res = await fetch('/generate-excel', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ cells })
         });
-
         if(res.ok) {
             const blob = await res.blob();
-            const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = "TI_1142_Final_Report.xlsx";
+            a.href = URL.createObjectURL(blob);
+            a.download = `Report_Full_1142_${new Date().toLocaleDateString()}.xlsx`;
             a.click();
         }
     }
