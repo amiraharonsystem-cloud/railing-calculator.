@@ -2,129 +2,159 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>מערכת הפקת דוחות - גרסה סופית</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת הפקת דוחות - 100% התאמה</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; direction: rtl; }
-        .nav { display: flex; background: #2c3e50; sticky: top; }
-        .nav-item { flex: 1; padding: 15px; color: white; text-align: center; cursor: pointer; border-bottom: 3px solid transparent; }
-        .nav-item.active { border-bottom: 3px solid #27ae60; background: #34495e; }
-        .container { max-width: 900px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .section { display: none; }
-        .section.active { display: block; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
-        label { display: block; font-size: 13px; color: #7f8c8d; margin-bottom: 5px; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        .btn-submit { width: 100%; background: #27ae60; color: white; padding: 20px; border: none; font-size: 18px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        :root { --primary: #2563eb; --success: #059669; --bg: #f8fafc; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); direction: rtl; margin: 0; }
+        .tabs { display: flex; background: #1e293b; overflow-x: auto; position: sticky; top: 0; z-index: 10; }
+        .tab-btn { flex: 1; padding: 18px; color: #cbd5e1; border: none; background: none; cursor: pointer; font-weight: 600; white-space: nowrap; }
+        .tab-btn.active { color: white; background: var(--primary); border-bottom: 4px solid white; }
+        .container { max-width: 1000px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .page { display: none; }
+        .page.active { display: block; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: #334155; font-size: 14px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 16px; background: #fff; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+        th { background: #f1f5f9; padding: 12px; border: 1px solid #e2e8f0; font-size: 14px; }
+        td { padding: 8px; border: 1px solid #e2e8f0; }
+        .main-btn { width: 100%; padding: 20px; background: var(--success); color: white; border: none; font-size: 20px; font-weight: bold; cursor: pointer; border-radius: 8px; margin-top: 30px; }
+        h3 { border-right: 4px solid var(--primary); padding-right: 10px; color: #1e293b; }
     </style>
 </head>
 <body>
 
-<div class="nav">
-    <div class="nav-item active" onclick="showTab(0)">1. פרטי לקוח ואתר</div>
-    <div class="nav-item" onclick="showTab(1)">2. מפרט זכוכית</div>
-    <div class="nav-item" onclick="showTab(2)">3. עומסי רוח</div>
-    <div class="nav-item" onclick="showTab(3)">4. בדיקות ותוצאות</div>
+<div class="tabs">
+    <button class="tab-btn active" onclick="tab(0)">פרויקט ואתר</button>
+    <button class="tab-btn" onclick="tab(1)">מידות ועומסים</button>
+    <button class="tab-btn" onclick="tab(2)">מפרט זכוכית</button>
+    <button class="tab-btn" onclick="tab(3)">חישובי רוח</button>
+    <button class="tab-btn" onclick="tab(4)">תוצאות בדיקה</button>
 </div>
 
 <div class="container">
-    <div id="t0" class="section active">
+    <div id="p0" class="page active">
+        <h3>פרטי זיהוי</h3>
         <div class="grid">
-            <div><label>תאריך בדיקה (L3)</label><input type="date" id="testDate"></div>
-            <div><label>קוד פרויקט (L4)</label><input type="text" id="projectId"></div>
-            <div><label>שם האתר (C4)</label><input type="text" id="siteName"></div>
-            <div><label>שם המזמין (C7)</label><input type="text" id="clientName"></div>
-            <div><label>נציג המזמין (L7)</label><input type="text" id="presenterName"></div>
-            <div><label>כתובת (C8)</label><input type="text" id="siteAddress"></div>
+            <div><label>תאריך בדיקה</label><input type="date" id="testDate"></div>
+            <div><label>קוד פרויקט</label><input type="text" id="projectId"></div>
+            <div><label>שם המזמין</label><input type="text" id="clientName"></div>
+            <div><label>שם המציג (נציג מזמין)</label><input type="text" id="presenterName"></div>
         </div>
         <div class="grid">
-            <div><label>תיאור המבנה (C10)</label><input type="text" id="structureDesc"></div>
-            <div><label>תיאור הפריט (C11)</label><input type="text" id="itemDesc"></div>
-            <div><label>מיקום הבדיקה (C12)</label><input type="text" id="testLocation"></div>
+            <div><label>שם האתר</label><input type="text" id="siteName"></div>
+            <div><label>כתובת האתר</label><input type="text" id="siteAddress"></div>
         </div>
         <div class="grid">
-            <div><label>סטטוס תכנון (C13)</label><select id="planningStatus"><option>הוגש</option><option>לא הוגש</option></select></div>
-            <div><label>חישוב הנדסי (C14)</label><select id="engStatus"><option>הוגש</option><option>לא הוגש</option></select></div>
+            <div><label>תיאור המבנה</label><input type="text" id="structureType" placeholder="למשל: מגורים / מסחרי"></div>
+            <div><label>תיאור המעקה</label><input type="text" id="itemDesc"></div>
+            <div><label>מיקום הבדיקה</label><input type="text" id="testLocation"></div>
         </div>
-    </div>
-
-    <div id="t1" class="section">
         <div class="grid">
-            <div><label>אורך דיגוז 'מ (C66)</label><input type="text" id="glassWidth"></div>
-            <div><label>גובה דיגוז 'מ (F66)</label><input type="text" id="glassHeight"></div>
-            <div><label>עובי במ"מ (I67)</label><input type="text" id="glassThick"></div>
-            <div><label>סימון היצרן (I68)</label><input type="text" id="glassMarking"></div>
-            <div><label>סוג השמשה (I70)</label><input type="text" id="glassType"></div>
-            <div><label>שם היצרן (I72)</label><input type="text" id="glassBrand"></div>
-            <div><label>חפיפה למסגרת מ"מ (I75)</label><input type="text" id="overlap"></div>
-            <div><label>חומר אטם (I76)</label><input type="text" id="sealing"></div>
+            <div><label>תכנון המעקה</label><select id="planningStatus"><option>הוגש</option><option>לא הוגש</option><option>לא רלוונטי</option></select></div>
+            <div><label>חישוב הנדסי</label><select id="engineeringStatus"><option>הוגש</option><option>לא הוגש</option><option>לא רלוונטי</option></select></div>
         </div>
     </div>
 
-    <div id="t2" class="section">
+    <div id="p1" class="page">
+        <h3>גאומטריה ועומסי תכנון</h3>
         <div class="grid">
-            <div><label>h - גובה הפעלת לחץ (I83)</label><input type="text" id="h_val"></div>
-            <div><label>qb (I84)</label><input type="text" id="qb_val"></div>
-            <div><label>We (G82)</label><input type="text" id="we_val"></div>
-            <div><label>Fw (G83)</label><input type="text" id="fw_val"></div>
-            <div><label>Ce(Ze) (G84)</label><input type="text" id="ceze_val"></div>
-            <div><label>עומס אזן עליון (G85)</label><input type="text" id="rail_load"></div>
+            <div><label>L1 - מרחק בין ניצבים (מ')</label><input type="number" step="0.01" id="L1"></div>
+            <div><label>L2 - מפתח שדה סמוך (מ')</label><input type="number" step="0.01" id="L2"></div>
+            <div><label>L - מפתח לוח מליא (מ')</label><input type="number" step="0.01" id="L_fill"></div>
         </div>
-        <hr>
         <div class="grid">
-            <div><label>L1 - בין ניצבים (L22)</label><input type="text" id="L1"></div>
-            <div><label>L2 - שדה סמוך (L24)</label><input type="text" id="L2"></div>
-            <div><label>L - מליא (L26)</label><input type="text" id="L_fill"></div>
-            <div><label>עומס ws (L30)</label><input type="text" id="ws_load"></div>
+            <div><label>עומס תכנון ws (ק"נ/מ')</label><input type="text" id="ws_load"></div>
+            <div><label>חצי עומס 0.5ws (ק"נ/מ')</label><input type="text" id="half_ws"></div>
         </div>
     </div>
 
-    <div id="t3" class="section">
+    <div id="p2" class="page">
+        <h3>מפרט לוחות מילוי (זכוכית)</h3>
+        <div class="grid">
+            <div><label>אורך דיגוז (מ')</label><input type="text" id="glassW"></div>
+            <div><label>גובה דיגוז (מ')</label><input type="text" id="glassH"></div>
+            <div><label>עובי במ"מ</label><input type="text" id="glassThick"></div>
+        </div>
+        <div class="grid">
+            <div><label>סימון היצרן</label><select id="glassMark"><option>קיים</option><option>לא קיים</option><option>חלקי</option></select></div>
+            <div><label>סוג השמשה</label><select id="glassType"><option>רבודה ומחוסמת</option><option>רבודה חצי מחוסמת</option><option>רבודה לא מחוסמת</option></select></div>
+            <div><label>שם יצרן/מותג</label><input type="text" id="glassManuf"></div>
+        </div>
+        <div class="grid">
+            <div><label>חפיפה למסגרת (מ"מ)</label><input type="text" id="overlap"></div>
+            <div><label>חומר אטם</label><select id="sealing"><option>גומי EPDM</option><option>סיליקון</option><option>לא קיים</option></select></div>
+        </div>
+    </div>
+
+    <div id="p3" class="page">
+        <h3>חישובי עומסי רוח</h3>
+        <div class="grid">
+            <div><label>h - גובה הפעלת לחץ (מ')</label><input type="text" id="h_pressure"></div>
+            <div><label>qb - לחץ רוח בסיסי</label><input type="text" id="qb_val"></div>
+            <div><label>We - לחץ רוח תכנוני</label><input type="text" id="we_val"></div>
+        </div>
+        <div class="grid">
+            <div><label>Fw - עומס קווי</label><input type="text" id="fw_val"></div>
+            <div><label>Ce(Ze) - מקדם חשיפה</label><input type="text" id="ceze_val"></div>
+            <div><label>עומס על אזן עליון</label><input type="text" id="topRail_load"></div>
+        </div>
+    </div>
+
+    <div id="p4" class="page">
+        <h3>טבלת תוצאות (תקן 1142)</h3>
         <table>
-            <tr><th>סעיף</th><th>תזוזה אופקית (I)</th><th>תזוזה שיורית (J)</th><th>סטטוס (L)</th></tr>
-            <tr><td>10.3.4 א'</td><td><input id="horiz_a"></td><td><input id="resid_a"></td><td><select id="status_a"><option>עמד</option><option>לא עמד</option></select></td></tr>
-            <tr><td>10.3.4 ב'</td><td><input id="horiz_b"></td><td><input id="resid_b"></td><td><select id="status_b"><option>עמד</option><option>לא עמד</option></select></td></tr>
-            <tr><td>10.3.4 ג'</td><td><input id="horiz_c"></td><td><input id="resid_c"></td><td><select id="status_c"><option>עמד</option><option>לא עמד</option></select></td></tr>
-            <tr><td>10.3.5 מליא</td><td colspan="2">-</td><td><select id="status_1035"><option>עמד</option><option>לא עמד</option></select></td></tr>
+            <thead>
+                <tr>
+                    <th>בדיקה</th>
+                    <th>תזוזה אופקית (I)</th>
+                    <th>תזוזה שיורית (J)</th>
+                    <th>סטטוס</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>10.3.4 א' (חצי עומס)</td><td><input id="hor_a"></td><td><input id="res_a"></td><td><select id="stat_a"><option>עמד</option><option>לא עמד</option><option>לא רלוונטי</option></select></td></tr>
+                <tr><td>10.3.4 ב' (עומס מלא)</td><td><input id="hor_b"></td><td><input id="res_b"></td><td><select id="stat_b"><option>עמד</option><option>לא עמד</option><option>לא רלוונטי</option></select></td></tr>
+                <tr><td>10.3.4 ג' (עומס ניצב)</td><td><input id="hor_c"></td><td><input id="res_c"></td><td><select id="stat_c"><option>עמד</option><option>לא עמד</option><option>לא רלוונטי</option></select></td></tr>
+                <tr><td>10.3.5 (בדיקת מליא)</td><td>-</td><td>-</td><td><select id="stat_1035"><option>עמד</option><option>לא עמד</option><option>לא רלוונטי</option></select></td></tr>
+            </tbody>
         </table>
-        <div style="margin-top:20px;">
-            <label>מסקנה סופית (L37)</label><select id="finalStatus"><option>עמד בדרישות התקן</option><option>לא עמד בדרישות התקן</option></select>
-            <label>הערות סיכום (C40)</label><textarea id="finalRemarks"></textarea>
+        <div style="margin-top:25px;">
+            <label>מסקנה סופית</label>
+            <select id="finalConclusion"><option>המעקה עומד בדרישות התקן</option><option>המעקה אינו עומד בדרישות התקן</option></select>
+            <label>הערות הבודק</label><textarea id="comments" rows="3"></textarea>
             <div class="grid">
-                <div><label>שם הבודק (L38)</label><input type="text" id="inspectorName"></div>
-                <div><label>שם המאשר (L39)</label><input type="text" id="approverName"></div>
+                <div><label>שם הבודק</label><input type="text" id="inspectorName"></div>
+                <div><label>שם המאשר</label><input type="text" id="approverName"></div>
             </div>
         </div>
     </div>
 
-    <button class="btn-submit" onclick="sendData()">💾 הפק דוח אקסל מלא (100% תאים)</button>
+    <button class="main-btn" onclick="send()">💾 הפק אקסל סופי (100% שדות)</button>
 </div>
 
 <script>
-    function showTab(i) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById('t'+i).classList.add('active');
-        document.querySelectorAll('.nav-item')[i].classList.add('active');
+    function tab(i) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('p'+i).classList.add('active');
+        document.querySelectorAll('.tab-btn')[i].classList.add('active');
     }
-
-    async function sendData() {
-        const payload = {};
-        document.querySelectorAll('input, select, textarea').forEach(el => payload[el.id] = el.value);
-        
+    async function send() {
+        const data = {};
+        document.querySelectorAll('input, select, textarea').forEach(el => data[el.id] = el.value);
         const res = await fetch('/generate-excel', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(payload)
+            body: JSON.stringify(data)
         });
-
         if(res.ok) {
             const blob = await res.blob();
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "Final_Report.xlsx";
-            link.click();
+            const a = document.createElement('a');
+            a.href = window.URL.createObjectURL(blob);
+            a.download = `Report_${data.projectId || 'Complete'}.xlsx`;
+            a.click();
         }
     }
 </script>
