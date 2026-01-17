@@ -2,76 +2,75 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>מערכת הפקת דו"ח בדיקת מעקה</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת בדיקת מעקה</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f9; padding: 20px; direction: rtl; }
-        .form-card { background: white; max-width: 600px; margin: auto; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        label { font-weight: bold; display: block; margin-bottom: 5px; }
-        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        .full-width { grid-column: span 2; }
-        button { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 6px; font-size: 18px; cursor: pointer; margin-top: 20px; }
-        .download-btn { display: block; text-align: center; margin-top: 20px; color: #3498db; text-decoration: none; font-weight: bold; }
+        body { font-family: sans-serif; background: #eee; padding: 10px; }
+        .card { background: white; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; }
+        .section { border-bottom: 2px solid #ddd; margin-bottom: 15px; padding-bottom: 10px; }
+        h3 { color: #007bff; }
+        label { display: block; margin: 10px 0 5px; font-weight: bold; }
+        input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #28a745; color: white; border: none; font-size: 18px; margin-top: 20px; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="form-card">
-    <h2>תעודת בדיקת מעקה - הזנת נתונים</h2>
-    <div class="grid">
-        <div>
-            <label>תאריך בדיקה:</label>
-            <input type="date" id="testDate">
-        </div>
-        <div>
-            <label>קוד פרויקט:</label>
-            <input type="text" id="projectId">
-        </div>
-        <div class="full-width">
-            <label>שם האתר:</label>
-            <input type="text" id="siteName">
-        </div>
-        <div class="full-width">
-            <label>שם המזמין:</label>
-            <input type="text" id="clientName">
-        </div>
-        <div class="full-width">
-            <label>תיאור הפריט שנבדק:</label>
-            <input type="text" id="itemDesc" value="מעקה במרפסת שמש עשוי אלומניום">
-        </div>
-        <div class="full-width">
-            <label>מיקום בדיקה (קומה/דירה):</label>
-            <input type="text" id="location">
-        </div>
+<div class="card">
+    <h2>הזנת דו"ח בדיקת מעקה</h2>
+    
+    <div class="section">
+        <h3>1. פרטי הדו"ח</h3>
+        <label>תאריך בדיקה:</label>
+        <input type="date" id="testDate">
+        <label>שם האתר:</label>
+        <input type="text" id="siteName">
+        <label>קוד פרויקט:</label>
+        <input type="text" id="projectId">
     </div>
 
-    <button onclick="generateReport()">הפק דו"ח אקסל רשמי</button>
-    <p id="status" style="text-align: center;"></p>
-    <a href="/download" class="download-btn">⬇️ הורד את הדו"ח המוכן</a>
+    <div class="section">
+        <h3>2. פרטי הלקוח</h3>
+        <label>שם המזמין:</label>
+        <input type="text" id="clientName">
+        <label>מיקום הבדיקה (קומה/דירה):</label>
+        <input type="text" id="location">
+    </div>
+
+    <div class="section">
+        <h3>3. מדידות טכניות</h3>
+        <label>מרחק L1 (מטרים):</label>
+        <input type="number" step="0.01" id="L1">
+        <label>מפתח שדה סמוך L2 (מטרים):</label>
+        <input type="number" step="0.01" id="L2">
+    </div>
+
+    <button onclick="save()">הפק דו"ח אקסל</button>
+    <a id="dl" href="/download" style="display:none; text-align:center; display:block; margin-top:10px;">⬇️ הורד קובץ מוכן</a>
 </div>
 
 <script>
-    async function generateReport() {
-        const status = document.getElementById('status');
+    async function save() {
         const data = {
             testDate: document.getElementById('testDate').value,
-            projectId: document.getElementById('projectId').value,
             siteName: document.getElementById('siteName').value,
+            projectId: document.getElementById('projectId').value,
             clientName: document.getElementById('clientName').value,
-            itemDesc: document.getElementById('itemDesc').value,
-            location: document.getElementById('location').value
+            location: document.getElementById('location').value,
+            L1: document.getElementById('L1').value,
+            L2: document.getElementById('L2').value
         };
 
-        status.innerText = "יוצר דו"ח...";
-        const response = await fetch('/generate-report', {
+        const res = await fetch('/generate-excel', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
         });
 
-        if (response.ok) status.innerText = "✅ הדו"ח מוכן להורדה!";
-        else status.innerText = "❌ תקלה בהפקת הדו"ח";
+        if(res.ok) {
+            alert("הנתונים הוזנו לאקסל בהצלחה!");
+            document.getElementById('dl').style.display = 'block';
+        }
     }
 </script>
 
