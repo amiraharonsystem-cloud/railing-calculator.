@@ -2,149 +2,129 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת ניהול דוחות ת"י 1142</title>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>מערכת הנדסית 1142 - דוח מלא</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Assistant', sans-serif; background-color: #f0f2f5; margin: 0; padding: 40px; color: #1c1e21; }
-        .container { max-width: 1000px; margin: auto; }
+        body { font-family: 'Assistant', sans-serif; background: #f4f7f9; margin: 0; padding: 20px; color: #2c3e50; }
+        .wrapper { max-width: 1100px; margin: auto; }
+        .main-title { text-align: center; color: #1a73e8; font-size: 2.8rem; margin-bottom: 40px; font-weight: 800; }
         
-        .header { margin-bottom: 30px; text-align: center; }
-        .header h1 { font-size: 2.5rem; color: #1a73e8; margin-bottom: 10px; }
-        .header p { font-size: 1.2rem; color: #5f6368; }
-
-        .card { background: white; border-radius: 12px; padding: 30px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; }
-        .card-title { font-size: 1.5rem; font-weight: 700; color: #202124; margin-bottom: 25px; border-bottom: 2px solid #f1f3f4; padding-bottom: 10px; display: flex; align-items: center; }
-        .card-title i { margin-left: 10px; color: #1a73e8; }
-
-        .grid-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .card { background: white; border-radius: 15px; padding: 35px; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .card-header { font-size: 1.6rem; font-weight: 700; color: #1a237e; border-bottom: 3px solid #e8f0fe; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; }
         
-        .input-group { display: flex; flex-direction: column; }
-        .input-group label { font-weight: 600; margin-bottom: 8px; font-size: 1.1rem; color: #3c4043; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
+        .field { display: flex; flex-direction: column; }
+        label { font-weight: 600; font-size: 1.15rem; margin-bottom: 8px; color: #444; }
         
         input, select, textarea { 
-            padding: 12px 16px; border: 2px solid #dadce0; border-radius: 8px; font-size: 1.1rem; 
-            transition: all 0.2s; outline: none; background: #fff;
+            padding: 14px; border: 2px solid #dce1e8; border-radius: 10px; font-size: 1.1rem; outline: none; transition: 0.3s;
         }
-        input:focus, select:focus { border-color: #1a73e8; box-shadow: 0 0 0 4px rgba(26,115,232,0.1); }
-
-        .section-divider { grid-column: 1 / -1; margin-top: 15px; font-weight: bold; color: #1a73e8; font-size: 1.2rem; }
-
-        .actions { text-align: center; margin-top: 50px; position: sticky; bottom: 30px; }
-        .btn-submit { 
-            background: #1a73e8; color: white; border: none; padding: 18px 80px; font-size: 1.4rem; 
-            font-weight: 700; border-radius: 50px; cursor: pointer; box-shadow: 0 8px 24px rgba(26,115,232,0.3);
-            transition: transform 0.2s, background 0.2s;
+        input:focus { border-color: #1a73e8; background: #fcfdfe; }
+        
+        .sub-section { grid-column: 1 / -1; background: #f8f9fa; padding: 15px; border-right: 5px solid #1a73e8; margin: 15px 0; font-weight: bold; font-size: 1.2rem; }
+        
+        .footer-actions { position: sticky; bottom: 20px; text-align: center; padding: 20px; }
+        .btn-generate { 
+            background: #2e7d32; color: white; padding: 20px 100px; font-size: 1.6rem; font-weight: 700; 
+            border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 30px rgba(46,125,50,0.3);
         }
-        .btn-submit:hover { background: #1765cc; transform: translateY(-2px); }
-        .btn-submit:active { transform: translateY(0); }
-
-        .row-ref { font-size: 0.8rem; color: #bdc3c7; margin-top: 4px; }
+        .btn-generate:hover { background: #1b5e20; transform: scale(1.02); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>דוח בדיקת מעקה</h1>
-        <p>ת"י 1142 - הזנת נתונים והפקת אקסל הנדסי</p>
-    </div>
+<div class="wrapper">
+    <div class="main-title">דוח מעבדה ת"י 1142</div>
 
     <div class="card">
-        <div class="card-title">פרטי זיהוי ופרויקט</div>
-        <div class="grid-row">
-            <div class="input-group">
-                <label>מספר דו"ח</label>
-                <input data-addr="H2" placeholder="לדוגמה: 2024-105">
-            </div>
-            <div class="input-group">
-                <label>תאריך הבדיקה</label>
-                <input data-addr="L3" type="date">
-            </div>
-            <div class="input-group">
-                <label>קוד פרויקט</label>
-                <input data-addr="L4" placeholder="קוד פנימי">
-            </div>
-        </div>
-        <div class="grid-row">
-            <div class="input-group" style="grid-column: span 2;">
-                <label>שם האתר / הפרויקט</label>
-                <input data-addr="C4" placeholder="הזן את שם האתר">
-            </div>
+        <div class="card-header"><span>1. פרטי זיהוי ומינהלה</span> <small style="font-size: 0.8rem; color:#999;">שורות 1-30</small></div>
+        <div class="grid">
+            <div class="field"><label>מספר דו"ח (H2)</label><input data-addr="H2"></div>
+            <div class="field"><label>תאריך (L3)</label><input data-addr="L3" type="date"></div>
+            <div class="field"><label>קוד פרויקט (L4)</label><input data-addr="L4"></div>
+            <div class="field" style="grid-column: span 2;"><label>שם האתר (C4)</label><input data-addr="C4"></div>
+            <div class="field" style="grid-column: span 2;"><label>שם המזמין (C7)</label><input data-addr="C7"></div>
+            <div class="field" style="grid-column: span 2;"><label>מען המזמין (I7)</label><input data-addr="I7"></div>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title">מפרט טכני וחומרים</div>
-        
-        <div class="section-divider">פרופיל ניצב</div>
-        <div class="grid-row">
-            <div class="input-group"><label>חומר</label><input data-addr="C45"></div>
-            <div class="input-group"><label>גמר</label><input data-addr="F45"></div>
-            <div class="input-group"><label>דרישה</label><input data-addr="H45"></div>
-            <div class="input-group">
-                <label>מסקנה</label>
-                <select data-addr="L45"><option value="מתאים">מתאים ✅</option><option value="לא מתאים">לא מתאים ❌</option></select>
-            </div>
-        </div>
-
-        <div class="section-divider">זכוכית</div>
-        <div class="grid-row">
-            <div class="input-group"><label>סוג זכוכית</label><input data-addr="G70"></div>
-            <div class="input-group"><label>עובי (מ"מ)</label><input data-addr="G67"></div>
-            <div class="input-group">
-                <label>מסקנה</label>
-                <select data-addr="L70"><option value="מתאים">מתאים</option><option value="לא מתאים">לא מתאים</option></select>
-            </div>
+        <div class="card-header"><span>2. ציוד המשתתף בבדיקה</span> <small style="font-size: 0.8rem; color:#999;">שורות 31-38</small></div>
+        <div class="grid">
+            <div class="field"><label>מערכת הפעלת עומס (C32)</label><input data-addr="C32" value="בוכנה הידראולית"></div>
+            <div class="field"><label>מד כוח (C34)</label><input data-addr="C34"></div>
+            <div class="field"><label>מד תזוזה (C36)</label><input data-addr="C36"></div>
+            <div class="field"><label>תוקף כיול (L34)</label><input data-addr="L34" type="date"></div>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title">תוצאות בדיקת עומסים</div>
-        
-        <div class="section-divider">בדיקה 10.3.4 א' (אופקי/שירות)</div>
-        <div class="grid-row">
-            <div class="input-group"><label>עומס N</label><input data-addr="G107" type="number"></div>
-            <div class="input-group"><label>תזוזה I (מ"מ)</label><input data-addr="I107" type="number"></div>
-            <div class="input-group"><label>שיורית J (מ"מ)</label><input data-addr="J107" type="number"></div>
-            <div class="input-group">
-                <label>מסקנה</label>
-                <select data-addr="L107"><option value="מתאים">מתאים</option><option value="לא מתאים">לא מתאים</option></select>
+        <div class="card-header"><span>3. תיאור המעקה ומפרט</span> <small style="font-size: 0.8rem; color:#999;">שורות 40-78</small></div>
+        <div class="grid">
+            <div class="sub-section">פרופיל ניצב</div>
+            <div class="field"><label>חומר (C45)</label><input data-addr="C45"></div>
+            <div class="field"><label>גמר (F45)</label><input data-addr="F45"></div>
+            <div class="field"><label>דרישה (H45)</label><input data-addr="H45"></div>
+            <div class="field"><label>מסקנה (L45)</label>
+                <select data-addr="L45"><option value="מתאים">מתאים</option><option value="לא מתאים">לא מתאים</option></select>
             </div>
-        </div>
 
-        <div class="section-divider">ניתוח רוח (Wind Analysis)</div>
-        <div class="grid-row">
-            <div class="input-group"><label>qb</label><input data-addr="F84"></div>
-            <div class="input-group"><label>Ce</label><input data-addr="K84"></div>
-            <div class="input-group"><label>Fw (N)</label><input data-addr="I84" style="background: #e8f0fe; font-weight: bold;"></div>
+            <div class="sub-section">זכוכית</div>
+            <div class="field"><label>סוג (G70)</label><input data-addr="G70"></div>
+            <div class="field"><label>עובי (G67)</label><input data-addr="G67"></div>
+            <div class="field"><label>מסקנה (L70)</label><select data-addr="L70"><option>מתאים</option></select></div>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title">סיכום חזותי והערות</div>
-        <div class="input-group">
-            <label>ממצאי בדיקה חזותית (10.3.1)</label>
-            <textarea data-addr="I137" rows="4" placeholder="פרט כאן את הממצאים החזותיים..."></textarea>
+        <div class="card-header"><span>4. תוצאות בדיקת עומסים (10.3.4)</span> <small style="font-size: 0.8rem; color:#999;">שורות 100-117</small></div>
+        <div class="grid">
+            <div class="sub-section">10.3.4 א' - עומס אופקי שירות</div>
+            <div class="field"><label>עומס N (G107)</label><input data-addr="G107"></div>
+            <div class="field"><label>תזוזה מ"מ (I107)</label><input data-addr="I107"></div>
+            <div class="field"><label>שיורית (J107)</label><input data-addr="J107"></div>
+            <div class="field"><label>מסקנה (L107)</label><select data-addr="L107"><option>מתאים</option><option>לא מתאים</option></select></div>
+
+            <div class="sub-section">10.3.4 ג' - עומס ניצב</div>
+            <div class="field"><label>עומס N (G111)</label><input data-addr="G111"></div>
+            <div class="field"><label>תזוזה (I111)</label><input data-addr="I111"></div>
+            <div class="field"><label>מסקנה (L111)</label><select data-addr="L111"><option>מתאים</option></select></div>
+
+            <div class="sub-section">10.3.4 ד' - עומס משולב</div>
+            <div class="field"><label>עומס N (G113)</label><input data-addr="G113"></div>
+            <div class="field"><label>שיורית (J113)</label><input data-addr="J113"></div>
+            <div class="field"><label>מסקנה (L113)</label><select data-addr="L113"><option>מתאים</option></select></div>
         </div>
-        <div class="grid-row" style="margin-top:20px;">
-            <div class="input-group">
-                <label>מסקנה סופית</label>
-                <select data-addr="L138" style="background:#e6f4ea; border-color:#34a853;">
-                    <option value="מתאים">עומד בדרישות התקן ✅</option>
-                    <option value="לא מתאים">אינו עומד בדרישות ❌</option>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><span>5. מליא וסיכום סופי</span> <small style="font-size: 0.8rem; color:#999;">שורות 120-138</small></div>
+        <div class="grid">
+            <div class="field"><label>שטח מליא S (I127)</label><input data-addr="I127"></div>
+            <div class="field"><label>תוצאת בדיקה (I132)</label><input data-addr="I132"></div>
+            <div class="field"><label>מסקנה מליא (L133)</label><select data-addr="L133"><option>מתאים</option></select></div>
+            
+            <div class="field" style="grid-column: span 3;">
+                <label>ממצאים חזותיים 10.3.1 (I137)</label>
+                <textarea data-addr="I137" rows="3"></textarea>
+            </div>
+            <div class="field" style="grid-column: span 1;">
+                <label>מסקנה סופית (L138)</label>
+                <select data-addr="L138" style="background: #e8f5e9; font-weight: bold;">
+                    <option value="מתאים">עומד בדרישות</option>
+                    <option value="לא מתאים">לא עומד בדרישות</option>
                 </select>
             </div>
         </div>
     </div>
 
-    <div class="actions">
-        <button class="btn-submit" onclick="generateExcel()">הפק דוח אקסל מקצועי</button>
+    <div class="footer-actions">
+        <button class="btn-generate" onclick="submitData()">💾 הפק אקסל הנדסי מלא (1:1)</button>
     </div>
 </div>
 
 <script>
-    async function generateExcel() {
+    async function submitData() {
         const cells = {};
         document.querySelectorAll('[data-addr]').forEach(el => cells[el.getAttribute('data-addr')] = el.value);
         
@@ -156,10 +136,11 @@
 
         if(res.ok) {
             const blob = await res.blob();
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `Report_1142_${new Date().toLocaleDateString()}.xlsx`;
-            link.click();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "TI_1142_Final_Report.xlsx";
+            a.click();
         }
     }
 </script>
