@@ -12,48 +12,38 @@ app.post('/generate-excel', async (req, res) => {
         await workbook.xlsx.readFile(path.join(__dirname, 'template.xlsx'));
         const ws = workbook.getWorksheet(1);
 
-        // --- מילוי לפי כתובת תא מדויקת ---
-        // פרטי זיהוי
-        ws.getCell('H2').value = d.H2;   // מספר דו"ח
+        // --- עמוד 1: זיהוי וכללי ---
+        ws.getCell('H2').value = d.H2;   // מס' דוח
         ws.getCell('L3').value = d.L3;   // תאריך
-        ws.getCell('C4').value = d.C4;   // שם האתר
-        ws.getCell('L4').value = d.L4;   // קוד פרויקט
-        ws.getCell('C7').value = d.C7;   // שם המזמין
-        ws.getCell('I7').value = d.I7;   // מען המזמין
-        ws.getCell('L7').value = d.L7;   // נציג המזמין
-        ws.getCell('C8').value = d.C8;   // כתובת האתר
-        ws.getCell('D9').value = d.D9;   // מהות הבדיקה
+        ws.getCell('C4').value = d.C4;   // שם אתר
+        ws.getCell('C7').value = d.C7;   // מזמין
+        ws.getCell('I14').value = d.I14; // תכנון הוגש (V/X)
 
-        // מפרט טכני (השורות שביקשת)
-        ws.getCell('C11').value = d.C11; // תיאור המבנה
-        ws.getCell('C12').value = d.C12; // תיאור הפריט
-        ws.getCell('C13').value = d.C13; // מיקום הבדיקה
-        ws.getCell('I14').value = d.I14; // תכנון מעקה
-        ws.getCell('I15').value = d.I15; // חישוב שלד
-        ws.getCell('I16').value = d.I16; // חישוב מליא
+        // --- עמוד 2: גאומטריה ופרטים (שורות 55-78) ---
+        ws.getCell('E56').value = d.E56; // גובה מעקה
+        ws.getCell('E60').value = d.E60; // מרווחים בין רכיבים
+        ws.getCell('E66').value = d.E66; // אורך זיגוג
+        ws.getCell('E67').value = d.E67; // גובה זיגוג
+        ws.getCell('G67').value = d.G67; // עובי זכוכית
+        ws.getCell('G70').value = d.G70; // סוג זכוכית
+        ws.getCell('G75').value = d.G75; // עובי שכבה פנימית
 
-        // נתוני חומרים וברגים (שורות 45-78)
-        ws.getCell('C45').value = d.C45; // סוג פרופיל
-        ws.getCell('F45').value = d.F45; // גמר
-        ws.getCell('C47').value = d.C47; // סוג עיגון
-        ws.getCell('I47').value = d.I47; // תיאור עיגון
-        ws.getCell('C49').value = d.C49; // ברגים
-        ws.getCell('C55').value = d.C55; // מסעד יד
-        ws.getCell('I67').value = d.I67; // עובי זכוכית
-        ws.getCell('I70').value = d.I70; // סוג זכוכית
+        // --- עמוד 2: חישובי רוח (שורות 79-85) ---
+        ws.getCell('F83').value = d.F83; // h - גובה מעל פני הקרקע
+        ws.getCell('F84').value = d.F84; // qb - לחץ רוח בסיסי
+        ws.getCell('H82').value = d.H82; // We - לחץ רוח לתכנון
+        ws.getCell('H84').value = d.H84; // Fw - כוח רוח כולל
 
-        // נתוני חישוב ועומסים
-        ws.getCell('L19').value = d.L19; // Fser
-        ws.getCell('L20').value = d.L20; // P מחושב
-        ws.getCell('L22').value = d.L22; // L1
-        ws.getCell('L24').value = d.L24; // L2
-        ws.getCell('I32').value = d.I32; // We לחץ רוח
-        ws.getCell('L32').value = d.L32; // Ws עומס כולל
-
-        // תוצאות
-        ws.getCell('I107').value = d.I107; // תזוזה א'
-        ws.getCell('J107').value = d.J107; // שיורית א'
-        ws.getCell('L107').value = d.L107; // מסקנה א'
+        // --- עמוד 3: תוצאות עומסים (שורות 100-138) ---
+        // סעיף 10.3.4 א'
+        ws.getCell('I107').value = d.I107; // תזוזה אופקית
+        ws.getCell('J107').value = d.J107; // תזוזה שיורית
+        ws.getCell('L107').value = d.L107; // מסקנה (מתאים/לא)
+        
+        // סעיף 10.3.5 ג' (מליא)
+        ws.getCell('H127').value = d.H127; // S - שטח הלוח
+        ws.getCell('I132').value = d.I132; // תוצאת בדיקה מליא
+        ws.getCell('L133').value = d.L133; // מסקנה סופית
 
         res.end(await workbook.xlsx.writeBuffer());
     } catch (e) { res.status(500).send(e.message); }
