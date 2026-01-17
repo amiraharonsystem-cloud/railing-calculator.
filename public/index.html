@@ -3,74 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת בדיקת מעקה</title>
+    <title>מערכת דוחות מעקה</title>
     <style>
-        body { font-family: sans-serif; background: #eee; padding: 10px; }
-        .card { background: white; padding: 20px; border-radius: 10px; max-width: 500px; margin: auto; }
-        .section { border-bottom: 2px solid #ddd; margin-bottom: 15px; padding-bottom: 10px; }
-        h3 { color: #007bff; }
-        label { display: block; margin: 10px 0 5px; font-weight: bold; }
-        input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: #28a745; color: white; border: none; font-size: 18px; margin-top: 20px; border-radius: 5px; cursor: pointer; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f4f8; margin: 0; padding: 15px; }
+        .app-container { max-width: 600px; margin: auto; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: #1a73e8; color: white; padding: 20px; text-align: center; }
+        .section { padding: 20px; border-bottom: 1px solid #eee; }
+        .section-title { font-weight: bold; color: #1a73e8; margin-bottom: 15px; display: block; border-right: 4px solid #1a73e8; padding-right: 10px; }
+        label { display: block; margin-bottom: 5px; font-size: 14px; color: #555; }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 18px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #218838; }
+        .download-area { display: none; text-align: center; padding: 20px; background: #e8f5e9; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>הזנת דו"ח בדיקת מעקה</h2>
-    
-    <div class="section">
-        <h3>1. פרטי הדו"ח</h3>
-        <label>תאריך בדיקה:</label>
-        <input type="date" id="testDate">
-        <label>שם האתר:</label>
-        <input type="text" id="siteName">
-        <label>קוד פרויקט:</label>
-        <input type="text" id="projectId">
+<div class="app-container">
+    <div class="header">
+        <h1>הפקת דו"ח בדיקה</h1>
     </div>
 
     <div class="section">
-        <h3>2. פרטי הלקוח</h3>
-        <label>שם המזמין:</label>
+        <span class="section-title">פרטי פרויקט ולקוח</span>
+        <label>תאריך בדיקה</label>
+        <input type="date" id="testDate">
+        <label>קוד פרויקט</label>
+        <input type="text" id="projectId" placeholder="למשל: 140407">
+        <label>שם האתר</label>
+        <input type="text" id="siteName" placeholder="כתובת האתר">
+        <label>שם המזמין</label>
         <input type="text" id="clientName">
-        <label>מיקום הבדיקה (קומה/דירה):</label>
+        <label>נציג המזמין בבדיקה</label>
+        <input type="text" id="clientRep">
+    </div>
+
+    <div class="section">
+        <span class="section-title">תיאור הבדיקה</span>
+        <label>תיאור המבנה</label>
+        <input type="text" id="structure" value="בנין מגורים">
+        <label>פריט נבדק</label>
+        <input type="text" id="itemDesc" value="מעקה במרפסת שמש עשוי אלומניום">
+        <label>מיקום (קומה / דירה)</label>
         <input type="text" id="location">
     </div>
 
     <div class="section">
-        <h3>3. מדידות טכניות</h3>
-        <label>מרחק L1 (מטרים):</label>
-        <input type="number" step="0.01" id="L1">
-        <label>מפתח שדה סמוך L2 (מטרים):</label>
+        <span class="section-title">נתונים הנדסיים (מדידות)</span>
+        <label>מרחק L1 (מטרים)</label>
+        <input type="number" step="0.01" id="L1" placeholder="המרחק בין הניצבים">
+        <label>מפתח סמוך L2 (מטרים)</label>
         <input type="number" step="0.01" id="L2">
+        <label>מפתח לוח מליא L</label>
+        <input type="text" id="L_fill" value="-">
+        <label>עומס רוח (נ'/מ"ר)</label>
+        <input type="text" id="windLoad">
     </div>
 
-    <button onclick="save()">הפק דו"ח אקסל</button>
-    <a id="dl" href="/download" style="display:none; text-align:center; display:block; margin-top:10px;">⬇️ הורד קובץ מוכן</a>
+    <div class="section">
+        <label>הערות הבודק</label>
+        <textarea id="comments" rows="3"></textarea>
+    </div>
+
+    <div style="padding: 20px;">
+        <button onclick="submitData()">🚀 הפק דו"ח אקסל סופי</button>
+    </div>
+
+    <div id="downloadArea" class="download-area">
+        <p style="color: #2e7d32; font-weight: bold;">הדו"ח נוצר בהצלחה!</p>
+        <a href="/download" style="color: #1a73e8; text-decoration: none; font-size: 18px;">⬇️ לחץ כאן להורדת הקובץ</a>
+    </div>
 </div>
 
 <script>
-    async function save() {
-        const data = {
-            testDate: document.getElementById('testDate').value,
-            siteName: document.getElementById('siteName').value,
-            projectId: document.getElementById('projectId').value,
-            clientName: document.getElementById('clientName').value,
-            location: document.getElementById('location').value,
-            L1: document.getElementById('L1').value,
-            L2: document.getElementById('L2').value
-        };
+    async function submitData() {
+        const fields = ['testDate', 'projectId', 'siteName', 'clientName', 'clientRep', 'structure', 'itemDesc', 'location', 'L1', 'L2', 'L_fill', 'windLoad', 'comments'];
+        const data = {};
+        fields.forEach(f => data[f] = document.getElementById(f).value);
 
-        const res = await fetch('/generate-excel', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        });
+        const btn = document.querySelector('button');
+        btn.innerText = "מעבד...";
+        btn.disabled = true;
 
-        if(res.ok) {
-            alert("הנתונים הוזנו לאקסל בהצלחה!");
-            document.getElementById('dl').style.display = 'block';
-        }
+        try {
+            const res = await fetch('/generate-excel', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            if(res.ok) {
+                document.getElementById('downloadArea').style.display = 'block';
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        } catch(e) { alert("שגיאה בחיבור"); }
+        btn.innerText = "🚀 הפק דו"ח אקסל סופי";
+        btn.disabled = false;
     }
 </script>
 
