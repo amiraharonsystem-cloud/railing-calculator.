@@ -2,98 +2,69 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מערכת דו"ח מעבדה ת"י 1142</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; direction: rtl; padding: 20px; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .section-title { background: #2c3e50; color: white; padding: 10px; margin-top: 25px; font-weight: bold; }
-        .field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; border: 1px solid #eee; }
-        label { font-size: 13px; font-weight: bold; color: #444; }
-        input, select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        .btn { background: #27ae60; color: white; width: 100%; padding: 20px; border: none; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        body { font-family: Arial, sans-serif; background: #f4f4f4; direction: rtl; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .section { background: #eee; padding: 10px; margin: 15px 0; font-weight: bold; border-right: 5px solid #2c3e50; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        label { font-size: 13px; color: #333; }
+        input, select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 3px; }
+        .btn { background: #27ae60; color: white; border: none; padding: 15px; width: 100%; cursor: pointer; font-size: 18px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 style="text-align: center;">מערכת הפקת דו"ח בדיקה - ת"י 1142</h1>
+    <h2>הזנת נתוני בדיקה - ת"י 1142</h2>
 
-    <div class="section-title">1. פרטי הלקוח וזיהוי ההזמנה</div>
-    <div class="field-group">
-        <div><label>שם המזמין</label><input type="text" id="clientName"></div>
-        <div><label>מען המזמין</label><input type="text" id="clientAddress"></div>
-        <div><label>נציג המזמין בבדיקה</label><input type="text" id="presenterName"></div>
+    <div class="section">1. פרטי זיהוי</div>
+    <div class="grid">
+        <div><label>שם המזמין</label><input id="clientName"></div>
+        <div><label>נציג המזמין</label><input id="presenterName"></div>
         <div><label>תאריך בדיקה</label><input type="date" id="testDate"></div>
-        <div><label>שם האתר</label><input type="text" id="siteName"></div>
-        <div><label>כתובת האתר</label><input type="text" id="siteAddress"></div>
-        <div><label>קוד פרויקט</label><input type="text" id="projectId"></div>
-        <div><label>הבדיקה הינה</label><select id="testType"><option>ראשונה</option><option>חוזרת</option></select></div>
+        <div><label>קוד פרויקט</label><input id="projectId"></div>
     </div>
 
-    <div class="section-title">2. פרטים על המערכת וסטטוס לפני בדיקה</div>
-    <div class="field-group">
-        <div><label>תיאור המבנה</label><input type="text" id="structureType"></div>
-        <div><label>תיאור הפריט שנבדק</label><input type="text" id="itemDesc"></div>
-        <div><label>מיקום הבדיקה</label><input type="text" id="testLocation"></div>
-        <div><label>תכנון המעקה</label><select id="planStatus"><option>הוגש</option><option>לא הוגש</option></select></div>
-        <div><label>חישוב הנדסי שלד</label><select id="engStatus"><option>הוגש</option><option>לא הוגש</option></select></div>
-        <div><label>חישוב לוח מליא</label><select id="glassStatus"><option>הוגש</option><option>לא הוגש</option></select></div>
+    <div class="section">2. נתוני רוח (סעיף 80-85)</div>
+    <div class="grid">
+        <div><label>לחץ רוח בסיסי (qb)</label><input id="qb"></div>
+        <div><label>מקדם חשיפה (Ce)</label><input id="ce_z"></div>
+        <div><label>לחץ תכנוני (we)</label><input id="we_design"></div>
     </div>
 
-    <div class="section-title">3. נתונים וערכים לחישוב (Fser, L1, L2)</div>
-    <div class="field-group">
-        <div><label>Fser (ק"נ/מ')</label><input type="number" step="0.01" id="Fser"></div>
-        <div><label>L1 - מרחק בין ניצבים (מ')</label><input type="number" step="0.01" id="L1"></div>
-        <div><label>L2 - מפתח שדה סמוך (מ')</label><input type="number" step="0.01" id="L2"></div>
-        <div><label>P - עומס מחושב (ק"נ)</label><input type="number" step="0.01" id="P_calc"></div>
-        <div><label>L - מפתח לוח מליא (מ')</label><input type="number" step="0.01" id="L_fill"></div>
+    <div class="section">3. עומסים מחושבים (P, Fser, L1, L2)</div>
+    <div class="grid">
+        <div><label>Fser (ק"נ/מ')</label><input id="Fser"></div>
+        <div><label>L1 - מרחק בין ניצבים</label><input id="L1"></div>
+        <div><label>L2 - מפתח שדה סמוך</label><input id="L2"></div>
+        <div><label>P - עומס מחושב</label><input id="P_calc"></div>
     </div>
 
-    <div class="section-title">חישוב עומס רוח (10.3.5 ג')</div>
-    <div class="field-group">
-        <div><label>we - לחץ רוח תכנוני (נ'/מ"ר)</label><input type="number" id="we_val"></div>
-        <div><label>S - שטח הלוח (מ"ר)</label><input type="number" step="0.01" id="S_area"></div>
-        <div><label>ws - עומס כולל (נ')</label><input type="number" id="ws_total"></div>
-    </div>
-
-    <div class="section-title">תוצאות הבדיקה</div>
-    <table>
-        <thead>
-            <tr><th>סעיף</th><th>תאור</th><th>תזוזה I</th><th>שיורית J</th><th>מסקנה</th></tr>
-        </thead>
-        <tbody>
-            <tr><td>10.3.4 א'</td><td>אופקית מרוכזת</td><td><input id="hor_a"></td><td><input id="res_a"></td><td><select id="stat_a"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
-            <tr><td>10.3.4 ב'</td><td>אופקית מחזורית</td><td><input id="hor_b"></td><td><input id="res_b"></td><td><select id="stat_b"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
-            <tr><td>10.3.5 ג'</td><td>לוח מליא</td><td><input id="hor_c"></td><td><input id="res_c"></td><td><select id="stat_c"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
-        </tbody>
+    <div class="section">4. תוצאות וסיכום</div>
+    <table width="100%" border="1" style="border-collapse: collapse; text-align: center;">
+        <tr><th>סעיף</th><th>תזוזה I</th><th>שיורית J</th><th>מסקנה</th></tr>
+        <tr><td>10.3.4 א'</td><td><input id="hor_a"></td><td><input id="res_a"></td><td><select id="stat_a"><option>עמד</option><option>לא עמד</option></select></td></tr>
+        <tr><td>10.3.5 ג'</td><td><input id="hor_c"></td><td><input id="res_c"></td><td><select id="stat_c"><option>עמד</option><option>לא עמד</option></select></td></tr>
     </table>
 
-    <div class="section-title">סיכום וחתימות</div>
-    <div class="field-group">
-        <div style="grid-column: span 2;"><label>מסקנה סופית</label><input type="text" id="conclusion" value="המעקה עומד בדרישות התקן"></div>
-        <div><label>שם הבודק</label><input type="text" id="testerName"></div>
-        <div><label>שם המאשר</label><input type="text" id="approverName"></div>
-    </div>
-
-    <button class="btn" onclick="generate()">💾 הפק אקסל מלא - ללא השמטות</button>
+    <br>
+    <button class="btn" onclick="generate()">💾 הפק אקסל מלא ל-Render</button>
 </div>
 
 <script>
     async function generate() {
-        const data = {};
-        document.querySelectorAll('input, select').forEach(el => data[el.id] = el.value);
+        const d = {};
+        document.querySelectorAll('input, select').forEach(el => d[el.id] = el.value);
         const res = await fetch('/generate-excel', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
+            body: JSON.stringify(d)
         });
         const blob = await res.blob();
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = "Railing_Report_Complete.xlsx";
+        a.download = "Final_Report.xlsx";
         a.click();
     }
 </script>
