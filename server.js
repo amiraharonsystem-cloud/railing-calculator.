@@ -2,6 +2,7 @@ const express = require('express');
 const ExcelJS = require('exceljs');
 const path = require('path');
 const app = express();
+
 app.use(express.json());
 app.use(express.static('public'));
 
@@ -9,25 +10,30 @@ app.post('/generate-excel', async (req, res) => {
     try {
         const { cells } = req.body; 
         const workbook = new ExcelJS.Workbook();
+        
+        // טעינת הקובץ המקורי שלך כבסיס
         await workbook.xlsx.readFile(path.join(__dirname, 'template.xlsx'));
         const ws = workbook.getWorksheet(1);
 
-        // הזרקה דינמית לכל תא ותא שמופיע בטופס ה-HTML
+        // לולאת הזרקה לכל תא ותא שמוגדר בממשק
         Object.keys(cells).forEach(address => {
             const value = cells[address];
             if (value !== undefined && value !== "") {
                 const cell = ws.getCell(address);
-                // אם הערך הוא מספר, נזין אותו כמספר כדי שנוסחאות האקסל יפעלו
-                cell.value = isNaN(value) ? value : Number(value);
+                // המרה למספר במידת האפשר כדי לשמור על תקינות הנוסחאות באקסל
+                cell.value = (isNaN(value) || value === "") ? value : Number(value);
             }
         });
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', 'attachment; filename=Full_Railing_Report.xlsx');
-        res.send(await workbook.xlsx.writeBuffer());
+        res.setHeader('Content-Disposition', 'attachment; filename=Full_Engineering_Report_1142.xlsx');
+        
+        const buffer = await workbook.xlsx.writeBuffer();
+        res.send(buffer);
     } catch (e) {
-        res.status(500).send("Error generating file: " + e.message);
+        console.error("Excel Error:", e);
+        res.status(500).send("שגיאה ביצירת הקובץ");
     }
 });
 
-app.listen(3000, () => console.log('Server running on http://localhost:3000'));
+app.listen(3000, () => console.log('Server is live on http://localhost:3000'));
