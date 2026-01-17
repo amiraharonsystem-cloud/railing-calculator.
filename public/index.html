@@ -2,54 +2,74 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>מערכת דו"ח מעבדה ת"י 1142</title>
+    <title>דו"ח 1142 - מילוי מלא</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f4; direction: rtl; padding: 20px; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .section { background: #eee; padding: 10px; margin: 15px 0; font-weight: bold; border-right: 5px solid #2c3e50; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        label { font-size: 13px; color: #333; }
-        input, select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 3px; }
-        .btn { background: #27ae60; color: white; border: none; padding: 15px; width: 100%; cursor: pointer; font-size: 18px; font-weight: bold; }
+        body { font-family: Arial; background: #eee; direction: rtl; padding: 10px; }
+        .page { background: white; max-width: 900px; margin: auto; padding: 20px; border: 1px solid #000; }
+        .row { display: flex; align-items: center; border-bottom: 1px solid #ddd; padding: 5px 0; }
+        .label { width: 300px; font-weight: bold; font-size: 14px; color: #2c3e50; }
+        input, select { flex: 1; padding: 8px; border: 1px solid #ccc; }
+        .header { background: #2c3e50; color: white; padding: 10px; font-weight: bold; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #000; padding: 5px; text-align: center; }
+        .btn { background: #27ae60; color: white; width: 100%; padding: 20px; font-size: 20px; cursor: pointer; border: none; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>הזנת נתוני בדיקה - ת"י 1142</h2>
+<div class="page">
+    <h2 style="text-align:center">תעודת בדיקת מעקה - מילוי כל שורות הדו"ח</h2>
 
-    <div class="section">1. פרטי זיהוי</div>
-    <div class="grid">
-        <div><label>שם המזמין</label><input id="clientName"></div>
-        <div><label>נציג המזמין</label><input id="presenterName"></div>
-        <div><label>תאריך בדיקה</label><input type="date" id="testDate"></div>
-        <div><label>קוד פרויקט</label><input id="projectId"></div>
-    </div>
+    <div class="header">פרטי כותרת</div>
+    <div class="row"><div class="label">דו"ח מס'</div><input id="reportNum"></div>
+    <div class="row"><div class="label">מבטל ומחליף דו"ח מס'</div><input id="replacedReportNum"></div>
+    <div class="row"><div class="label">תאריך בדיקה</div><input type="date" id="testDate"></div>
+    <div class="row"><div class="label">שם האתר</div><input id="siteName"></div>
+    <div class="row"><div class="label">קוד פרויקט</div><input id="projectId"></div>
 
-    <div class="section">2. נתוני רוח (סעיף 80-85)</div>
-    <div class="grid">
-        <div><label>לחץ רוח בסיסי (qb)</label><input id="qb"></div>
-        <div><label>מקדם חשיפה (Ce)</label><input id="ce_z"></div>
-        <div><label>לחץ תכנוני (we)</label><input id="we_design"></div>
-    </div>
+    <div class="header">1. פרטי הלקוח והזמנה</div>
+    <div class="row"><div class="label">שם המזמין</div><input id="clientName"></div>
+    <div class="row"><div class="label">מען המזמין</div><input id="clientAddress"></div>
+    <div class="row"><div class="label">נציג המזמין בבדיקה</div><input id="presenterName"></div>
+    <div class="row"><div class="label">כתובת האתר</div><input id="siteAddress"></div>
+    <div class="row"><div class="label">הבדיקה הינה</div><select id="testType"><option>ראשונה</option><option>חוזרת</option></select></div>
 
-    <div class="section">3. עומסים מחושבים (P, Fser, L1, L2)</div>
-    <div class="grid">
-        <div><label>Fser (ק"נ/מ')</label><input id="Fser"></div>
-        <div><label>L1 - מרחק בין ניצבים</label><input id="L1"></div>
-        <div><label>L2 - מפתח שדה סמוך</label><input id="L2"></div>
-        <div><label>P - עומס מחושב</label><input id="P_calc"></div>
-    </div>
+    <div class="header">2. פרטים על המערכת וסטטוס לפני בדיקה</div>
+    <div class="row"><div class="label">תיאור המבנה</div><input id="structureType"></div>
+    <div class="row"><div class="label">תיאור הפריט</div><input id="itemDesc"></div>
+    <div class="row"><div class="label">מיקום הבדיקה</div><input id="testLocation"></div>
+    <div class="row"><div class="label">תכנון המעקה (V/X)</div><input id="planOk"></div>
+    <div class="row"><div class="label">חישוב הנדסי שלד (V/X)</div><input id="engOk"></div>
+    <div class="row"><div class="label">חישוב הנדסי לוח מליא (V/X)</div><input id="glassOk"></div>
 
-    <div class="section">4. תוצאות וסיכום</div>
-    <table width="100%" border="1" style="border-collapse: collapse; text-align: center;">
+    <div class="header">3. נתונים וערכים לחישוב</div>
+    <div class="row"><div class="label">Fser (ק"נ/מ')</div><input id="Fser"></div>
+    <div class="row"><div class="label">P - עומס מחושב (ק"נ)</div><input id="P_calc"></div>
+    <div class="row"><div class="label">L1 - מרחק בין ניצבים (מ')</div><input id="L1"></div>
+    <div class="row"><div class="label">L2 - מפתח שדה סמוך (מ')</div><input id="L2"></div>
+    <div class="row"><div class="label">L - מפתח לוח מליא (מ')</div><input id="L_fill"></div>
+
+    <div class="header">חישוב עומס רוח (10.3.5 ג')</div>
+    <div class="row"><div class="label">we (נ'/מ"ר)</div><input id="we"></div>
+    <div class="row"><div class="label">S - שטח הלוח (מ"ר)</div><input id="S_area"></div>
+    <div class="row"><div class="label">ws (עומס כולל נ')</div><input id="ws_total"></div>
+
+    <div class="header">תוצאות הבדיקה - טבלה מלאה</div>
+    <table>
         <tr><th>סעיף</th><th>תזוזה I</th><th>שיורית J</th><th>מסקנה</th></tr>
-        <tr><td>10.3.4 א'</td><td><input id="hor_a"></td><td><input id="res_a"></td><td><select id="stat_a"><option>עמד</option><option>לא עמד</option></select></td></tr>
-        <tr><td>10.3.5 ג'</td><td><input id="hor_c"></td><td><input id="res_c"></td><td><select id="stat_c"><option>עמד</option><option>לא עמד</option></select></td></tr>
+        <tr><td>10.3.4 א'</td><td><input id="hor_a"></td><td><input id="res_a"></td><td><input id="stat_a"></td></tr>
+        <tr><td>10.3.4 ב'</td><td><input id="hor_b"></td><td><input id="res_b"></td><td><input id="stat_b"></td></tr>
+        <tr><td>10.3.5 ג'</td><td><input id="hor_c"></td><td><input id="res_c"></td><td><input id="stat_c"></td></tr>
+        <tr><td>10.3.5 ד'</td><td><input id="hor_d"></td><td><input id="res_d"></td><td><input id="stat_d"></td></tr>
+        <tr><td>10.3.5 ה'</td><td><input id="hor_e"></td><td><input id="res_e"></td><td><input id="stat_e"></td></tr>
     </table>
 
-    <br>
-    <button class="btn" onclick="generate()">💾 הפק אקסל מלא ל-Render</button>
+    <div class="header">סיכום וחתימות</div>
+    <div class="row"><div class="label">מסקנות</div><input id="conclusion"></div>
+    <div class="row"><div class="label">שם הבודק</div><input id="tester"></div>
+    <div class="row"><div class="label">מאשר הדו"ח</div><input id="approver"></div>
+
+    <button class="btn" onclick="generate()">הפק אקסל - כל השורות</button>
 </div>
 
 <script>
@@ -64,7 +84,7 @@
         const blob = await res.blob();
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = "Final_Report.xlsx";
+        a.download = "Railing_Report_Complete.xlsx";
         a.click();
     }
 </script>
