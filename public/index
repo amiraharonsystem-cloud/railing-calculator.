@@ -2,51 +2,46 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>מערכת בדיקת מעקה</title>
+    <title>מערכת הזנת נתונים</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
-        .form-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 400px; }
-        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
-        .download-link { display: block; text-align: center; margin-top: 20px; color: #28a745; text-decoration: none; font-weight: bold; }
+        body { font-family: Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 350px; text-align: center; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #0056b3; }
+        .download-btn { display: inline-block; margin-top: 20px; color: #28a745; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h2>הזנת נתונים לאקסל</h2>
+        <input type="text" id="name" placeholder="שם מלא">
+        <input type="email" id="email" placeholder="אימייל">
+        <input type="text" id="phone" placeholder="טלפון">
+        <input type="text" id="city" placeholder="עיר">
+        <button onclick="sendData()">שלח לענן</button>
+        <p id="msg"></p>
+        <a href="/download-excel" class="download-btn">⬇️ הורד קובץ אקסל</a>
+    </div>
 
-<div class="form-container">
-    <h2>הזנת דו"ח בדיקה</h2>
-    <input type="date" id="testDate" placeholder="תאריך בדיקה">
-    <input type="text" id="siteName" placeholder="שם האתר">
-    <input type="text" id="projectId" placeholder="קוד פרויקט">
-    <input type="text" id="clientName" placeholder="שם המזמין">
-    <input type="text" id="location" placeholder="מיקום (קומה/דירה)">
-    <input type="text" id="itemDescription" placeholder="תיאור הפריט (מעקה אלומניום וכו')">
-    <button onclick="saveData()">שמור באקסל</button>
-    <a href="/download" class="download-link">⬇️ הורד את קובץ האקסל המלא</a>
-    <p id="msg" style="text-align: center;"></p>
-</div>
+    <script>
+        async function sendData() {
+            const data = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                city: document.getElementById('city').value
+            };
 
-<script>
-    async function saveData() {
-        const data = {
-            testDate: document.getElementById('testDate').value,
-            siteName: document.getElementById('siteName').value,
-            projectId: document.getElementById('projectId').value,
-            clientName: document.getElementById('clientName').value,
-            location: document.getElementById('location').value,
-            itemDescription: document.getElementById('itemDescription').value
-        };
+            const response = await fetch('/add-to-excel', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
 
-        const response = await fetch('/add-row', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-
-        const resJson = await response.json();
-        document.getElementById('msg').innerText = resJson.message;
-    }
-</script>
-
+            const result = await response.json();
+            document.getElementById('msg').innerText = result.message;
+        }
+    </script>
 </body>
 </html>
