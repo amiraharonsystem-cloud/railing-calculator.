@@ -2,85 +2,152 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <title>מערכת דוחות הנדסיים ת"י 1142</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; direction: rtl; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border: 1px solid #ccc; }
-        .section { border: 2px solid #2c3e50; margin-bottom: 20px; padding: 15px; }
-        .section-h { background: #2c3e50; color: white; padding: 5px 10px; margin: -15px -15px 15px -15px; font-weight: bold; }
-        .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
-        label { font-size: 12px; font-weight: bold; display: block; }
-        input { width: 100%; padding: 5px; border: 1px solid #999; box-sizing: border-box; }
-        .btn { background: #27ae60; color: white; padding: 20px; width: 100%; font-size: 20px; cursor: pointer; border: none; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #2c3e50; color: #333; margin: 0; padding: 20px; }
+        .container { background: white; max-width: 1400px; margin: auto; padding: 20px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .header { text-align: center; border-bottom: 3px solid #1a237e; margin-bottom: 20px; padding-bottom: 10px; }
+        .section-title { background: #1a237e; color: white; padding: 10px; margin-top: 20px; font-weight: bold; }
+        
+        /* מבנה טבלת אקסל */
+        .excel-table { width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: fixed; }
+        .excel-table th, .excel-table td { border: 1px solid #ccc; padding: 4px; text-align: center; }
+        .excel-table th { background: #f1f1f1; font-size: 12px; }
+        .row-label { background: #f9f9f9; font-weight: bold; width: 150px; text-align: right !important; padding-right: 10px; }
+        
+        input, select { width: 100%; border: 1px solid transparent; padding: 5px; box-sizing: border-box; font-size: 13px; }
+        input:focus { border-color: #3498db; outline: none; background: #e8f4fd; }
+        
+        .btn-generate { position: sticky; bottom: 20px; width: 100%; background: #27ae60; color: white; padding: 20px; font-size: 24px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 -5px 15px rgba(0,0,0,0.2); }
+        .btn-generate:hover { background: #2ecc71; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2 style="text-align:center">מערכת הזנת נתונים - דו"ח 1142 (לפי מפרט אקסל מלא)</h2>
+    <div class="header"><h1>עורך דוח מעבדה ת"י 1142 - פריסה מלאה 1:1</h1></div>
 
-    <div class="section">
-        <div class="section-h">1. פרטי זיהוי (עמוד 1)</div>
-        <div class="row">
-            <div><label>מס' דו"ח (H2)</label><input id="H2"></div>
-            <div><label>תאריך בדיקה (L3)</label><input type="date" id="L3"></div>
-            <div><label>שם האתר (C4)</label><input id="C4"></div>
-            <div><label>קוד פרויקט (L4)</label><input id="L4"></div>
-        </div>
-    </div>
+    <div class="section-title">פרטי זיהוי ומינהלה (שורות 1-20)</div>
+    <table class="excel-table">
+        <tr><th>תיאור</th><th>תא (C/D)</th><th>תא (H/I)</th><th>תא (L)</th></tr>
+        <tr>
+            <td class="row-label">זיהוי דוח:</td>
+            <td><input data-cell="C4" placeholder="שם האתר"></td>
+            <td><input data-cell="H2" placeholder="מס' דוח"></td>
+            <td><input data-cell="L3" type="date"></td>
+        </tr>
+        <tr>
+            <td class="row-label">המזמין:</td>
+            <td><input data-cell="C7" placeholder="שם המזמין"></td>
+            <td><input data-cell="I7" placeholder="כתובת"></td>
+            <td><input data-cell="L7" placeholder="נציג"></td>
+        </tr>
+    </table>
 
-    <div class="section">
-        <div class="section-h">2. גאומטריה וזכוכית (לפי סעיף 6 ו-7)</div>
-        <div class="row">
-            <div><label>גובה מעקה (E56)</label><input id="E56"></div>
-            <div><label>מרווח בין רכיבים (E60)</label><input id="E60"></div>
-            <div><label>עובי זכוכית (G67)</label><input id="G67"></div>
-            <div><label>סוג זכוכית (G70)</label><input id="G70"></div>
-        </div>
-    </div>
+    <div class="section-title">מפרט טכני, חומרים ועיגון (שורות 45-78)</div>
+    <table class="excel-table">
+        <tr><th>תיאור שורה</th><th>חומר/סוג (C)</th><th>גמר/תיאור (F/I)</th><th>דרישה (H)</th><th>מסקנה (L)</th></tr>
+        <tr>
+            <td class="row-label">פרופיל ניצב (45)</td>
+            <td><select data-cell="C45"><option value="אלומיניום 6061">אלומיניום 6061</option><option value="פלדה ST-37">פלדה ST-37</option></select></td>
+            <td><input data-cell="F45" placeholder="גמר"></td>
+            <td><input data-cell="H45"></td>
+            <td><select data-cell="L45"><option value="מתאים">מתאים</option><option value="לא מתאים">לא מתאים</option></select></td>
+        </tr>
+        <tr>
+            <td class="row-label">עיגון (47)</td>
+            <td><input data-cell="C47" placeholder="סוג עיגון"></td>
+            <td><input data-cell="I47" placeholder="תיאור"></td>
+            <td><input data-cell="H47"></td>
+            <td><select data-cell="L47"><option value="מתאים">מתאים</option></select></td>
+        </tr>
+    </table>
 
-    <div class="section">
-        <div class="section-h">3. חישובי עומס ורוח (עמוד 2)</div>
-        <div class="row">
-            <div><label>גובה מעל קרקע (F83)</label><input id="F83"></div>
-            <div><label>לחץ רוח qb (F84)</label><input id="F84"></div>
-            <div><label>לחץ תכנון We (H82)</label><input id="H82"></div>
-            <div><label>כוח רוח Fw (H84)</label><input id="H84"></div>
-        </div>
-    </div>
+    <div class="section-title">תוצאות בדיקה 10.3.4 - עומס אופקי (כל התאים בשורה)</div>
+    <table class="excel-table">
+        <tr><th>סעיף בדיקה</th><th>סוג עומס (D)</th><th>עומס N (G)</th><th>תזוזה I</th><th>שיורית J</th><th>מסקנה L</th></tr>
+        <tr>
+            <td class="row-label">10.3.4 א'</td>
+            <td><input data-cell="D107" value="שירות"></td>
+            <td><input data-cell="G107"></td>
+            <td><input data-cell="I107"></td>
+            <td><input data-cell="J107"></td>
+            <td><select data-cell="L107"><option value="מתאים">מתאים</option><option value="לא מתאים">לא מתאים</option></select></td>
+        </tr>
+        <tr>
+            <td class="row-label">10.3.4 ג'</td>
+            <td><input data-cell="D111" value="ניצב"></td>
+            <td><input data-cell="G111"></td>
+            <td><input data-cell="I111"></td>
+            <td><input data-cell="J111"></td>
+            <td><select data-cell="L111"><option value="מתאים">מתאים</option></select></td>
+        </tr>
+        <tr>
+            <td class="row-label">10.3.4 ד'</td>
+            <td><input data-cell="D113" value="משולב"></td>
+            <td><input data-cell="G113"></td>
+            <td><input data-cell="I113"></td>
+            <td><input data-cell="J113"></td>
+            <td><select data-cell="L113"><option value="מתאים">מתאים</option></select></td>
+        </tr>
+        <tr>
+            <td class="row-label">10.3.4 ה'</td>
+            <td><input data-cell="D115" value="סכום"></td>
+            <td><input data-cell="G115"></td>
+            <td><input data-cell="I115"></td>
+            <td><input data-cell="J115"></td>
+            <td><select data-cell="L115"><option value="מתאים">מתאים</option></select></td>
+        </tr>
+    </table>
 
-    <div class="section">
-        <div class="section-h">4. תוצאות בדיקה (עמוד 3)</div>
-        <div class="row">
-            <div style="grid-column: span 4; font-weight: bold; border-bottom: 1px solid #ddd;">סעיף 10.3.4 (עומס אופקי)</div>
-            <div><label>תזוזה אופקית (I107)</label><input id="I107"></div>
-            <div><label>תזוזה שיורית (J107)</label><input id="J107"></div>
-            <div><label>מסקנה (L107)</label><input id="L107" placeholder="מתאים"></div>
-        </div>
-        <div class="row" style="margin-top: 15px;">
-            <div style="grid-column: span 4; font-weight: bold; border-bottom: 1px solid #ddd;">סעיף 10.3.5 (עומס מליא)</div>
-            <div><label>שטח הלוח S (H127)</label><input id="H127"></div>
-            <div><label>תוצאת בדיקה (I132)</label><input id="I132"></div>
-            <div><label>מסקנה סופית (L133)</label><input id="L133"></div>
-        </div>
-    </div>
+    <div class="section-title">נתוני רוח ומליא (שורות 79-138)</div>
+    <table class="excel-table">
+        <tr><th>פרמטר</th><th>תא G</th><th>תא K</th><th>תא L</th><th>תא I</th><th>מסקנה</th></tr>
+        <tr>
+            <td class="row-label">חישוב רוח (84)</td>
+            <td><input data-cell="G84" placeholder="qb"></td>
+            <td><input data-cell="K84" placeholder="Ce"></td>
+            <td><input data-cell="L84" placeholder="CsCd"></td>
+            <td><input data-cell="I82" placeholder="We"></td>
+            <td>---</td>
+        </tr>
+        <tr>
+            <td class="row-label">מליא 10.3.5 ג'</td>
+            <td><input data-cell="I127" placeholder="שטח S"></td>
+            <td>---</td>
+            <td>---</td>
+            <td><input data-cell="I132" placeholder="תוצאה"></td>
+            <td><select data-cell="L133"><option value="מתאים">מתאים</option></select></td>
+        </tr>
+    </table>
 
-    <button class="btn" onclick="generate()">הפק אקסל זהה למקור (Render)</button>
+    <button class="btn-generate" onclick="submitData()">💾 הפק אקסל מלא (כל השורות והתאים)</button>
 </div>
 
 <script>
-    async function generate() {
-        const d = {};
-        document.querySelectorAll('input').forEach(i => d[i.id] = i.value);
-        const res = await fetch('/generate-excel', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(d)
+    async function submitData() {
+        const cells = {};
+        // אוסף את כל האלמנטים שיש להם data-cell
+        document.querySelectorAll('[data-cell]').forEach(el => {
+            cells[el.getAttribute('data-cell')] = el.value;
         });
-        const blob = await res.blob();
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = "Final_Report.xlsx";
-        a.click();
+
+        const response = await fetch('/generate-excel', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cells })
+        });
+
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Report_Full_${new Date().getTime()}.xlsx`;
+            a.click();
+        } else {
+            alert('שגיאה בהפקת הקובץ');
+        }
     }
 </script>
 
