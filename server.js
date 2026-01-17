@@ -12,35 +12,44 @@ app.post('/generate-excel', async (req, res) => {
         await workbook.xlsx.readFile(path.join(__dirname, 'template.xlsx'));
         const ws = workbook.getWorksheet(1);
 
-        // --- זיהוי ואתר (3-14) ---
-        ws.getCell('L3').value = d.L3; ws.getCell('C4').value = d.C4;
-        ws.getCell('L4').value = d.L4; ws.getCell('C7').value = d.C7;
-        ws.getCell('L7').value = d.L7; ws.getCell('C8').value = d.C8;
-        ws.getCell('C10').value = d.C10; ws.getCell('C11').value = d.C11;
-        ws.getCell('C12').value = d.C12; ws.getCell('C13').value = d.C13;
-        ws.getCell('C14').value = d.C14;
+        // זיהוי ואתר
+        ws.getCell('L3').value = d.testDate;
+        ws.getCell('C4').value = d.siteName;
+        ws.getCell('L4').value = d.projectId;
+        ws.getCell('C7').value = d.clientName;
+        ws.getCell('L7').value = d.clientRep;
+        ws.getCell('C8').value = d.siteAddress;
+        ws.getCell('C10').value = d.structure;
+        ws.getCell('C11').value = d.itemDesc;
+        ws.getCell('C12').value = d.testLoc;
+        ws.getCell('C13').value = d.planning; 
+        ws.getCell('C14').value = d.engineering;
 
-        // --- מדידות (22-31) ---
-        ws.getCell('L22').value = d.L22; ws.getCell('L24').value = d.L24;
-        ws.getCell('L26').value = d.L26; ws.getCell('L30').value = d.L30;
-        ws.getCell('L31').value = d.L31;
+        // נתוני מדידה וגיאומטריה
+        ws.getCell('L22').value = d.L1;
+        ws.getCell('L24').value = d.L2;
+        ws.getCell('L26').value = d.L_fill;
+        ws.getCell('L30').value = d.ws;
+        ws.getCell('L31').value = d.half_ws;
 
-        // --- טבלת בדיקות מפורטת (שורות 103-122 כפי שצילמת) ---
-        const rows = ['107', '108', '110', '112', '114', '116'];
-        rows.forEach(r => {
+        // טבלת בדיקות 10.3.4 (כולל תזוזות אופקיות ושיוריות)
+        const rows = { 'a': 107, 'b': 108, 'c': 110, 'd': 112, 'e': 116 };
+        for (let key in rows) {
+            let r = rows[key];
             ws.getCell(`I${r}`).value = d[`I${r}`]; // תזוזה אופקית
             ws.getCell(`J${r}`).value = d[`J${r}`]; // תזוזה שיורית
             ws.getCell(`L${r}`).value = d[`L${r}`]; // תוצאה: עמד/לא עמד
-        });
+        }
 
-        // --- סיכום (40-42) ---
-        ws.getCell('C40').value = d.C40; ws.getCell('C42').value = d.C42;
+        // סיכום
+        ws.getCell('C40').value = d.comments;
+        ws.getCell('C42').value = d.inspector;
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', 'attachment; filename=Report_Full.xlsx');
+        res.setHeader('Content-Disposition', 'attachment; filename=Railing_Report.xlsx');
         await workbook.xlsx.write(res);
         res.end();
-    } catch (e) { res.status(500).send(e.message); }
+    } catch (e) { res.status(500).send("Error"); }
 });
 
 app.listen(10000, '0.0.0.0');
