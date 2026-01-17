@@ -10,25 +10,33 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const TEMPLATE_FILE = path.join(__dirname, 'template.xlsx');
-const OUTPUT_FILE = path.join(__dirname, 'output_report.xlsx');
+const OUTPUT_FILE = path.join(__dirname, 'report_result.xlsx');
 
 app.post('/generate-excel', async (req, res) => {
     try {
-        const data = req.body;
+        const d = req.body;
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.readFile(TEMPLATE_FILE);
-        const worksheet = workbook.getWorksheet(1);
+        const ws = workbook.getWorksheet(1);
 
-        // --- שיבוץ נתונים לפי הקובץ שלך ---
-        worksheet.getCell('L3').value = data.testDate;      // תאריך בדיקה
-        worksheet.getCell('C4').value = data.siteName;      // שם האתר
-        worksheet.getCell('L4').value = data.projectId;     // קוד פרויקט
-        worksheet.getCell('C7').value = data.clientName;    // שם המזמין
-        worksheet.getCell('C11').value = data.location;     // מיקום (קומה/דירה)
+        // --- מיפוי תאים לפי הדו"ח שלך ---
+        ws.getCell('L3').value = d.testDate;      // תאריך בדיקה
+        ws.getCell('C4').value = d.siteName;      // שם האתר
+        ws.getCell('L4').value = d.projectId;     // קוד פרויקט
+        ws.getCell('C7').value = d.clientName;    // שם המזמין
+        ws.getCell('L7').value = d.clientRep;     // נציג המזמין
+        ws.getCell('C10').value = d.structure;    // תיאור המבנה
+        ws.getCell('C11').value = d.itemDesc;     // תיאור הפריט
+        ws.getCell('C12').value = d.location;     // מיקום (קומה/דירה)
         
-        // שדות מדידה טכניים (מהסניפט שלך)
-        worksheet.getCell('L22').value = parseFloat(data.L1); // מרחק בין ניצבים L1
-        worksheet.getCell('L24').value = parseFloat(data.L2); // מפתח שדה סמוך L2
+        // --- מדידות הנדסיות ---
+        ws.getCell('L22').value = parseFloat(d.L1) || 0; // מרחק L1
+        ws.getCell('L24').value = parseFloat(d.L2) || 0; // מרחק L2
+        ws.getCell('L26').value = d.L_fill || '-';       // מפתח לוח מליא L
+        
+        // --- עומסי רוח והערות ---
+        ws.getCell('L30').value = d.windLoad || '-';     // חישוב עומס רוח
+        ws.getCell('C40').value = d.comments || '';      // הערות בודק
 
         await workbook.xlsx.writeFile(OUTPUT_FILE);
         res.json({ success: true });
@@ -42,4 +50,4 @@ app.get('/download', (req, res) => {
 });
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, '0.0.0.0', () => console.log(`Server running`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Server is running`));
