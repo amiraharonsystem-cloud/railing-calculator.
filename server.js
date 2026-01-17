@@ -12,7 +12,7 @@ app.post('/generate-excel', async (req, res) => {
         await workbook.xlsx.readFile(path.join(__dirname, 'template.xlsx'));
         const ws = workbook.getWorksheet(1);
 
-        // --- פרטי זיהוי וסביבה (3-16) ---
+        // פרטי פרויקט ואתר
         ws.getCell('L3').value = d.testDate;
         ws.getCell('L4').value = d.projectId;
         ws.getCell('C4').value = d.siteName;
@@ -24,23 +24,17 @@ app.post('/generate-excel', async (req, res) => {
         ws.getCell('C12').value = d.testLocation;
         ws.getCell('C13').value = d.planningStatus;
         ws.getCell('C14').value = d.engineeringStatus;
-        ws.getCell('L15').value = d.temp; // טמפרטורה
-        ws.getCell('L16').value = d.humidity; // לחות
 
-        // --- התאמה לסעיפי תקן (28-31) ---
-        ws.getCell('L28').value = d.match1;
-        ws.getCell('L29').value = d.match2;
-        ws.getCell('L30').value = d.match3;
-        ws.getCell('L31').value = d.match4;
-
-        // --- גאומטריה ועומסים (הזרקה כפולה 22-31 ו-118-122) ---
-        ws.getCell('L22').value = d.L1; ws.getCell('L118').value = d.L1;
-        ws.getCell('L24').value = d.L2; ws.getCell('L120').value = d.L2;
-        ws.getCell('L26').value = d.L_fill; ws.getCell('L122').value = d.L_fill;
+        // ערכים לחישוב (הזרקה למיקומים המקוריים)
+        ws.getCell('L22').value = d.L1;
+        ws.getCell('L24').value = d.L2;
+        ws.getCell('L26').value = d.L_fill;
         ws.getCell('L30').value = d.ws_load;
         ws.getCell('L31').value = d.half_ws;
 
-        // --- מפרט זכוכית (66-77) ---
+        // מפרט טכני וזכוכית
+        ws.getCell('C45').value = d.profileType;
+        ws.getCell('C47').value = d.anchorType;
         ws.getCell('C66').value = d.glassW;
         ws.getCell('F66').value = d.glassH;
         ws.getCell('I67').value = d.glassThick;
@@ -50,7 +44,7 @@ app.post('/generate-excel', async (req, res) => {
         ws.getCell('I75').value = d.overlap;
         ws.getCell('I76').value = d.sealing;
 
-        // --- חישוב עומסי רוח (80-85) ---
+        // עומסי רוח
         ws.getCell('I83').value = d.h_pressure;
         ws.getCell('I84').value = d.qb_val;
         ws.getCell('G82').value = d.we_val;
@@ -58,7 +52,7 @@ app.post('/generate-excel', async (req, res) => {
         ws.getCell('G84').value = d.ceze_val;
         ws.getCell('G85').value = d.topRail_load;
 
-        // --- טבלת תוצאות (107-117) ---
+        // טבלת תוצאות (107-117)
         const rows = { 'a': 107, 'b': 108, 'c': 110, 'd': 112, 'db': 114, 'e': 116 };
         for (let k in rows) {
             ws.getCell(`I${rows[k]}`).value = d[`hor_${k}`];
@@ -66,7 +60,11 @@ app.post('/generate-excel', async (req, res) => {
             ws.getCell(`L${rows[k]}`).value = d[`stat_${k}`];
         }
 
-        // --- מסקנות וחתימות (37-40) ---
+        // סיכום, התאמה וחתימות
+        ws.getCell('L28').value = d.match1;
+        ws.getCell('L29').value = d.match2;
+        ws.getCell('L30').value = d.match3;
+        ws.getCell('L31').value = d.match4;
         ws.getCell('L37').value = d.finalConclusion;
         ws.getCell('L38').value = d.inspectorName;
         ws.getCell('L39').value = d.approverName;
@@ -76,7 +74,7 @@ app.post('/generate-excel', async (req, res) => {
         res.setHeader('Content-Disposition', 'attachment; filename=Railing_Test_Report.xlsx');
         await workbook.xlsx.write(res);
         res.end();
-    } catch (e) { res.status(500).send("Error generating file"); }
+    } catch (e) { res.status(500).send("Error"); }
 });
 
 app.listen(10000, '0.0.0.0');
