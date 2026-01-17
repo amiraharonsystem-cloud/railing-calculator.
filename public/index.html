@@ -1,113 +1,76 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>מערכת דוח ת"י 1142 - העתק מקור מלא</title>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Assistant', sans-serif; background: #f4f4f4; padding: 20px; }
-        .container { max-width: 950px; margin: auto; background: white; padding: 30px; border: 1px solid #333; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        
-        .header-title { text-align: center; font-weight: 800; font-size: 1.8rem; border-bottom: 3px solid #000; margin-bottom: 20px; padding-bottom: 10px; }
-        
-        .row { display: grid; grid-template-columns: 220px 1fr; border-bottom: 1px solid #ddd; padding: 12px 0; align-items: center; }
-        .row.header-row { background: #1a237e; color: white; padding: 8px 15px; font-weight: bold; border: none; margin-top: 20px; }
-        
-        label { font-weight: 700; color: #333; font-size: 1.1rem; }
-        input, select, textarea { padding: 10px; border: 1px solid #bbb; border-radius: 4px; font-size: 1.1rem; width: 100%; box-sizing: border-box; }
-        
-        .signature-section { margin-top: 40px; padding-top: 20px; border-top: 2px solid #000; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
-        
-        .btn-container { text-align: center; margin-top: 40px; }
-        .btn-save { background: #2e7d32; color: white; padding: 20px 80px; font-size: 1.5rem; font-weight: 800; border: none; border-radius: 8px; cursor: pointer; }
-        .btn-save:hover { background: #1b5e20; }
+        body { font-family: 'Assistant', sans-serif; background: #f4f4f4; padding: 20px; direction: rtl; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 25px; border: 2px solid #000; }
+        .header-main { text-align: center; font-weight: bold; font-size: 1.5rem; text-decoration: underline; margin-bottom: 20px; }
+        .section-header { background: #1a237e; color: white; font-weight: bold; padding: 8px; margin-top: 20px; border: 1px solid #000; }
+        .row { display: flex; align-items: center; border-bottom: 1px solid #ddd; padding: 6px 0; }
+        .label { width: 380px; font-weight: bold; font-size: 0.9rem; }
+        input, select { padding: 4px; border: 1px solid #999; width: 100%; }
+        .num-input { width: 80px; text-align: center; }
+        .tech-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .tech-table th, .tech-table td { border: 1px solid #000; padding: 5px; font-size: 0.85rem; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-title">תעודת בדיקת מעקה במעטפת הבנין</div>
+    <div class="header-main">תעודת בדיקת מעקה במעטפת הבנין</div>
 
-    <div class="row header-row">1. פרטי הלקוח והזיהוי (שורות 1-14)</div>
-    <div class="row"><label>מס' דוח (L2):</label><input data-addr="L2"></div>
-    <div class="row"><label>תאריך בדיקה (L3):</label><input data-addr="L3" type="date"></div>
-    <div class="row"><label>שם האתר (L4):</label><input data-addr="L4"></div>
-    <div class="row"><label>שם המזמין (L7):</label><input data-addr="L7"></div>
-    <div class="row"><label>מען המזמין (L8):</label><input data-addr="L8"></div>
-    <div class="row">
-        <label>סוג הבדיקה (L10):</label>
-        <select data-addr="L10">
-            <option value="ראשונה">ראשונה</option>
-            <option value="חוזרת">חוזרת</option>
-        </select>
-    </div>
-    <div class="row"><label>תיאור המבנה (L12):</label><input data-addr="L12"></div>
-    <div class="row"><label>מקום הבדיקה (L14):</label><input data-addr="L14"></div>
+    <div class="row"><div class="label">מס' :</div><input id="reportNum" data-addr="L2"></div>
+    <div class="row"><div class="label">תאריך בדיקה:</div><input id="checkDate" data-addr="L3" type="date"></div>
+    <div class="row"><div class="label">מען המזמין:</div><input id="location" data-addr="L8"></div>
 
-    <div class="row header-row">2. מפרט ודגם (שורות 15-20)</div>
-    <div class="row"><label>סגנון/דגם המעקה (L15):</label><input data-addr="L15"></div>
-    <div class="row"><label>ניצב המעקה (L16):</label><input data-addr="L16"></div>
-    <div class="row"><label>חישוב עומס רוח (L17):</label><input data-addr="L17"></div>
+    <div class="section-header">סעיף מס' 1 : בדיקות גאומטריה (ת"י 1142)</div>
+    <table class="tech-table">
+        <tr><th>סעיף</th><th>תאור הדרישה</th><th>תוצאה</th><th>התאמה</th></tr>
+        <tr><td>7.2.4</td><td>גובה המעקה במרפסות</td><td><input data-addr="I56"></td><td><select data-addr="L56"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
+        <tr><td>5.1.2</td><td>איסור רכיבי טיפוס</td><td><input data-addr="I57"></td><td><select data-addr="L57"><option>מתאים</option></select></td></tr>
+        <tr><td>5.1.4.1</td><td>מרווחים (כדור 10 ס"מ)</td><td><input data-addr="I58"></td><td><select data-addr="L58"><option>מתאים</option></select></td></tr>
+        <tr><td>6.1.4.2</td><td>מרווח אדן/קופינג (כדור 5 ס"מ)</td><td><input data-addr="I60"></td><td><select data-addr="L60"><option>מתאים</option></select></td></tr>
+    </table>
 
-    <div class="row header-row">3. תוצאות התאמה לדרישות (שורות 28-31)</div>
-    <div class="row">
-        <label>התאמה לסעיף מס' 1 (L28):</label>
-        <select data-addr="L28"><option>מתאים</option><option>לא מתאים</option></select>
-    </div>
-    <div class="row">
-        <label>התאמה לסעיף מס' 2 (L29):</label>
-        <select data-addr="L29"><option>מתאים</option><option>לא מתאים</option></select>
-    </div>
-    <div class="row">
-        <label>התאמה לסעיף מס' 3 (L30):</label>
-        <select data-addr="L30"><option>מתאים</option><option>לא מתאים</option></select>
-    </div>
-    <div class="row">
-        <label>התאמה לסעיף מס' 4 (L31):</label>
-        <select data-addr="L31"><option>מתאים</option><option>לא מתאים</option></select>
-    </div>
+    <div class="section-header">לוחות מליא עשויים זכוכית: זיהוי השמשה</div>
+    <div class="row"><div class="label">סוג הזכוכית (רב-שכבתית/מחוסמת):</div><input data-addr="L66"></div>
+    <div class="row"><div class="label">גובה הזגוגית H (מ"מ):</div><input data-addr="I66" class="num-input"></div>
+    <div class="row"><div class="label">אורך הזגוגית L (מ"מ):</div><input data-addr="G66" class="num-input"></div>
+    <div class="row"><div class="label">עובי הזכוכית (מ"מ):</div><input data-addr="L67" class="num-input"></div>
 
-    <div class="row header-row">4. הערות וסיכום</div>
-    <div class="row" style="display: block;">
-        <label>הערות הבודק (L32):</label>
-        <textarea data-addr="L32" rows="4"></textarea>
-    </div>
-    
-    <div class="signature-section">
-        <div>
-            <label>שם הבודק (L145):</label>
-            <input data-addr="L145" placeholder="שם מלא">
-        </div>
-        <div style="text-align: left;">
-            <label>חתימת המעבדה</label>
-            <div style="height: 60px; border: 1px dashed #ccc; margin-top: 10px; display: flex; align-items: center; justify-content: center; color: #999;">מקום לחתימה</div>
+    <div class="section-header">העמסה אופקית בעומסים מרוכזים (10.3.4)</div>
+    <div class="row">
+        <div class="label">מחצית העומס המרוכז (12):</div>
+        <div style="display:flex; gap:5px;">
+            תזוזה: <input data-addr="I107" class="num-input"> שיורית: <input data-addr="J107" class="num-input"> <select data-addr="L107"><option>מתאים</option></select>
         </div>
     </div>
-
-    <div class="btn-container">
-        <button class="btn-save" onclick="generate()">הפק דוח אקסל מקורי (1:1)</button>
+    <div class="row">
+        <div class="label">עומס מרוכז מלא (25):</div>
+        <div style="display:flex; gap:5px;">
+            תזוזה: <input data-addr="I108" class="num-input"> שיורית: <input data-addr="J108" class="num-input"> <select data-addr="L108"><option>מתאים</option></select>
+        </div>
     </div>
-</div>
+    <div class="row"><div class="label">סכום התזוזות משתי ההעמסות (לא יותר מ-25):</div><input data-addr="I114" class="num-input"></div>
 
-<script>
-    async function generate() {
-        const cells = {};
-        document.querySelectorAll('[data-addr]').forEach(el => cells[el.getAttribute('data-addr')] = el.value);
-        
-        const res = await fetch('/generate-excel', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ cells })
-        });
-        
-        if(res.ok) {
-            const blob = await res.blob();
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = "Final_Report_1142.xlsx";
-            a.click();
-        }
-    }
-</script>
-</body>
-</html>
+    <div class="section-header">נתוני מידות למדידה (מ')</div>
+    <div class="row"><div class="label">L1 - שפה עליונה:</div><input data-addr="L118" class="num-input"></div>
+    <div class="row"><div class="label">L2 - ניצב:</div><input data-addr="L120" class="num-input"></div>
+    <div class="row"><div class="label">L - מפתח השדה:</div><input data-addr="L122" class="num-input"></div>
+
+    <div class="section-header">לוחות מליא ובדיקה חזותית</div>
+    <div class="row"><div class="label">S - שטח הלוח (מ"ר):</div><input data-addr="I127" class="num-input"></div>
+    <div class="row">
+        <div class="label">תזוזה אופקית ומשוריינת (מ"מ):</div>
+        <div style="display:flex; gap:5px;">
+            אופקית: <input data-addr="I131" class="num-input"> משוריינת: <input data-addr="J131" class="num-input"> <select data-addr="L131"><option>מתאים</option></select>
+        </div>
+    </div>
+    <div class="row"><div class="label">בדיקה חזותית (סדקים/עיוות):</div><select data-addr="L136"><option>מתאים</option><option>לא מתאים</option></select></div>
+
+    <div class="section-header">סיכום וחתימה</div>
+    <div class="row"><div class="label">הערות:</div><input data-addr="L32"></div>
+    <div class="row"><div class="label">שם הבודק:</div><input data-addr="L145"></div>
+
+    <button onclick="generateFile()" style="background:#2e7
