@@ -2,157 +2,125 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>מערכת הפקת דוחות מעבדה - ת"י 1142</title>
+    <title>מערכת הפקת דוחות מעבדה</title>
     <style>
-        body { font-family: system-ui; background: #f0f2f5; direction: rtl; margin: 0; }
-        .tabs { display: flex; background: #2d3436; position: sticky; top: 0; z-index: 100; overflow-x: auto; }
-        .tab-btn { flex: 1; padding: 15px; color: white; border: none; background: none; cursor: pointer; font-weight: bold; white-space: nowrap; }
-        .tab-btn.active { background: #0984e3; border-bottom: 4px solid white; }
-        .container { max-width: 1000px; margin: 20px auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .page { display: none; }
-        .page.active { display: block; }
-        .section { background: #f8fafc; padding: 10px; border-right: 5px solid #0984e3; margin: 15px 0; font-weight: bold; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f6f9; direction: rtl; margin: 0; padding: 20px; }
+        .form-container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .group-title { background: #2c3e50; color: white; padding: 12px; margin: 25px 0 15px; font-weight: bold; border-radius: 4px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 5px; color: #34495e; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #bdc3c7; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 14px; }
+        th, td { border: 1px solid #dfe6e9; padding: 10px; text-align: center; }
         th { background: #f1f2f6; }
-        .submit-btn { width: 100%; padding: 20px; background: #00b894; color: white; border: none; font-size: 20px; font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 20px; }
+        .btn-generate { background: #27ae60; color: white; border: none; padding: 20px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 30px; transition: 0.3s; }
+        .btn-generate:hover { background: #1e8449; }
     </style>
 </head>
 <body>
 
-<div class="tabs">
-    <button class="tab-btn active" onclick="show(0)">1. פרטי אתר וזיהוי</button>
-    <button class="tab-btn" onclick="show(1)">2. גאומטריה ומפרט</button>
-    <button class="tab-btn" onclick="show(2)">3. חישובי עומסי רוח</button>
-    <button class="tab-btn" onclick="show(3)">4. תוצאות בדיקה</button>
-    <button class="tab-btn" onclick="show(4)">5. סיכום והתאמה</button>
-</div>
+<div class="form-container">
+    <h1 style="text-align:center;">דו"ח בדיקת מעקה - מילוי נתונים</h1>
 
-<div class="container">
-    <div id="p0" class="page active">
-        <div class="section">פרטי זיהוי המזמין והאתר</div>
-        <div class="grid">
-            <div><label>תאריך הבדיקה (L3)</label><input type="date" id="testDate"></div>
-            <div><label>מספר/קוד פרויקט (L4)</label><input type="text" id="projectId"></div>
-            <div><label>שם האתר (C4)</label><input type="text" id="siteName"></div>
-            <div><label>שם המזמין (C7)</label><input type="text" id="clientName"></div>
-            <div><label>שם המציג / נציג המזמין (L7)</label><input type="text" id="presenterName"></div>
-            <div><label>כתובת האתר (C8)</label><input type="text" id="siteAddress"></div>
-            <div><label>תיאור המבנה (C10)</label><input type="text" id="structureType"></div>
-            <div><label>תיאור הפריט (C11)</label><input type="text" id="itemDesc"></div>
-            <div><label>מיקום הבדיקה (C12)</label><input type="text" id="testLocation"></div>
-        </div>
-        <div class="grid">
-            <div><label>תכנון המעקה (C13)</label><select id="planningStatus"><option>הוגש</option><option>לא הוגש</option><option>לא רלוונטי</option></select></div>
-            <div><label>חישוב הנדסי (C14)</label><select id="engineeringStatus"><option>הוגש</option><option>לא הוגש</option><option>לא רלוונטי</option></select></div>
-            <div><label>טמפרטורה C°</label><input type="text" id="temp"></div>
-            <div><label>לחות %</label><input type="text" id="humidity"></div>
-        </div>
+    <div class="group-title">פרטי זיהוי ואתר</div>
+    <div class="grid">
+        <div><label>תאריך הבדיקה</label><input type="date" id="testDate"></div>
+        <div><label>קוד פרויקט</label><input type="text" id="projectId"></div>
+        <div><label>שם האתר</label><input type="text" id="siteName"></div>
+        <div><label>שם המזמין</label><input type="text" id="clientName"></div>
+        <div><label>שם המציג (נציג המזמין)</label><input type="text" id="presenterName"></div>
+        <div><label>כתובת האתר</label><input type="text" id="siteAddress"></div>
+        <div><label>תיאור המבנה</label><input type="text" id="structureType"></div>
+        <div><label>תיאור הפריט</label><input type="text" id="itemDesc"></div>
+        <div><label>מיקום הבדיקה</label><input type="text" id="testLocation"></div>
+        <div><label>תכנון המעקה</label><select id="planningStatus"><option>הוגש</option><option>לא הוגש</option><option>לא רלוונטי</option></select></div>
+        <div><label>חישוב הנדסי</label><select id="engineeringStatus"><option>הוגש</option><option>לא הוגש</option><option>לא רלוונטי</option></select></div>
     </div>
 
-    <div id="p1" class="page">
-        <div class="section">גאומטריה ועומסי תכנון</div>
-        <div class="grid">
-            <div><label>L1 - מרחק בין ניצבים 'מ</label><input type="text" id="L1"></div>
-            <div><label>L2 - מפתח שדה סמוך 'מ</label><input type="text" id="L2"></div>
-            <div><label>L - מפתח לוח מילוי 'מ</label><input type="text" id="L_fill"></div>
-            <div><label>עומס תכנון Ws (ק"נ/מ')</label><input type="text" id="ws_load"></div>
-            <div><label>חצי עומס 0.5Ws (ק"נ/מ')</label><input type="text" id="half_ws"></div>
-        </div>
-        <div class="section">מפרט לוחות מילוי (זכוכית)</div>
-        <div class="grid">
-            <div><label>אורך דיגוז 'מ</label><input type="text" id="glassW"></div>
-            <div><label>גובה דיגוז 'מ</label><input type="text" id="glassH"></div>
-            <div><label>עובי במ"מ</label><input type="text" id="glassThick"></div>
-            <div><label>סימון היצרן</label><select id="glassMark"><option>קיים</option><option>לא קיים</option><option>לא נבדק</option></select></div>
-            <div><label>סוג השמשה</label><input type="text" id="glassType"></div>
-            <div><label>שם יצרן/מותג</label><input type="text" id="glassManuf"></div>
-            <div><label>חפיפה למסגרת (מ"מ)</label><input type="text" id="overlap"></div>
-            <div><label>חומר אטם / גומי</label><input type="text" id="sealing"></div>
-        </div>
+    <div class="group-title">ערכים לחישוב וגאומטריה</div>
+    <div class="grid">
+        <div><label>L1 - מרחק בין ניצבים 'מ</label><input type="text" id="L1"></div>
+        <div><label>L2 - מפתח שדה סמוך 'מ</label><input type="text" id="L2"></div>
+        <div><label>L - מפתח לוח מילוי 'מ</label><input type="text" id="L_fill"></div>
+        <div><label>עומס תכנון Ws (ק"נ/מ')</label><input type="text" id="ws_load"></div>
+        <div><label>חצי עומס 0.5Ws (ק"נ/מ')</label><input type="text" id="half_ws"></div>
     </div>
 
-    <div id="p2" class="page">
-        <div class="section">חישוב עומס הרוח ע"פ ת"י 414</div>
-        <div class="grid">
-            <div><label>h - גובה הפעלת לחץ (מ')</label><input type="text" id="h_pressure"></div>
-            <div><label>qb - לחץ רוח בסיסי</label><input type="text" id="qb_val"></div>
-            <div><label>We - לחץ רוח תכנוני</label><input type="text" id="we_val"></div>
-            <div><label>Fw - עומס קווי</label><input type="text" id="fw_val"></div>
-            <div><label>Ce(Ze) - מקדם חשיפה</label><input type="text" id="ceze_val"></div>
-            <div><label>עומס רוח על אזן עליון</label><input type="text" id="topRail_load"></div>
-        </div>
+    <div class="group-title">מפרט טכני ולוחות מילוי (זכוכית)</div>
+    <div class="grid">
+        <div><label>סוג פרופיל / עמוד</label><input type="text" id="profileType"></div>
+        <div><label>סוג עיגון</label><input type="text" id="anchorType"></div>
+        <div><label>אורך לוח 'מ</label><input type="text" id="glassW"></div>
+        <div><label>גובה לוח 'מ</label><input type="text" id="glassH"></div>
+        <div><label>עובי במ"מ</label><input type="text" id="glassThick"></div>
+        <div><label>סימון היצרן</label><select id="glassMark"><option>קיים</option><option>לא קיים</option><option>לא נבדק</option></select></div>
+        <div><label>סוג השמשה</label><input type="text" id="glassType"></div>
+        <div><label>שם יצרן/מותג</label><input type="text" id="glassManuf"></div>
+        <div><label>חפיפה למסגרת (מ"מ)</label><input type="text" id="overlap"></div>
+        <div><label>חומר אטם / גומי</label><input type="text" id="sealing"></div>
     </div>
 
-    <div id="p3" class="page">
-        <div class="section">תוצאות בדיקה ע"פ סעיף 10.3.4</div>
-        <table>
-            <thead>
-                <tr>
-                    <th>סעיף בדיקה</th>
-                    <th>תזוזה אופקית (I)</th>
-                    <th>תזוזה שיורית (J)</th>
-                    <th>התאמה</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>10.3.4 א' (חצי עומס)</td><td><input id="hor_a"></td><td><input id="res_a"></td><td><select id="stat_a"><option>עמד</option><option>לא עמד</option><option>לא רלוונטי</option></select></td></tr>
-                <tr><td>10.3.4 ב' (עומס מלא)</td><td><input id="hor_b"></td><td><input id="res_b"></td><td><select id="stat_b"><option>עמד</option><option>לא עמד</option></select></td></tr>
-                <tr><td>10.3.4 ג' (ניצב)</td><td><input id="hor_c"></td><td><input id="res_c"></td><td><select id="stat_c"><option>עמד</option><option>לא עמד</option></select></td></tr>
-                <tr><td>10.3.4 ד' (ניצב נוסף)</td><td><input id="hor_d"></td><td><input id="res_d"></td><td><select id="stat_d"><option>עמד</option><option>לא עמד</option></select></td></tr>
-                <tr><td>10.3.4 ד'+ב' (סכום)</td><td><input id="hor_db"></td><td><input id="res_db"></td><td><select id="stat_db"><option>עמד</option><option>לא עמד</option></select></td></tr>
-                <tr><td>10.3.4 ה' (ניצב)</td><td><input id="hor_e"></td><td><input id="res_e"></td><td><select id="stat_e"><option>עמד</option><option>לא עמד</option></select></td></tr>
-            </tbody>
-        </table>
+    <div class="group-title">חישוב עומס הרוח</div>
+    <div class="grid">
+        <div><label>h - גובה הפעלת לחץ (מ')</label><input type="text" id="h_pressure"></div>
+        <div><label>qb - לחץ רוח בסיסי</label><input type="text" id="qb_val"></div>
+        <div><label>We - לחץ רוח תכנוני</label><input type="text" id="we_val"></div>
+        <div><label>Fw - עומס קווי</label><input type="text" id="fw_val"></div>
+        <div><label>Ce(Ze) - מקדם חשיפה</label><input type="text" id="ceze_val"></div>
+        <div><label>עומס רוח על אזן עליון</label><input type="text" id="topRail_load"></div>
     </div>
 
-    <div id="p4" class="page">
-        <div class="section">סיכום התאמה (שורות 28-31)</div>
-        <div class="grid">
-            <div><label>התאמה לסעיף 1</label><select id="match1"><option>מתאים</option><option>לא מתאים</option><option>לא נבדק</option></select></div>
-            <div><label>התאמה לסעיף 2</label><select id="match2"><option>מתאים</option><option>לא מתאים</option><option>לא נבדק</option></select></div>
-            <div><label>התאמה לסעיף 3</label><select id="match3"><option>מתאים</option><option>לא מתאים</option><option>לא נבדק</option></select></div>
-            <div><label>התאמה לסעיף 4</label><select id="match4"><option>מתאים</option><option>לא מתאים</option><option>לא נבדק</option></select></div>
-        </div>
-        <div class="section">מסקנה סופית וחתימות</div>
-        <div class="grid">
-            <div style="grid-column: span 2;">
-                <label>מסקנה (L37)</label>
-                <select id="finalConclusion"><option>המעקה עומד בדרישות ת"י 1142</option><option>המעקה אינו עומד בדרישות ת"י 1142</option></select>
-            </div>
-            <div><label>שם הבודק (L38)</label><input type="text" id="inspectorName"></div>
-            <div><label>שם המאשר (L39)</label><input type="text" id="approverName"></div>
-        </div>
-        <label>הערות (C40)</label><textarea id="comments" rows="3"></textarea>
-        <button class="submit-btn" onclick="send()">💾 הפק אקסל - בדיקה יסודית הושלמה</button>
+    <div class="group-title">תוצאות בדיקה (סעיף 10.3.4)</div>
+    <table>
+        <thead>
+            <tr>
+                <th>סעיף</th>
+                <th>תזוזה אופקית (I)</th>
+                <th>תזוזה שיורית (J)</th>
+                <th>התאמה</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>א'</td><td><input id="hor_a"></td><td><input id="res_a"></td><td><select id="stat_a"><option>עמד</option><option>לא עמד</option><option>לא רלוונטי</option></select></td></tr>
+            <tr><td>ב'</td><td><input id="hor_b"></td><td><input id="res_b"></td><td><select id="stat_b"><option>עמד</option><option>לא עמד</option></select></td></tr>
+            <tr><td>ג'</td><td><input id="hor_c"></td><td><input id="res_c"></td><td><select id="stat_c"><option>עמד</option><option>לא עמד</option></select></td></tr>
+            <tr><td>ד'</td><td><input id="hor_d"></td><td><input id="res_d"></td><td><select id="stat_d"><option>עמד</option><option>לא עמד</option></select></td></tr>
+            <tr><td>ד'+ב'</td><td><input id="hor_db"></td><td><input id="res_db"></td><td><select id="stat_db"><option>עמד</option><option>לא עמד</option></select></td></tr>
+            <tr><td>ה'</td><td><input id="hor_e"></td><td><input id="res_e"></td><td><select id="stat_e"><option>עמד</option><option>לא עמד</option></select></td></tr>
+        </tbody>
+    </table>
+
+    <div class="group-title">סיכום התאמה ומסקנות</div>
+    <div class="grid">
+        <div><label>התאמה לסעיף 1</label><select id="match1"><option>מתאים</option><option>לא מתאים</option><option>לא נבדק</option><option>לא רלוונטי</option></select></div>
+        <div><label>התאמה לסעיף 2</label><select id="match2"><option>מתאים</option><option>לא מתאים</option><option>לא נבדק</option><option>לא רלוונטי</option></select></div>
+        <div><label>התאמה לסעיף 3</label><select id="match3"><option>מתאים</option><option>לא מתאים</option><option>לא נבדק</option><option>לא רלוונטי</option></select></div>
+        <div><label>התאמה לסעיף 4</label><select id="match4"><option>מתאים</option><option>לא מתאים</option><option>לא נבדק</option><option>לא רלוונטי</option></select></div>
+        <div style="grid-column: span 2;"><label>מסקנה סופית</label><select id="finalConclusion"><option>המעקה עומד בדרישות ת"י 1142</option><option>המעקה אינו עומד בדרישות ת"י 1142</option></select></div>
+        <div><label>שם הבודק</label><input type="text" id="inspectorName"></div>
+        <div><label>שם המאשר</label><input type="text" id="approverName"></div>
     </div>
+    <div style="margin-top:15px;"><label>הערות</label><textarea id="comments" rows="3"></textarea></div>
+
+    <button class="btn-generate" onclick="submitData()">💾 הפק אקסל סופי ומדויק</button>
 </div>
 
 <script>
-    function show(n) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('p'+n).classList.add('active');
-        document.querySelectorAll('.tab-btn')[n].classList.add('active');
-    }
-    async function send() {
-        const d = {};
-        document.querySelectorAll('input, select, textarea').forEach(el => d[el.id] = el.value);
-        const r = await fetch('/generate-excel', {
+    async function submitData() {
+        const payload = {};
+        document.querySelectorAll('input, select, textarea').forEach(el => payload[el.id] = el.value);
+        const response = await fetch('/generate-excel', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(d)
+            body: JSON.stringify(payload)
         });
-        if(r.ok) {
-            const blob = await r.blob();
-            const a = document.createElement('a');
-            a.href = window.URL.createObjectURL(blob);
-            a.download = `Report_${d.projectId || 'Complete'}.xlsx`;
-            a.click();
-        }
+        if(response.ok) {
+            const blob = await response.blob();
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "Final_Report.xlsx";
+            link.click();
+        } else { alert("שגיאה בהפקה"); }
     }
 </script>
 </body>
