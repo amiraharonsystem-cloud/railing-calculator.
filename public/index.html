@@ -3,105 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת הפקת דוחות מעקה - הכל כלול</title>
+    <title>מערכת דוחות הנדסיים</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 10px; direction: rtl; }
-        .form-card { max-width: 850px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        .section { border: 1px solid #007bff; padding: 15px; border-radius: 8px; margin-bottom: 20px; background: #fff; }
-        .section-title { font-weight: bold; color: #007bff; background: #eef6ff; padding: 5px 15px; margin: -15px -15px 15px -15px; border-radius: 8px 8px 0 0; display: block; border-bottom: 1px solid #007bff; }
+        body { font-family: 'Segoe UI', Arial; background: #f0f2f5; margin: 0; padding: 10px; }
+        .form-card { max-width: 800px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: #1a73e8; color: white; padding: 15px; text-align: center; }
+        .section { padding: 20px; border-bottom: 1px solid #eee; }
+        .section-h { font-weight: bold; color: #1a73e8; margin-bottom: 15px; display: block; border-right: 4px solid #1a73e8; padding-right: 10px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        label { display: block; margin-top: 10px; font-weight: bold; font-size: 13px; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 15px; }
-        button { width: 100%; padding: 20px; background: #28a745; color: white; border: none; border-radius: 10px; font-size: 22px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        .tech-info { font-style: italic; color: #666; font-size: 12px; }
+        label { display: block; margin-top: 10px; font-size: 13px; font-weight: 600; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 20px; background: #28a745; color: white; border: none; font-size: 20px; font-weight: bold; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="form-card">
-    <h2 style="text-align:center;">תעודת בדיקת מעקה - הזנה מלאה</h2>
+    <div class="header"><h1>תעודת בדיקת מעקה</h1></div>
 
     <div class="section">
-        <span class="section-title">פרטי כותרת</span>
+        <span class="section-h">פרטי כותרת</span>
         <div class="grid">
             <div><label>תאריך בדיקה</label><input type="date" id="testDate"></div>
             <div><label>קוד פרויקט</label><input type="text" id="projectId"></div>
-            <div style="grid-column: span 2;"><label>שם האתר</label><input type="text" id="siteName"></div>
         </div>
+        <label>שם האתר</label><input type="text" id="siteName">
     </div>
 
     <div class="section">
-        <span class="section-title">1. פרטי הלקוח וזיהוי ההזמנה</span>
+        <span class="section-h">1. פרטי הלקוח וזיהוי</span>
+        <label>שם המזמין</label><input type="text" id="clientName">
+        <label>נציג המזמין</label><input type="text" id="clientRep">
+        <label>מען המזמין</label><input type="text" id="clientAddress">
+        <label>תיאור המבנה</label><input type="text" id="structureType">
+        <label>תיאור הפריט</label><input type="text" id="itemDescription">
+        <label>מיקום בדיקה</label><input type="text" id="testLocation">
         <div class="grid">
-            <div><label>שם המזמין</label><input type="text" id="clientName"></div>
-            <div><label>נציג המזמין</label><input type="text" id="clientRep"></div>
+            <div><label>תכנון מעקה</label><select id="planningStatus"><option>לא הוגש</option><option>הוגש</option></select></div>
+            <div><label>חישוב הנדסי</label><select id="calcStatus"><option>לא הוגש</option><option>הוגש</option></select></div>
         </div>
-        <label>כתובת האתר</label><input type="text" id="siteAddress">
-        <label>תיאור המבנה</label><input type="text" id="structure">
-        <label>תיאור הפריט שנבדק</label><input type="text" id="itemDesc">
-        <label>מיקום הבדיקה</label><input type="text" id="location">
+    </div>
+
+    <div class="section">
+        <span class="section-h">2. גיאומטריה ומדידות (מ')</span>
         <div class="grid">
-            <div><label>תכנון המעקה</label><select id="planningStatus"><option>לא הוגש</option><option>הוגש</option></select></div>
-            <div><label>חישוב הנדסי</label><select id="calculationStatus"><option>לא הוגש</option><option>הוגש</option></select></div>
+            <div><label>L1 - בין ניצבים</label><input type="text" id="L1"></div>
+            <div><label>L2 - שדה סמוך</label><input type="text" id="L2"></div>
+            <div><label>L - לוח מליא</label><input type="text" id="L_gap"></div>
         </div>
     </div>
 
     <div class="section">
-        <span class="section-title">2. נתוני הגיאומטריה (מדידות במטרים)</span>
+        <span class="section-h">3. עומסי רוח (נ/מ"ר)</span>
         <div class="grid">
-            <div><label>L1 - מרחק בין ניצבים</label><input type="text" id="L1"></div>
-            <div><label>L2 - מפתח שדה סמוך</label><input type="text" id="L2"></div>
-            <div style="grid-column: span 2;"><label>L - מפתח לוח מליא</label><input type="text" id="L_fill"></div>
+            <div><label>ws עומס רוח</label><input type="text" id="ws_load"></div>
+            <div><label>0.5ws חצי עומס</label><input type="text" id="half_ws"></div>
         </div>
     </div>
 
     <div class="section">
-        <span class="section-title">3. עומסי רוח (נ'/מ"ר)</span>
-        <div class="grid">
-            <div><label>ws (עומס רוח)</label><input type="text" id="ws"></div>
-            <div><label>0.5ws (חצי עומס)</label><input type="text" id="halfWs"></div>
-        </div>
+        <span class="section-h">4. תוצאות בדיקה (לפי סעיפי ת"י)</span>
+        <label>10.3.3 (עומס מרוכז)</label><input type="text" id="res1033">
+        <label>10.3.4 (עומס אופקי)</label><input type="text" id="res1034">
+        <label>10.3.5 (לוח מליא)</label><input type="text" id="res1035">
     </div>
 
     <div class="section">
-        <span class="section-title">4. תוצאות הבדיקה (ת"י 1142)</span>
-        <label>סעיף 10.3.3 (עומס מרוכז)</label><input type="text" id="res1033">
-        <label>סעיף 10.3.4 (עומס אופקי)</label><input type="text" id="res1034">
-        <label>סעיף 10.3.5 (לוח מליא)</label><input type="text" id="res1035">
-    </div>
-
-    <div class="section">
-        <span class="section-title">5. הערות וחתימה</span>
         <label>הערות הבודק</label><textarea id="comments" rows="3"></textarea>
         <label>שם הבודק</label><input type="text" id="inspectorName">
     </div>
 
-    <button onclick="generate()">💾 הפק דו"ח אקסל מלא</button>
+    <button onclick="send()">💾 הפק אקסל אחד-לא-אחד</button>
 </div>
 
 <script>
-    async function generate() {
+    async function send() {
         const data = {};
         document.querySelectorAll('input, select, textarea').forEach(el => data[el.id] = el.value);
         const btn = document.querySelector('button');
-        btn.innerText = "מעבד נתונים..."; btn.disabled = true;
-
-        try {
-            const response = await fetch('/generate-excel', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            if (response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `Report_${data.projectId}.xlsx`;
-                a.click();
-            } else { alert("תקלה: וודא שקובץ template.xlsx נמצא ב-GitHub"); }
-        } catch (e) { alert("שגיאה בחיבור"); }
-        btn.innerText = "💾 הפק דו"ח אקסל מלא"; btn.disabled = false;
+        btn.innerText = "יוצר קובץ...";
+        const res = await fetch('/generate-excel', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        if(res.ok) {
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Report_${data.projectId}.xlsx`;
+            a.click();
+        }
+        btn.innerText = "💾 הפק אקסל אחד-לא-אחד";
     }
 </script>
 </body>
