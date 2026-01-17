@@ -3,62 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        body { font-family: Arial; padding: 20px; direction: rtl; }
-        .grid { display: grid; grid-template-columns: 200px 1fr; gap: 10px; max-width: 800px; margin: auto; }
-        input { padding: 8px; border: 1px solid #000; }
-        .header { background: #eee; padding: 10px; font-weight: bold; grid-column: span 2; border: 1px solid #000; margin-top: 15px; }
-        button { grid-column: span 2; padding: 20px; background: #000; color: #fff; font-size: 20px; cursor: pointer; margin-top: 20px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; direction: rtl; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border: 1px solid #ccc; }
+        .section { border: 2px solid #2c3e50; margin-bottom: 20px; padding: 15px; }
+        .section-h { background: #2c3e50; color: white; padding: 5px 10px; margin: -15px -15px 15px -15px; font-weight: bold; }
+        .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }
+        label { font-size: 12px; font-weight: bold; display: block; }
+        input { width: 100%; padding: 5px; border: 1px solid #999; box-sizing: border-box; }
+        .btn { background: #27ae60; color: white; padding: 20px; width: 100%; font-size: 20px; cursor: pointer; border: none; }
     </style>
 </head>
 <body>
 
-<div class="grid">
-    <div class="header">פרטי הדו"ח (שורות 2-10)</div>
-    <label>מספר דו"ח (H2):</label><input id="H2">
-    <label>תאריך (L3):</label><input id="L3">
-    <label>שם האתר (C4):</label><input id="C4">
-    <label>קוד פרויקט (L4):</label><input id="L4">
-    <label>שם המזמין (C7):</label><input id="C7">
-    <label>כתובת (C8):</label><input id="C8">
+<div class="container">
+    <h2 style="text-align:center">מערכת הזנת נתונים - דו"ח 1142 (לפי מפרט אקסל מלא)</h2>
 
-    <div class="header">מפרט טכני וברגים (שורות 45-78)</div>
-    <label>סוג פרופיל (C45):</label><input id="C45">
-    <label>גמר (F45):</label><input id="F45">
-    <label>סוג עיגון (C47):</label><input id="C47">
-    <label>תיאור עיגון (I47):</label><input id="I47">
-    <label>ברגים (C49):</label><input id="C49">
-    <label>מסעד יד (C55):</label><input id="C55">
-    <label>עובי זכוכית (I67):</label><input id="I67">
-    <label>סוג זכוכית (I70):</label><input id="I70">
+    <div class="section">
+        <div class="section-h">1. פרטי זיהוי (עמוד 1)</div>
+        <div class="row">
+            <div><label>מס' דו"ח (H2)</label><input id="H2"></div>
+            <div><label>תאריך בדיקה (L3)</label><input type="date" id="L3"></div>
+            <div><label>שם האתר (C4)</label><input id="C4"></div>
+            <div><label>קוד פרויקט (L4)</label><input id="L4"></div>
+        </div>
+    </div>
 
-    <div class="header">נתוני עומס וחישוב (שורות 19-32)</div>
-    <label>Fser (L19):</label><input id="L19">
-    <label>P מחושב (L20):</label><input id="L20">
-    <label>L1 (L22):</label><input id="L22">
-    <label>We רוח (I32):</label><input id="I32">
-    <label>Ws סה"כ (L32):</label><input id="L32">
+    <div class="section">
+        <div class="section-h">2. גאומטריה וזכוכית (לפי סעיף 6 ו-7)</div>
+        <div class="row">
+            <div><label>גובה מעקה (E56)</label><input id="E56"></div>
+            <div><label>מרווח בין רכיבים (E60)</label><input id="E60"></div>
+            <div><label>עובי זכוכית (G67)</label><input id="G67"></div>
+            <div><label>סוג זכוכית (G70)</label><input id="G70"></div>
+        </div>
+    </div>
 
-    <div class="header">תוצאות (שורות 107-116)</div>
-    <label>תזוזה אופקית (I107):</label><input id="I107">
-    <label>שיורית (J107):</label><input id="J107">
-    <label>מסקנה (L107):</label><input id="L107">
+    <div class="section">
+        <div class="section-h">3. חישובי עומס ורוח (עמוד 2)</div>
+        <div class="row">
+            <div><label>גובה מעל קרקע (F83)</label><input id="F83"></div>
+            <div><label>לחץ רוח qb (F84)</label><input id="F84"></div>
+            <div><label>לחץ תכנון We (H82)</label><input id="H82"></div>
+            <div><label>כוח רוח Fw (H84)</label><input id="H84"></div>
+        </div>
+    </div>
 
-    <button onclick="save()">הפק אקסל - העתק מדויק של התאים</button>
+    <div class="section">
+        <div class="section-h">4. תוצאות בדיקה (עמוד 3)</div>
+        <div class="row">
+            <div style="grid-column: span 4; font-weight: bold; border-bottom: 1px solid #ddd;">סעיף 10.3.4 (עומס אופקי)</div>
+            <div><label>תזוזה אופקית (I107)</label><input id="I107"></div>
+            <div><label>תזוזה שיורית (J107)</label><input id="J107"></div>
+            <div><label>מסקנה (L107)</label><input id="L107" placeholder="מתאים"></div>
+        </div>
+        <div class="row" style="margin-top: 15px;">
+            <div style="grid-column: span 4; font-weight: bold; border-bottom: 1px solid #ddd;">סעיף 10.3.5 (עומס מליא)</div>
+            <div><label>שטח הלוח S (H127)</label><input id="H127"></div>
+            <div><label>תוצאת בדיקה (I132)</label><input id="I132"></div>
+            <div><label>מסקנה סופית (L133)</label><input id="L133"></div>
+        </div>
+    </div>
+
+    <button class="btn" onclick="generate()">הפק אקסל זהה למקור (Render)</button>
 </div>
 
 <script>
-    async function save() {
-        const data = {};
-        document.querySelectorAll('input').forEach(i => data[i.id] = i.value);
+    async function generate() {
+        const d = {};
+        document.querySelectorAll('input').forEach(i => d[i.id] = i.value);
         const res = await fetch('/generate-excel', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
+            body: JSON.stringify(d)
         });
         const blob = await res.blob();
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = "Railing_Report.xlsx";
+        a.download = "Final_Report.xlsx";
         a.click();
     }
 </script>
