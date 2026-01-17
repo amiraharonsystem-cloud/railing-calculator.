@@ -19,24 +19,31 @@ app.post('/generate-excel', async (req, res) => {
         await workbook.xlsx.readFile(TEMPLATE_FILE);
         const ws = workbook.getWorksheet(1);
 
-        // --- מיפוי תאים לפי הדו"ח שלך ---
-        ws.getCell('L3').value = d.testDate;      // תאריך בדיקה
-        ws.getCell('C4').value = d.siteName;      // שם האתר
-        ws.getCell('L4').value = d.projectId;     // קוד פרויקט
-        ws.getCell('C7').value = d.clientName;    // שם המזמין
-        ws.getCell('L7').value = d.clientRep;     // נציג המזמין
-        ws.getCell('C10').value = d.structure;    // תיאור המבנה
-        ws.getCell('C11').value = d.itemDesc;     // תיאור הפריט
-        ws.getCell('C12').value = d.location;     // מיקום (קומה/דירה)
+        // --- חלק 1: פרטי כלליים ותאריכים ---
+        ws.getCell('L3').value = d.testDate;      
+        ws.getCell('C4').value = d.siteName;      
+        ws.getCell('L4').value = d.projectId;     
         
-        // --- מדידות הנדסיות ---
-        ws.getCell('L22').value = parseFloat(d.L1) || 0; // מרחק L1
-        ws.getCell('L24').value = parseFloat(d.L2) || 0; // מרחק L2
-        ws.getCell('L26').value = d.L_fill || '-';       // מפתח לוח מליא L
-        
-        // --- עומסי רוח והערות ---
-        ws.getCell('L30').value = d.windLoad || '-';     // חישוב עומס רוח
-        ws.getCell('C40').value = d.comments || '';      // הערות בודק
+        // --- חלק 2: פרטי לקוח ---
+        ws.getCell('C7').value = d.clientName;    
+        ws.getCell('L7').value = d.clientRep;     
+        ws.getCell('C8').value = d.siteAddress;   
+
+        // --- חלק 3: תיאור המבנה והפריט ---
+        ws.getCell('C10').value = d.structure;    
+        ws.getCell('C11').value = d.itemDesc;     
+        ws.getCell('C12').value = d.location;     
+        ws.getCell('C13').value = d.planningStatus; // "הוגש / לא הוגש"
+
+        // --- חלק 4: נתונים הנדסיים ומדידות ---
+        ws.getCell('L22').value = parseFloat(d.L1) || 0; 
+        ws.getCell('L24').value = parseFloat(d.L2) || 0; 
+        ws.getCell('L26').value = d.L_fill || '-';       
+        ws.getCell('L30').value = d.windLoad || '-';     
+
+        // --- חלק 5: סיכום והערות ---
+        ws.getCell('C40').value = d.comments;      
+        ws.getCell('C42').value = d.inspectorName; 
 
         await workbook.xlsx.writeFile(OUTPUT_FILE);
         res.json({ success: true });
