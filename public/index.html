@@ -1,114 +1,79 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <title>מערכת דוח ת"י 1142 - פריסה מלאה</title>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Assistant', sans-serif; background: #f0f2f5; padding: 20px; direction: rtl; line-height: 1.4; }
-        .container { max-width: 1100px; margin: auto; background: white; padding: 40px; border: 1px solid #333; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
-        .header-main { text-align: center; font-weight: bold; font-size: 1.8rem; text-decoration: underline; margin-bottom: 30px; color: #1a237e; }
-        
-        .section-header { background: #1a237e; color: white; font-weight: bold; padding: 12px; margin-top: 30px; border: 1px solid #000; font-size: 1.1rem; }
-        .row { display: flex; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0; transition: background 0.2s; }
-        .row:hover { background: #f9f9f9; }
-        .label { width: 450px; font-weight: bold; font-size: 0.95rem; color: #222; padding-left: 15px; }
-        .input-box { flex: 1; display: flex; gap: 10px; align-items: center; }
-        
-        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #bbb; border-radius: 3px; font-size: 1rem; font-family: inherit; }
-        .num-input { width: 90px; text-align: center; font-weight: bold; border-color: #1a237e; }
-        
-        .tech-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; }
-        .tech-table th, .tech-table td { border: 1px solid #000; padding: 10px; font-size: 0.9rem; text-align: center; }
-        .tech-table th { background: #e8eaf6; color: #1a237e; }
-        
-        .sub-label { font-size: 0.85rem; color: #555; margin-right: 5px; font-weight: normal; }
-        .btn-submit { background: #2e7d32; color: white; padding: 25px; width: 100%; font-size: 1.6rem; border: none; cursor: pointer; font-weight: bold; margin-top: 50px; border-radius: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .btn-submit:hover { background: #1b5e20; }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <div class="header-main">תעודת בדיקת מעקה במעטפת הבנין - דוח מלא</div>
-
-    <div class="section-header">1. פרטי הלקוח וזיהוי ההזמנה</div>
-    <div class="row"><div class="label">מס' :</div><input id="reportNum" data-addr="L2"></div>
-    <div class="row"><div class="label">תאריך בדיקה:</div><input id="checkDate" data-addr="L3" type="date"></div>
-    <div class="row"><div class="label">שם האתר:</div><input data-addr="L4"></div>
-    <div class="row"><div class="label">שם המזמין:</div><input data-addr="L7"></div>
-    <div class="row"><div class="label">מען המזמין:</div><input id="location" data-addr="L8"></div>
-    <div class="row"><div class="label">הבדיקה הינה בדיקה:</div><select data-addr="L10"><option>ראשונה</option><option>חוזרת</option></select></div>
-    <div class="row"><div class="label">תיאור המבנה:</div><input data-addr="L12"></div>
-    <div class="row"><div class="label">תאור המפרט שנבדק:</div><input data-addr="L13"></div>
-    <div class="row"><div class="label">מקום הבדיקה:</div><input data-addr="L14"></div>
-
-    <div class="section-header">תיאור ודגם המעקה</div>
-    <div class="row"><div class="label">סגנון/דגם המעקה:</div><input data-addr="L15"></div>
-    <div class="row"><div class="label">ניצב המעקה:</div><input data-addr="L16"></div>
-    <div class="row"><div class="label">חישוב עומס רוח (ח"ח):</div><input data-addr="L17"></div>
-
-    <div class="section-header">סעיף מס' 1 : בדיקות גאומטריה (ת"י 1142)</div>
-    <table class="tech-table">
-        <tr><th style="width:10%">סעיף</th><th style="width:45%">תאור הדרישה</th><th style="width:25%">תוצאות המדידה</th><th style="width:10%">התאמה</th><th style="width:10%">הערות</th></tr>
-        <tr><td>7.2.4</td><td style="text-align:right">גובה המעקה במרפסות, לרבות במרפסות של דירות...</td><td><input data-addr="I56"></td><td><select data-addr="L56"><option>מתאים</option><option>לא מתאים</option></select></td><td><input data-addr="M56"></td></tr>
-        <tr><td>5.1.2</td><td style="text-align:right">בתחום שבין 10 ס"מ עד 90 ס"מ... לא יהיו רכיבים המאפשרים טיפוס</td><td><input data-addr="I57"></td><td><select data-addr="L57"><option>מתאים</option></select></td><td><input data-addr="M57"></td></tr>
-        <tr><td>5.1.4.1</td><td style="text-align:right">מרווחים בין רכיבי המעקה (כדור 10 ס"מ)</td><td><input data-addr="I58"></td><td><select data-addr="L58"><option>מתאים</option></select></td><td><input data-addr="M58"></td></tr>
-        <tr><td>6.1.4.2 א'</td><td style="text-align:right">מרווח בין אדן המעקה לאבן הקופינג (כדור 5 ס"מ)</td><td><input data-addr="I60"></td><td><select data-addr="L60"><option>מתאים</option></select></td><td><input data-addr="M60"></td></tr>
-        <tr><td>6.1.4.2 ב'</td><td style="text-align:right">כושר הפרש הגובה בין פני הרצפה השלויה למתקן המעקה</td><td><input data-addr="I61"></td><td><select data-addr="L61"><option>מתאים</option></select></td><td><input data-addr="M61"></td></tr>
-        <tr><td>6.2.1</td><td style="text-align:right">החלק העליון של בית האחיזה או של המעקה...</td><td><input data-addr="I62"></td><td><select data-addr="L62"><option>מתאים</option></select></td><td><input data-addr="M62"></td></tr>
-    </table>
-
-    <div class="section-header">לוחות מליא עשויים זכוכית : זיהוי השמשה</div>
-    <div class="row"><div class="label">סוג הזכוכית (רב-שכבתית/מחוסמת):</div><input data-addr="L66"></div>
-    <div class="row">
-        <div class="label">מידות השמשה (מ"מ):</div>
-        <div class="input-box">
-            <span class="sub-label">גובה H:</span><input data-addr="I66" class="num-input">
-            <span class="sub-label">אורך L:</span><input data-addr="G66" class="num-input">
-        </div>
-    </div>
-    <div class="row"><div class="label">עובי הזכוכית (מ"מ):</div><input data-addr="L67" class="num-input"></div>
-
-    <div class="section-header">העמסה אופקית בעומסים מרוכזים (10.3.4)</div>
-    <div class="row">
-        <div class="label">10.3.4 א' - מחצית העומס המרוכז (12):</div>
-        <div class="input-box">
-            <span class="sub-label">תזוזה:</span><input data-addr="I107" class="num-input">
-            <span class="sub-label">שיורית:</span><input data-addr="J107" class="num-input">
-            <select data-addr="L107" style="width:100px"><option>מתאים</option></select>
-        </div>
-    </div>
-    <div class="row">
-        <div class="label">10.3.4 א' - העומס המרוכז המלא (25):</div>
-        <div class="input-box">
-            <span class="sub-label">תזוזה:</span><input data-addr="I108" class="num-input">
-            <span class="sub-label">שיורית:</span><input data-addr="J108" class="num-input">
-            <select data-addr="L108" style="width:100px"><option>מתאים</option></select>
-        </div>
-    </div>
-    <div class="row">
-        <div class="label">10.3.4 ג' - העמסה של ניצב (12):</div>
-        <div class="input-box">
-            <span class="sub-label">תזוזה:</span><input data-addr="I110" class="num-input">
-            <span class="sub-label">שיורית:</span><input data-addr="J110" class="num-input">
-            <select data-addr="L110" style="width:100px"><option>מתאים</option></select>
-        </div>
-    </div>
-    <div class="row">
-        <div class="label">10.3.4 ד' - העמסה משולבת (25):</div>
-        <div class="input-box">
-            <span class="sub-label">תזוזה:</span><input data-addr="I114" class="num-input">
-            <span class="sub-label">שיורית:</span><input data-addr="J114" class="num-input">
-            <select data-addr="L114" style="width:100px"><option>מתאים</option></select>
-        </div>
-    </div>
-
-    <div class="section-header">נתוני מידות למדידה ולוחות מליא</div>
-    <div class="row"><div class="label">L1 - השפה העליונה (מ'):</div><input data-addr="L118" class="num-input"></div>
-    <div class="row"><div class="label">L2 - ניצב (מ'):</div><input data-addr="L120" class="num-input"></div>
-    <div class="row"><div class="label">L - מפתח השדה (מ'):</div><input data-addr="L122" class="num-input"></div>
-    <div class="row"><div class="label">S - שטח הלוח (מ"ר):</div><input data-addr="I127" class="num-input"></div>
-    <div class="row">
-        <div class="label">בדיקת העמסה של לוח מליא (מ"מ):</div>
-        <div
+<div class="section-header">סעיף מס' 2 : העמסה אופקית בעומסים מרוכזים (ת"י 1142)</div>
+<table class="tech-table">
+    <thead>
+        <tr>
+            <th>תאור הבדיקה</th>
+            <th>דרישת התקן (מ"מ)</th>
+            <th>תזוזה אופקית</th>
+            <th>תזוזה שיורית</th>
+            <th>התאמה לדרישות</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="text-align:right;">10.3.4 א' - מחצית העומס המרוכז (12 ק"ג)</td>
+            <td>לא יותר מ- 12</td>
+            <td><input data-addr="I107" class="num-input"></td>
+            <td><input data-addr="J107" class="num-input"></td>
+            <td>
+                <select data-addr="L107" class="status-select">
+                    <option>מתאים</option><option>לא מתאים</option><option>לא רלוונטי</option><option>לא נבדק</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;">10.3.4 א' - העומס המרוכז המלא (25 ק"ג)</td>
+            <td>לא יותר מ- 25</td>
+            <td><input data-addr="I108" class="num-input"></td>
+            <td><input data-addr="J108" class="num-input"></td>
+            <td>
+                <select data-addr="L108" class="status-select">
+                    <option>מתאים</option><option>לא מתאים</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;">10.3.4 ג' - העמסה של ניצב (12 ק"ג)</td>
+            <td>לא יותר מ- 12</td>
+            <td><input data-addr="I110" class="num-input"></td>
+            <td><input data-addr="J110" class="num-input"></td>
+            <td>
+                <select data-addr="L110" class="status-select">
+                    <option>מתאים</option><option>לא מתאים</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;">10.3.4 ד' - העמסה משולבת של שני ניצבים (25 ק"ג)</td>
+            <td>לא יותר מ- 25</td>
+            <td><input data-addr="I112" class="num-input"></td>
+            <td><input data-addr="J112" class="num-input"></td>
+            <td>
+                <select data-addr="L112" class="status-select">
+                    <option>מתאים</option><option>לא מתאים</option>
+                </select>
+            </td>
+        </tr>
+        <tr style="background:#f0f0f0; font-weight:bold;">
+            <td style="text-align:right;">10.3.4 ד' + ב' - סכום התזוזות משתי ההעמסות</td>
+            <td>לא יותר מ- 25</td>
+            <td colspan="2"><input data-addr="I114" class="num-input" style="width:100%"></td>
+            <td>
+                <select data-addr="L114" class="status-select">
+                    <option>מתאים</option><option>לא מתאים</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right;">10.3.4 ה' - העמסה של ניצב (25 ק"ג)</td>
+            <td>לא יותר מ- 25</td>
+            <td><input data-addr="I116" class="num-input"></td>
+            <td><input data-addr="J116" class="num-input"></td>
+            <td>
+                <select data-addr="L116" class="status-select">
+                    <option>מתאים</option><option>לא מתאים</option>
+                </select>
+            </td>
+        </tr>
+    </tbody>
+</table>
