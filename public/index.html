@@ -2,139 +2,139 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>מערכת הנדסית ת"י 1142 - פריסה מלאה</title>
+    <title>דוח ת"י 1142 - העתק מקור מלא</title>
     <style>
-        :root { --blue: #1a237e; --gray: #f5f5f5; --border: #999; --gold: #ffa000; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #37474f; margin: 0; padding: 20px; }
-        .excel-sheet { background: white; max-width: 1400px; margin: auto; padding: 40px; border: 1px solid #000; box-shadow: 0 0 50px rgba(0,0,0,0.6); }
-        .header-title { text-align: center; color: var(--blue); border-bottom: 4px solid var(--gold); padding-bottom: 15px; margin-bottom: 30px; }
+        :root { --excel-green: #217346; --border-color: #bbb; --header-bg: #f3f3f3; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #455a64; margin: 0; padding: 20px; }
+        .excel-container { background: white; max-width: 1400px; margin: auto; border: 1px solid #000; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        .section-h { background: var(--blue); color: white; padding: 10px; font-weight: bold; margin-top: 25px; border: 1px solid #000; }
-        table { width: 100%; border-collapse: collapse; margin-top: -1px; }
-        th, td { border: 1px solid var(--border); padding: 6px; text-align: center; font-size: 13px; }
-        th { background: var(--gray); font-weight: bold; }
-        .row-num { background: #eee; width: 40px; color: #666; font-size: 11px; font-weight: normal; }
-        .label-cell { text-align: right; background: #fafafa; font-weight: bold; width: 180px; }
+        .header-title { text-align: center; color: #1a237e; border-bottom: 3px solid var(--excel-green); padding-bottom: 10px; margin-bottom: 20px; }
         
-        input, select, textarea { width: 100%; border: 1px solid transparent; background: transparent; padding: 4px; box-sizing: border-box; font-size: 14px; }
-        input:focus { background: #fffde7; border: 1px solid var(--gold); outline: none; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th, td { border: 1px solid var(--border-color); height: 28px; padding: 0 5px; font-size: 13px; vertical-align: middle; }
         
-        .action-bar { position: sticky; bottom: 0; background: rgba(255,255,255,0.95); padding: 25px; border-top: 5px solid var(--blue); text-align: center; margin-top: 50px; }
-        .btn-submit { background: #2e7d32; color: white; padding: 20px 150px; font-size: 26px; border: none; cursor: pointer; border-radius: 4px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        /* Excel-like Header Styling */
+        .row-num { background: var(--header-bg); width: 40px; text-align: center; color: #666; font-size: 11px; font-weight: normal; }
+        .col-header { background: var(--header-bg); text-align: center; font-weight: normal; height: 22px; }
+        
+        .section-bar { background: #1a237e; color: white; font-weight: bold; padding: 6px 15px; }
+        .label-cell { background: #fafafa; font-weight: bold; text-align: right; }
+        
+        input, select { width: 100%; height: 100%; border: none; outline: none; background: transparent; font-size: 13px; }
+        input:focus { background: #fffde7; outline: 1px solid var(--excel-green); }
+        
+        .sticky-footer { position: sticky; bottom: 0; background: #fff; padding: 20px; text-align: center; border-top: 3px solid var(--excel-green); margin-top: 30px; }
+        .submit-btn { background: var(--excel-green); color: white; border: none; padding: 15px 120px; font-size: 22px; font-weight: bold; cursor: pointer; border-radius: 3px; }
     </style>
 </head>
 <body>
 
-<div class="excel-sheet">
-    <div class="header-title"><h1>דוח בדיקת מעקה ת"י 1142 - העתק דיגיטלי מלא</h1></div>
+<div class="excel-container">
+    <div class="header-title"><h1>דוח מעבדה ת"י 1142 - פריסה מלאה 1:1</h1></div>
 
-    <div class="section-h">1. פרטי זיהוי ומינהלה (שורות 1-30)</div>
     <table>
         <tr>
-            <td class="row-num">2</td><td class="label-cell">מספר דו"ח:</td><td><input data-addr="H2"></td>
-            <td class="row-num">3</td><td class="label-cell">תאריך בדיקה:</td><td><input data-addr="L3" type="date"></td>
+            <th class="row-num"></th>
+            <th class="col-header">C</th><th class="col-header">D</th><th class="col-header">F</th>
+            <th class="col-header">G</th><th class="col-header">H</th><th class="col-header">I</th>
+            <th class="col-header">J</th><th class="col-header">K</th><th class="col-header">L</th>
         </tr>
-        <tr>
-            <td class="row-num">4</td><td class="label-cell">שם האתר:</td><td><input data-addr="C4"></td>
-            <td class="row-num">4</td><td class="label-cell">קוד פרויקט:</td><td><input data-addr="L4"></td>
-        </tr>
-        <tr>
-            <td class="row-num">7</td><td class="label-cell">שם המזמין:</td><td><input data-addr="C7"></td>
-            <td class="row-num">7</td><td class="label-cell">מען המזמין:</td><td><input data-addr="I7"></td>
-        </tr>
-    </table>
 
-    <div class="section-h">2. מפרט טכני וחישובי רוח (שורות 45-85)</div>
-    <table>
+        <tr><td class="row-num">1</td><td colspan="9" class="section-bar">פרטי זיהוי ומינהלה</td></tr>
         <tr>
-            <th>שורה</th><th>תיאור רכיב</th><th>חומר (C)</th><th>גמר (F/I)</th><th>דרישת תקן (H)</th><th>מסקנה (L)</th>
+            <td class="row-num">2</td><td class="label-cell">מספר דוח (H2)</td><td colspan="3"><input data-addr="H2"></td>
+            <td class="label-cell">תאריך (L3)</td><td colspan="4"><input data-addr="L3" type="date"></td>
         </tr>
         <tr>
-            <td class="row-num">45</td><td class="label-cell">פרופיל ניצב</td>
-            <td><input data-addr="C45"></td><td><input data-addr="F45"></td><td><input data-addr="H45" value="לפי תכנון"></td>
-            <td><select data-addr="L45"><option value="מתאים">מתאים</option><option value="לא מתאים">לא מתאים</option></select></td>
+            <td class="row-num">4</td><td class="label-cell">שם האתר (C4)</td><td colspan="3"><input data-addr="C4"></td>
+            <td class="label-cell">קוד פרויקט (L4)</td><td colspan="4"><input data-addr="L4"></td>
+        </tr>
+
+        <tr><td class="row-num">40</td><td colspan="9" class="section-bar">תיאור המעקה ומפרט רכיבים (ללא עיגון)</td></tr>
+        <tr>
+            <th class="row-num">#</th><th colspan="2">תיאור הרכיב</th><th>חומר (C)</th><th>גמר (F)</th><th>דרישת תקן (H)</th><th colspan="4">מסקנה (L)</th>
         </tr>
         <tr>
-            <td class="row-num">70</td><td class="label-cell">זכוכית</td>
+            <td class="row-num">45</td><td colspan="2" class="label-cell">פרופיל ניצב</td>
+            <td><input data-addr="C45"></td><td><input data-addr="F45"></td><td><input data-addr="H45"></td>
+            <td colspan="4">
+                <select data-addr="L45">
+                    <option value=""></option><option value="מתאים">מתאים</option><option value="לא מתאים">לא מתאים</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="row-num">70</td><td colspan="2" class="label-cell">זכוכית</td>
             <td><input data-addr="G70"></td><td>עובי: <input data-addr="G67"></td><td><input data-addr="H70"></td>
-            <td><select data-addr="L70"><option value="מתאים">מתאים</option></select></td>
+            <td colspan="4"><select data-addr="L70"><option value=""></option><option value="מתאים">מתאים</option></select></td>
         </tr>
-    </table>
 
-    <div style="font-weight:bold; margin-top:15px; color:var(--blue);">מקדמי עומס רוח (Fw Analysis):</div>
-    <table>
+        <tr><td class="row-num">79</td><td colspan="9" class="section-bar">נתוני עומס רוח - Fw (שורות 80-85)</td></tr>
         <tr>
-            <th>qb (F84)</th><th>Ce (K84)</th><th>CsCd (L84)</th><th>Cf (M84)</th><th>We (I82) [N/m²]</th><th>Fw (I84) [N]</th>
+            <td class="row-num">84</td><td class="label-cell">qb (F84)</td><td><input data-addr="F84"></td>
+            <td class="label-cell">Ce (K84)</td><td><input data-addr="K84"></td>
+            <td class="label-cell">CsCd (L84)</td><td><input data-addr="L84"></td>
+            <td class="label-cell">Cf (M84)</td><td><input data-addr="M84"></td>
+            <td class="label-cell" style="background:#e8f5e9">Fw (I84)</td><td><input data-addr="I84"></td>
         </tr>
-        <tr>
-            <td><input data-addr="F84"></td><td><input data-addr="K84"></td><td><input data-addr="L84"></td>
-            <td><input data-addr="M84"></td><td><input data-addr="I82"></td><td><input data-addr="I84"></td>
-        </tr>
-    </table>
 
-    <div class="section-h">3. תוצאות בדיקת עומסים (שורות 100-117)</div>
-    <table>
+        <tr><td class="row-num">100</td><td colspan="9" class="section-bar">תוצאות בדיקת עומס אופקי (10.3.4)</td></tr>
         <tr>
-            <th>שורה</th><th>סעיף בדיקה</th><th>עומס N (G)</th><th>תזוזה I (מ"מ)</th><th>שיורית J (מ"מ)</th><th>דרישה (K)</th><th>מסקנה (L)</th>
+            <th class="row-num">#</th><th>סעיף</th><th>סוג</th><th>עומס (G)</th><th>תזוזה (I)</th><th>שיורית (J)</th><th>דרישה (K)</th><th colspan="3">מסקנה (L)</th>
         </tr>
         <tr>
-            <td class="row-num">107</td><td class="label-cell">10.3.4 א' (שירות)</td>
+            <td class="row-num">107</td><td>10.3.4 א'</td><td>שירות</td>
             <td><input data-addr="G107"></td><td><input data-addr="I107"></td><td><input data-addr="J107"></td><td><input data-addr="K107"></td>
-            <td><select data-addr="L107"><option value="מתאים">מתאים</option><option value="לא מתאים">לא מתאים</option></select></td>
+            <td colspan="3"><select data-addr="L107"><option value=""></option><option value="מתאים">מתאים</option><option value="לא מתאים">לא מתאים</option></select></td>
         </tr>
         <tr>
-            <td class="row-num">111</td><td class="label-cell">10.3.4 ג' (ניצב)</td>
+            <td class="row-num">111</td><td>10.3.4 ג'</td><td>ניצב</td>
             <td><input data-addr="G111"></td><td><input data-addr="I111"></td><td><input data-addr="J111"></td><td><input data-addr="K111"></td>
-            <td><select data-addr="L111"><option value="מתאים">מתאים</option></select></td>
+            <td colspan="3"><select data-addr="L111"><option value=""></option><option value="מתאים">מתאים</option></select></td>
+        </tr>
+
+        <tr><td class="row-num">127</td><td colspan="9" class="section-bar">מליא וסיכום (שורות 127-138)</td></tr>
+        <tr>
+            <td class="row-num">132</td><td class="label-cell">מליא (132)</td>
+            <td colspan="2">שטח S: <input data-addr="I127"></td>
+            <td colspan="2">תוצאה: <input data-addr="I132"></td>
+            <td colspan="2">דרישה: <input data-addr="K132"></td>
+            <td><select data-addr="L133"><option value=""></option><option value="מתאים">מתאים</option></select></td>
         </tr>
         <tr>
-            <td class="row-num">113</td><td class="label-cell">10.3.4 ד' (משולב)</td>
-            <td><input data-addr="G113"></td><td><input data-addr="I113"></td><td><input data-addr="J113"></td><td>---</td>
-            <td><select data-addr="L113"><option value="מתאים">מתאים</option></select></td>
+            <td class="row-num">137</td><td class="label-cell">חזותית</td>
+            <td colspan="6"><input data-addr="I137" placeholder="פירוט ממצאים חזותיים..."></td>
+            <td colspan="2"><select data-addr="L138"><option value=""></option><option value="מתאים">מתאים</option><option value="לא מתאים">לא מתאים</option></select></td>
         </tr>
     </table>
 
-    <div class="section-h">4. מליא וסיכום חזותי (שורות 127-138)</div>
-    <table>
-        <tr>
-            <td class="row-num">132</td><td class="label-cell">מליא (10.3.5 ג')</td>
-            <td>שטח S: <input data-addr="I127"></td><td>תוצאה: <input data-addr="I132"></td><td>דרישה: <input data-addr="K132"></td>
-            <td><select data-addr="L133"><option value="מתאים">מתאים</option></select></td>
-        </tr>
-        <tr>
-            <td class="row-num">137</td><td class="label-cell">בדיקה חזותית (10.3.1)</td>
-            <td colspan="3"><textarea data-addr="I137" rows="3" placeholder="פרט כאן ממצאים חזותיים מלאים של המעקה, חיבורים, סדקים וכו'..."></textarea></td>
-            <td><select data-addr="L138"><option value="מתאים">מתאים</option><option value="לא מתאים">לא מתאים</option></select></td>
-        </tr>
-    </table>
-
-    <div class="action-bar">
-        <button class="btn-submit" onclick="runExport()">💾 שתול הכל והפק אקסל מושלם</button>
+    <div class="sticky-footer">
+        <button class="submit-btn" onclick="generateExcel()">💾 הפק דוח אקסל סופי (1:1)</button>
     </div>
 </div>
 
 <script>
-    async function runExport() {
+    async function generateExcel() {
         const cells = {};
-        // איסוף אוטומטי של כל תא לפי כתובת האקסל שלו
         document.querySelectorAll('[data-addr]').forEach(el => {
             cells[el.getAttribute('data-addr')] = el.value;
         });
 
-        const res = await fetch('/generate-excel', {
+        const response = await fetch('/generate-excel', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ cells })
         });
 
-        if (res.ok) {
-            const blob = await res.blob();
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = "Report_1142_Final.xlsx";
+            a.href = url;
+            a.download = "TI_1142_Full_Report.xlsx";
             a.click();
         } else {
-            alert("שגיאה בתקשורת עם השרת");
+            alert("שגיאה בהפקת הקובץ");
         }
     }
 </script>
