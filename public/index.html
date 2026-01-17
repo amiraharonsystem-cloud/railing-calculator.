@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>מערכת מעקב דוחות</title>
+    <style>
+        body { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { color: #333; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        button:hover { background-color: #218838; }
+        .download-link { display: block; text-align: center; margin-top: 15px; color: #007bff; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>הזנת דוח חדש</h2>
+        <input type="text" id="date" placeholder="תאריך (DD/MM/YYYY)">
+        <input type="text" id="site" placeholder="שם האתר">
+        <input type="text" id="code" placeholder="קוד פרויקט">
+        <input type="text" id="client" placeholder="שם המזמין">
+        <input type="text" id="loc" placeholder="מיקום">
+        <button onclick="saveData()">שמור באקסל</button>
+        <p id="status" style="text-align: center; font-weight: bold;"></p>
+        <a href="/download" class="download-link">⬇️ הורד קובץ אקסל המלא</a>
+    </div>
+
+    <script>
+        async function saveData() {
+            const data = {
+                date: document.getElementById('date').value,
+                site: document.getElementById('site').value,
+                code: document.getElementById('code').value,
+                client: document.getElementById('client').value,
+                loc: document.getElementById('loc').value
+            };
+
+            const status = document.getElementById('status');
+            status.innerText = "שומר...";
+
+            try {
+                const response = await fetch('/add-row', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const res = await response.json();
+                status.innerText = res.message;
+                status.style.color = "green";
+            } catch (e) {
+                status.innerText = "שגיאה בחיבור לשרת";
+                status.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>
