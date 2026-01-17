@@ -1,79 +1,120 @@
-<div class="section-header">סעיף מס' 2 : העמסה אופקית בעומסים מרוכזים (ת"י 1142)</div>
-<table class="tech-table">
-    <thead>
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>מערכת דוחות ת"י 1142</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; padding: 20px; direction: rtl; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border: 1px solid #ccc; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { background: #1a237e; color: white; padding: 10px; font-weight: bold; margin-bottom: 20px; text-align: center; }
+        .section-title { background: #e8eaf6; color: #1a237e; padding: 8px; font-weight: bold; margin-top: 20px; border-right: 5px solid #1a237e; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 0.9rem; }
+        th { background: #f5f5f5; }
+        
+        .req-col { text-align: right; width: 35%; }
+        input { width: 80%; padding: 4px; border: 1px solid #aaa; text-align: center; }
+        select { width: 95%; padding: 4px; background: #fffde7; font-weight: bold; }
+        .btn { display: block; width: 100%; padding: 15px; background: #2e7d32; color: white; border: none; font-size: 1.2rem; cursor: pointer; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">תעודת בדיקת מעקה במעטפת הבניין - דוח מלא</div>
+
+    <div class="section-title">סעיף מס' 1: בדיקות גאומטריה (ת"י 1142)</div>
+    <table>
         <tr>
-            <th>תאור הבדיקה</th>
-            <th>דרישת התקן (מ"מ)</th>
-            <th>תזוזה אופקית</th>
-            <th>תזוזה שיורית</th>
-            <th>התאמה לדרישות</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td style="text-align:right;">10.3.4 א' - מחצית העומס המרוכז (12 ק"ג)</td>
-            <td>לא יותר מ- 12</td>
-            <td><input data-addr="I107" class="num-input"></td>
-            <td><input data-addr="J107" class="num-input"></td>
-            <td>
-                <select data-addr="L107" class="status-select">
-                    <option>מתאים</option><option>לא מתאים</option><option>לא רלוונטי</option><option>לא נבדק</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td style="text-align:right;">10.3.4 א' - העומס המרוכז המלא (25 ק"ג)</td>
-            <td>לא יותר מ- 25</td>
-            <td><input data-addr="I108" class="num-input"></td>
-            <td><input data-addr="J108" class="num-input"></td>
-            <td>
-                <select data-addr="L108" class="status-select">
-                    <option>מתאים</option><option>לא מתאים</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td style="text-align:right;">10.3.4 ג' - העמסה של ניצב (12 ק"ג)</td>
-            <td>לא יותר מ- 12</td>
-            <td><input data-addr="I110" class="num-input"></td>
-            <td><input data-addr="J110" class="num-input"></td>
-            <td>
-                <select data-addr="L110" class="status-select">
-                    <option>מתאים</option><option>לא מתאים</option>
-                </select>
-            </td>
+            <th>סעיף</th>
+            <th>תיאור הבדיקה / דרישה</th>
+            <th>מדידה</th>
+            <th>התאמה</th>
         </tr>
         <tr>
-            <td style="text-align:right;">10.3.4 ד' - העמסה משולבת של שני ניצבים (25 ק"ג)</td>
-            <td>לא יותר מ- 25</td>
-            <td><input data-addr="I112" class="num-input"></td>
-            <td><input data-addr="J112" class="num-input"></td>
-            <td>
-                <select data-addr="L112" class="status-select">
-                    <option>מתאים</option><option>לא מתאים</option>
-                </select>
-            </td>
-        </tr>
-        <tr style="background:#f0f0f0; font-weight:bold;">
-            <td style="text-align:right;">10.3.4 ד' + ב' - סכום התזוזות משתי ההעמסות</td>
-            <td>לא יותר מ- 25</td>
-            <td colspan="2"><input data-addr="I114" class="num-input" style="width:100%"></td>
-            <td>
-                <select data-addr="L114" class="status-select">
-                    <option>מתאים</option><option>לא מתאים</option>
-                </select>
-            </td>
+            <td>7.2.4</td>
+            <td class="req-col">גובה המעקה במרפסות (מינימום 105 ס"מ)</td>
+            <td><input data-addr="I56"></td>
+            <td><select data-addr="J56"><option>מתאים</option><option>לא מתאים</option><option>לא נבדק</option></select></td>
         </tr>
         <tr>
-            <td style="text-align:right;">10.3.4 ה' - העמסה של ניצב (25 ק"ג)</td>
-            <td>לא יותר מ- 25</td>
-            <td><input data-addr="I116" class="num-input"></td>
-            <td><input data-addr="J116" class="num-input"></td>
-            <td>
-                <select data-addr="L116" class="status-select">
-                    <option>מתאים</option><option>לא מתאים</option>
-                </select>
-            </td>
+            <td>5.1.2</td>
+            <td class="req-col">מניעת טיפוס (בין 10 ל-90 ס"מ)</td>
+            <td><input data-addr="I57"></td>
+            <td><select data-addr="J57"><option>מתאים</option><option>לא מתאים</option></select></td>
         </tr>
-    </tbody>
-</table>
+    </table>
+
+    <div class="section-title">סעיף מס' 2: העמסה אופקית בעומסים מרוכזים (10.3.4)</div>
+    <table>
+        <thead>
+            <tr>
+                <th>סעיף</th>
+                <th>תיאור הבדיקה</th>
+                <th>דרישה (מ"מ)</th>
+                <th>תזוזה אופקית</th>
+                <th>תזוזה שיורית</th>
+                <th>מסקנה</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>10.3.4 א'</td>
+                <td class="req-col">מחצית העומס המרוכז (12 ק"ג)</td>
+                <td>עד 12</td>
+                <td><input data-addr="I107"></td>
+                <td><input data-addr="J107"></td>
+                <td><select data-addr="L107"><option>מתאים</option><option>לא מתאים</option></select></td>
+            </tr>
+            <tr>
+                <td>10.3.4 א'</td>
+                <td class="req-col">עומס מרוכז מלא (25 ק"ג)</td>
+                <td>עד 25</td>
+                <td><input data-addr="I108"></td>
+                <td><input data-addr="J108"></td>
+                <td><select data-addr="L108"><option>מתאים</option><option>לא מתאים</option></select></td>
+            </tr>
+            <tr>
+                <td>10.3.4 ג'</td>
+                <td class="req-col">העמסה של ניצב (12 ק"ג)</td>
+                <td>עד 12</td>
+                <td><input data-addr="I110"></td>
+                <td><input data-addr="J110"></td>
+                <td><select data-addr="L110"><option>מתאים</option><option>לא מתאים</option></select></td>
+            </tr>
+            <tr style="background:#eeeeee;">
+                <td>10.3.4 ד'</td>
+                <td class="req-col"><b>סכום תזוזות משתי העמסות</b></td>
+                <td>עד 25</td>
+                <td colspan="2"><input data-addr="I114" style="width:90%"></td>
+                <td><select data-addr="L114"><option>מתאים</option><option>לא מתאים</option></select></td>
+            </tr>
+            <tr>
+                <td>10.3.4 ה'</td>
+                <td class="req-col">העמסה של ניצב (25 ק"ג)</td>
+                <td>עד 25</td>
+                <td><input data-addr="I116"></td>
+                <td><input data-addr="J116"></td>
+                <td><select data-addr="L116"><option>מתאים</option><option>לא מתאים</option></select></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button class="btn" onclick="generateExcel()">הפק דוח אקסל מעודכן</button>
+</div>
+
+<script>
+    function generateExcel() {
+        const data = {};
+        document.querySelectorAll('[data-addr]').forEach(el => {
+            data[el.getAttribute('data-addr')] = el.value;
+        });
+        console.log("Saving data:", data);
+        alert("הנתונים נשמרו. כעת ניתן להפיק את הקובץ.");
+        // כאן יבוא הקריאה לשרת (Fetch) כפי שהגדרנו קודם
+    }
+</script>
+
+</body>
+</html>
