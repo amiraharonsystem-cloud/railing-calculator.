@@ -14,9 +14,11 @@ app.post('/generate-excel', async (req, res) => {
 
         Object.keys(cells).forEach(addr => {
             const val = cells[addr];
-            if (val !== "") ws.getCell(addr).value = isNaN(val) ? val : Number(val);
+            if (val !== "") {
+                const cell = ws.getCell(addr);
+                cell.value = isNaN(val) ? val : Number(val);
+            }
         });
-
         res.send(await workbook.xlsx.writeBuffer());
     } catch (e) { res.status(500).send(e.message); }
 });
