@@ -12,60 +12,48 @@ app.post('/generate-excel', async (req, res) => {
         await workbook.xlsx.readFile(path.join(__dirname, 'template.xlsx'));
         const ws = workbook.getWorksheet(1);
 
-        // --- חלק 1: כותרות וזיהוי (שורות 2-10) ---
-        ws.getCell('H2').value = d.reportNum;
-        ws.getCell('L2').value = d.replacedReport;
-        ws.getCell('L3').value = d.testDate;
-        ws.getCell('C4').value = d.siteName;
-        ws.getCell('L4').value = d.projectId;
-        ws.getCell('C7').value = d.clientName;
-        ws.getCell('I7').value = d.clientAddress;
-        ws.getCell('L7').value = d.presenterName;
-        ws.getCell('C8').value = d.siteAddress;
-        ws.getCell('D9').value = d.testType;
+        // --- מילוי לפי כתובת תא מדויקת ---
+        // פרטי זיהוי
+        ws.getCell('H2').value = d.H2;   // מספר דו"ח
+        ws.getCell('L3').value = d.L3;   // תאריך
+        ws.getCell('C4').value = d.C4;   // שם האתר
+        ws.getCell('L4').value = d.L4;   // קוד פרויקט
+        ws.getCell('C7').value = d.C7;   // שם המזמין
+        ws.getCell('I7').value = d.I7;   // מען המזמין
+        ws.getCell('L7').value = d.L7;   // נציג המזמין
+        ws.getCell('C8').value = d.C8;   // כתובת האתר
+        ws.getCell('D9').value = d.D9;   // מהות הבדיקה
 
-        // --- חלק 2: מפרט טכני של המעקה (שורות 11-78) ---
-        ws.getCell('C11').value = d.structDesc;
-        ws.getCell('C12').value = d.itemDesc;
-        ws.getCell('C13').value = d.testLocation;
-        ws.getCell('I14').value = d.planStatus;
-        ws.getCell('I15').value = d.engStatus;
-        ws.getCell('I16').value = d.glassStatus;
-        
-        ws.getCell('C45').value = d.profileType;
-        ws.getCell('F45').value = d.profileFinish;
-        ws.getCell('C47').value = d.anchorType;
-        ws.getCell('I47').value = d.anchorDesc;
-        ws.getCell('C49').value = d.screwType;
-        ws.getCell('C55').value = d.topRail;
-        ws.getCell('C66').value = d.glassW;
-        ws.getCell('F66').value = d.glassH;
-        ws.getCell('I67').value = d.glassThick;
-        ws.getCell('I70').value = d.glassType;
+        // מפרט טכני (השורות שביקשת)
+        ws.getCell('C11').value = d.C11; // תיאור המבנה
+        ws.getCell('C12').value = d.C12; // תיאור הפריט
+        ws.getCell('C13').value = d.C13; // מיקום הבדיקה
+        ws.getCell('I14').value = d.I14; // תכנון מעקה
+        ws.getCell('I15').value = d.I15; // חישוב שלד
+        ws.getCell('I16').value = d.I16; // חישוב מליא
 
-        // --- חלק 3: נתוני רוח ועומסים (שורות 19-85) ---
-        ws.getCell('L19').value = d.Fser;
-        ws.getCell('L20').value = d.P_calc;
-        ws.getCell('L22').value = d.L1;
-        ws.getCell('L24').value = d.L2;
-        ws.getCell('L26').value = d.L_fill;
-        ws.getCell('I83').value = d.h_ground;
-        ws.getCell('I84').value = d.qb;
-        ws.getCell('G84').value = d.we_design;
-        ws.getCell('L32').value = d.ws_total;
+        // נתוני חומרים וברגים (שורות 45-78)
+        ws.getCell('C45').value = d.C45; // סוג פרופיל
+        ws.getCell('F45').value = d.F45; // גמר
+        ws.getCell('C47').value = d.C47; // סוג עיגון
+        ws.getCell('I47').value = d.I47; // תיאור עיגון
+        ws.getCell('C49').value = d.C49; // ברגים
+        ws.getCell('C55').value = d.C55; // מסעד יד
+        ws.getCell('I67').value = d.I67; // עובי זכוכית
+        ws.getCell('I70').value = d.I70; // סוג זכוכית
 
-        // --- חלק 4: טבלת תוצאות מלאה (107-117) ---
-        const rows = { '107':'a', '108':'b', '110':'c', '112':'d', '114':'db', '116':'e' };
-        for (let r in rows) {
-            ws.getCell(`I${r}`).value = d[`hor_${rows[r]}`];
-            ws.getCell(`J${r}`).value = d[`res_${rows[r]}`];
-            ws.getCell(`L${r}`).value = d[`stat_${rows[r]}`];
-        }
+        // נתוני חישוב ועומסים
+        ws.getCell('L19').value = d.L19; // Fser
+        ws.getCell('L20').value = d.L20; // P מחושב
+        ws.getCell('L22').value = d.L22; // L1
+        ws.getCell('L24').value = d.L24; // L2
+        ws.getCell('I32').value = d.I32; // We לחץ רוח
+        ws.getCell('L32').value = d.L32; // Ws עומס כולל
 
-        // --- חתימות (37-40) ---
-        ws.getCell('L37').value = d.conclusion;
-        ws.getCell('L38').value = d.tester;
-        ws.getCell('L39').value = d.approver;
+        // תוצאות
+        ws.getCell('I107').value = d.I107; // תזוזה א'
+        ws.getCell('J107').value = d.J107; // שיורית א'
+        ws.getCell('L107').value = d.L107; // מסקנה א'
 
         res.end(await workbook.xlsx.writeBuffer());
     } catch (e) { res.status(500).send(e.message); }
