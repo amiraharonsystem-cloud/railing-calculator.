@@ -8,57 +8,52 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// הגדרת נתיב לתיקיית public
-const publicPath = path.join(__dirname, 'public');
+// פתרון הבעיה: הגדרת נתיב מוחלט לתיקיית public
+const publicPath = path.resolve(__dirname, 'public');
 app.use(express.static(publicPath));
 
-// נתיב לקובץ האקסל
-const FILE_PATH = path.join(__dirname, 'database.xlsx');
+const FILE_PATH = path.join(__dirname, 'maake_reports.xlsx');
 
-// פתרון שגיאת "Cannot GET /" - שליחת דף הבית למשתמש
+// פותר את שגיאת "Cannot GET /"
 app.get('/', (req, res) => {
-    res.sendFile(path.join(publicPath, 'index.html'));
+    const indexPath = path.join(publicPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        res.status(404).send("Error: index.html not found in public folder");
+    }
 });
 
-// הוספת נתונים לאקסל
-app.post('/add-to-excel', async (req, res) => {
-    const { name, email, phone, city } = req.body;
-    const workbook = new ExcelJS.Workbook();
-    let worksheet;
-
+app.post('/add-row', async (req, res) => {
     try {
+        const workbook = new ExcelJS.Workbook();
+        let worksheet;
         if (fs.existsSync(FILE_PATH)) {
             await workbook.xlsx.readFile(FILE_PATH);
             worksheet = workbook.getWorksheet(1);
         } else {
-            worksheet = workbook.addWorksheet('נתוני לקוחות');
+            worksheet = workbook.addWorksheet('בדיקות');
             worksheet.columns = [
-                { header: 'שם מלא', key: 'name', width: 20 },
-                { header: 'אימייל', key: 'email', width: 25 },
-                { header: 'טלפון', key: 'phone', width: 15 },
-                { header: 'עיר', key: 'city', width: 15 }
+                { header: 'תאריך', key: 'date' },
+                { header: 'אתר', key: 'site' },
+                { header: 'פרויקט', key: 'code' },
+                { header: 'מזמין', key: 'client' },
+                { header: 'מיקום', key: 'loc' }
             ];
         }
-
-        worksheet.addRow({ name, email, phone, city });
+        worksheet.addRow(req.body);
         await workbook.xlsx.writeFile(FILE_PATH);
-        res.status(200).json({ message: 'הנתונים נשמרו בהצלחה!' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'שגיאה בשמירת הנתונים' });
+        res.status(200).json({ message: 'נשמר בהצלחה!' });
+    } catch (e) {
+        res.status(500).json({ message: e.message });
     }
 });
 
-// הורדת הקובץ
-app.get('/download-excel', (req, res) => {
-    if (fs.existsSync(FILE_PATH)) {
-        res.download(FILE_PATH);
-    } else {
-        res.status(404).send('הקובץ עדיין לא נוצר. אנא הזן נתונים תחילה.');
-    }
+app.get('/download', (req, res) => {
+    if (fs.existsSync(FILE_PATH)) res.download(FILE_PATH);
+    else res.status(404).send('הקובץ לא קיים');
 });
 
-// הגדרת פורט עבור Render
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
