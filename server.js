@@ -12,69 +12,45 @@ app.post('/generate-excel', async (req, res) => {
         await workbook.xlsx.readFile(path.join(__dirname, 'template.xlsx'));
         const ws = workbook.getWorksheet(1);
 
-        // פרטי פרויקט ואתר
+        // כותרת וזיהוי (שורות 3-10)
         ws.getCell('L3').value = d.testDate;
         ws.getCell('L4').value = d.projectId;
         ws.getCell('C4').value = d.siteName;
         ws.getCell('C7').value = d.clientName;
         ws.getCell('L7').value = d.presenterName;
         ws.getCell('C8').value = d.siteAddress;
-        ws.getCell('C10').value = d.structureType;
-        ws.getCell('C11').value = d.itemDesc;
-        ws.getCell('C12').value = d.testLocation;
-        ws.getCell('C13').value = d.planningStatus;
-        ws.getCell('C14').value = d.engineeringStatus;
+        ws.getCell('D9').value = d.testType; // ראשונה/חוזרת
 
-        // ערכים לחישוב (הזרקה למיקומים המקוריים)
+        // לפני הבדיקה (V או X)
+        ws.getCell('I14').value = d.planOk; 
+        ws.getCell('I15').value = d.engOk;
+        ws.getCell('I16').value = d.glassEngOk;
+
+        // פרטי המערכת
+        ws.getCell('C11').value = d.structureType;
+        ws.getCell('C12').value = d.itemDesc;
+        ws.getCell('C13').value = d.testLocation;
+
+        // ערכים לחישוב (התאמה מלאה לקובץ שהעלית)
         ws.getCell('L22').value = d.L1;
         ws.getCell('L24').value = d.L2;
         ws.getCell('L26').value = d.L_fill;
-        ws.getCell('L30').value = d.ws_load;
-        ws.getCell('L31').value = d.half_ws;
+        ws.getCell('L19').value = d.Fser; // עומס שירות
+        ws.getCell('L20').value = d.P_load; // P = Fser(1/2 L2 + 1/2 L1)
 
-        // מפרט טכני וזכוכית
-        ws.getCell('C45').value = d.profileType;
-        ws.getCell('C47').value = d.anchorType;
-        ws.getCell('C66').value = d.glassW;
-        ws.getCell('F66').value = d.glassH;
-        ws.getCell('I67').value = d.glassThick;
-        ws.getCell('I68').value = d.glassMark;
-        ws.getCell('I70').value = d.glassType;
-        ws.getCell('I72').value = d.glassManuf;
-        ws.getCell('I75').value = d.overlap;
-        ws.getCell('I76').value = d.sealing;
-
-        // עומסי רוח
-        ws.getCell('I83').value = d.h_pressure;
-        ws.getCell('I84').value = d.qb_val;
-        ws.getCell('G82').value = d.we_val;
-        ws.getCell('G83').value = d.fw_val;
-        ws.getCell('G84').value = d.ceze_val;
-        ws.getCell('G85').value = d.topRail_load;
-
-        // טבלת תוצאות (107-117)
-        const rows = { 'a': 107, 'b': 108, 'c': 110, 'd': 112, 'db': 114, 'e': 116 };
-        for (let k in rows) {
-            ws.getCell(`I${rows[k]}`).value = d[`hor_${k}`];
-            ws.getCell(`J${rows[k]}`).value = d[`res_${k}`];
-            ws.getCell(`L${rows[k]}`).value = d[`stat_${k}`];
+        // תוצאות בדיקה (סעיף 10.3.4 ו-10.3.5)
+        const mapping = { 'a': 107, 'b': 108, 'c': 110, 'd': 112, 'db': 114, 'e': 116 };
+        for (let key in mapping) {
+            ws.getCell(`I${mapping[key]}`).value = d[`hor_${key}`];
+            ws.getCell(`J${mapping[key]}`).value = d[`res_${key}`];
+            ws.getCell(`L${mapping[key]}`).value = d[`stat_${key}`];
         }
 
-        // סיכום, התאמה וחתימות
-        ws.getCell('L28').value = d.match1;
-        ws.getCell('L29').value = d.match2;
-        ws.getCell('L30').value = d.match3;
-        ws.getCell('L31').value = d.match4;
-        ws.getCell('L37').value = d.finalConclusion;
-        ws.getCell('L38').value = d.inspectorName;
-        ws.getCell('L39').value = d.approverName;
-        ws.getCell('C40').value = d.comments;
-
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', 'attachment; filename=Railing_Test_Report.xlsx');
+        res.setHeader('Content-Disposition', 'attachment; filename=Railing_Report.xlsx');
         await workbook.xlsx.write(res);
         res.end();
-    } catch (e) { res.status(500).send("Error"); }
+    } catch (e) { res.status(500).send("שגיאה"); }
 });
 
 app.listen(10000, '0.0.0.0');
