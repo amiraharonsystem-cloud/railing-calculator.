@@ -3,37 +3,37 @@ const ExcelJS = require('exceljs');
 const path = require('path');
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: '50mb' })); // תמיכה בכמות נתונים גדולה מאוד
 app.use(express.static('public'));
 
 app.post('/generate-excel', async (req, res) => {
     try {
-        const { cells } = req.body; 
+        const { cells } = req.body;
         const workbook = new ExcelJS.Workbook();
         
-        // טעינת הקובץ המקורי שלך כבסיס
+        // טעינת הטמפלייט האמיתי שלך
         await workbook.xlsx.readFile(path.join(__dirname, 'template.xlsx'));
         const ws = workbook.getWorksheet(1);
 
-        // לולאת הזרקה לכל תא ותא שמוגדר בממשק
+        // הזרקה מוחלטת לכל תא ותא שנשלח מהווב
         Object.keys(cells).forEach(address => {
-            const value = cells[address];
-            if (value !== undefined && value !== "") {
+            const val = cells[address];
+            if (val !== undefined && val !== "") {
                 const cell = ws.getCell(address);
-                // המרה למספר במידת האפשר כדי לשמור על תקינות הנוסחאות באקסל
-                cell.value = (isNaN(value) || value === "") ? value : Number(value);
+                // המרה למספר במידה והנתון הוא הנדסי (לשמירה על נוסחאות האקסל)
+                cell.value = (isNaN(val) || val.trim() === "") ? val : Number(val);
             }
         });
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', 'attachment; filename=Full_Engineering_Report_1142.xlsx');
+        res.setHeader('Content-Disposition', 'attachment; filename=Engineering_Report_1142_Final.xlsx');
         
         const buffer = await workbook.xlsx.writeBuffer();
         res.send(buffer);
     } catch (e) {
-        console.error("Excel Error:", e);
-        res.status(500).send("שגיאה ביצירת הקובץ");
+        console.error(e);
+        res.status(500).send("Error generating file");
     }
 });
 
-app.listen(3000, () => console.log('Server is live on http://localhost:3000'));
+app.listen(3000, () => console.log('Full System Running on http://localhost:3000'));
