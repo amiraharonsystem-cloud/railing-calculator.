@@ -15,40 +15,40 @@ app.post('/generate-excel', async (req, res) => {
         await workbook.xlsx.readFile(path.join(__dirname, 'template.xlsx'));
         const ws = workbook.getWorksheet(1);
 
-        // --- עמוד 1: זיהוי (שורות 1-14) ---
-        ws.getCell('L3').value = d.testDate;
-        ws.getCell('C4').value = d.siteName;
-        ws.getCell('L4').value = d.projectId;
-        ws.getCell('C7').value = d.clientName;
-        ws.getCell('L7').value = d.clientRep;
-        ws.getCell('C8').value = d.siteAddress;
-        ws.getCell('C10').value = d.structure;
-        ws.getCell('C11').value = d.itemDesc;
-        ws.getCell('C12').value = d.testLoc;
-        ws.getCell('C13').value = d.planning;    // "הוגש" או "לא הוגש"
-        ws.getCell('C14').value = d.engineering; // "הוגש" או "לא הוגש"
+        // --- חלק 1: פרטי זיהוי (שורות 3-14) ---
+        ws.getCell('L3').value = d.L3;   // תאריך
+        ws.getCell('C4').value = d.C4;   // שם אתר
+        ws.getCell('L4').value = d.L4;   // קוד פרויקט
+        ws.getCell('C7').value = d.C7;   // שם מזמין
+        ws.getCell('L7').value = d.L7;   // נציג
+        ws.getCell('C8').value = d.C8;   // כתובת
+        ws.getCell('C10').value = d.C10; // תיאור מבנה
+        ws.getCell('C11').value = d.C11; // תיאור פריט
+        ws.getCell('C12').value = d.C12; // מיקום בדיקה
+        ws.getCell('C13').value = d.C13; // תכנון (הוגש/לא הוגש)
+        ws.getCell('C14').value = d.C14; // חישוב (הוגש/לא הוגש)
 
-        // --- עמוד 2: מדידות טכניות (שורות 22-26) ---
-        ws.getCell('L22').value = d.L1;
-        ws.getCell('L24').value = d.L2;
-        ws.getCell('L26').value = d.L_fill;
+        // --- חלק 2: גיאומטריה ומדידות (שורות 22-31) ---
+        ws.getCell('L22').value = d.L22; // L1
+        ws.getCell('L24').value = d.L24; // L2
+        ws.getCell('L26').value = d.L26; // L_fill
+        ws.getCell('L30').value = d.L30; // ws
+        ws.getCell('L31').value = d.L31; // 0.5ws
 
-        // --- עמוד 3: עומסים ותוצאות (שורות 30-138) ---
-        ws.getCell('L30').value = d.ws;
-        ws.getCell('L31').value = d.half_ws;
-        ws.getCell('G35').value = d.res1033; // "עמד" או "לא עמד"
-        ws.getCell('G36').value = d.res1034;
-        ws.getCell('G37').value = d.res1035;
+        // --- חלק 3: תוצאות בדיקה (שורות 35-138) ---
+        ws.getCell('G35').value = d.G35; // עמד/לא עמד
+        ws.getCell('G36').value = d.G36; // עמד/לא עמד
+        ws.getCell('G37').value = d.G37; // עמד/לא עמד
         
-        ws.getCell('C40').value = d.comments;
-        ws.getCell('C42').value = d.inspector;
+        ws.getCell('C40').value = d.C40; // הערות
+        ws.getCell('C42').value = d.C42; // שם בודק
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', 'attachment; filename=Report.xlsx');
+        res.setHeader('Content-Disposition', 'attachment; filename=Report_Full.xlsx');
         const buffer = await workbook.xlsx.writeBuffer();
         res.send(buffer);
     } catch (error) {
-        res.status(500).send("שגיאה: הקובץ template.xlsx חייב להיות ב-GitHub");
+        res.status(500).send("שגיאה: וודא שקובץ template.xlsx נמצא ב-GitHub");
     }
 });
 
