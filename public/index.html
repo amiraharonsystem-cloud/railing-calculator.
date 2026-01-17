@@ -2,93 +2,98 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>דו"ח בדיקה ת"י 1142</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת דו"ח מעבדה ת"י 1142</title>
     <style>
-        body { font-family: Arial; direction: rtl; padding: 20px; background: #fdfdfd; }
-        .form-page { max-width: 850px; margin: auto; border: 1px solid #000; background: #fff; padding: 40px; }
-        .line { display: flex; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        .lbl { font-weight: bold; width: 200px; font-size: 14px; }
-        input, select { border: 1px solid #ccc; padding: 4px; flex-grow: 1; }
-        .section-head { background: #eee; padding: 5px; font-weight: bold; margin: 20px 0 10px; border: 1px solid #000; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #000; padding: 8px; text-align: center; }
-        .btn { background: #000; color: #fff; width: 100%; padding: 20px; margin-top: 30px; cursor: pointer; font-weight: bold; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; direction: rtl; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .section-title { background: #2c3e50; color: white; padding: 10px; margin-top: 25px; font-weight: bold; }
+        .field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; border: 1px solid #eee; }
+        label { font-size: 13px; font-weight: bold; color: #444; }
+        input, select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        .btn { background: #27ae60; color: white; width: 100%; padding: 20px; border: none; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div class="form-page">
-    <div style="text-align: center; font-weight: bold; font-size: 18px;">תעודת בדיקת מעקה במעטפת הבניין - ת"י 1142</div>
-    
-    <div class="section-head">1. פרטי הלקוח וזיהוי ההזמנה</div>
-    <div class="line"><span class="lbl">שם המזמין:</span><input id="clientName"></div>
-    <div class="grid-3">
-        <div class="line"><span class="lbl">מען המזמין:</span><input id="clientAddress"></div>
-        <div class="line"><span class="lbl">נציג המזמין:</span><input id="presenterName"></div>
-        <div class="line"><span class="lbl">תאריך בדיקה:</span><input type="date" id="testDate"></div>
-    </div>
-    <div class="grid-3">
-        <div class="line"><span class="lbl">שם האתר:</span><input id="siteName"></div>
-        <div class="line"><span class="lbl">כתובת האתר:</span><input id="siteAddress"></div>
-        <div class="line"><span class="lbl">קוד פרויקט:</span><input id="projectId"></div>
-    </div>
-    <div class="line"><span class="lbl">הבדיקה הינה:</span><select id="testType"><option>ראשונה</option><option>חוזרת</option></select></div>
+<div class="container">
+    <h1 style="text-align: center;">מערכת הפקת דו"ח בדיקה - ת"י 1142</h1>
 
-    <div class="section-head">2. פרטים על המערכת שנבדקה</div>
-    <div class="line"><span class="lbl">תיאור המבנה:</span><input id="structureType"></div>
-    <div class="line"><span class="lbl">תיאור הפריט:</span><input id="itemDesc"></div>
-    <div class="line"><span class="lbl">מיקום הבדיקה:</span><input id="testLocation"></div>
-    
-    <div class="section-head">לפני הבדיקה (סטטוס מסמכים)</div>
-    <div class="grid-3">
-        <div class="line"><span>תכנון המעקה:</span><select id="planStatus"><option>הוגש</option><option>לא הוגש</option></select></div>
-        <div class="line"><span>חישוב שלד:</span><select id="engStatus"><option>הוגש</option><option>לא הוגש</option></select></div>
-        <div class="line"><span>חישוב לוח מליא:</span><select id="glassStatus"><option>הוגש</option><option>לא הוגש</option></select></div>
+    <div class="section-title">1. פרטי הלקוח וזיהוי ההזמנה</div>
+    <div class="field-group">
+        <div><label>שם המזמין</label><input type="text" id="clientName"></div>
+        <div><label>מען המזמין</label><input type="text" id="clientAddress"></div>
+        <div><label>נציג המזמין בבדיקה</label><input type="text" id="presenterName"></div>
+        <div><label>תאריך בדיקה</label><input type="date" id="testDate"></div>
+        <div><label>שם האתר</label><input type="text" id="siteName"></div>
+        <div><label>כתובת האתר</label><input type="text" id="siteAddress"></div>
+        <div><label>קוד פרויקט</label><input type="text" id="projectId"></div>
+        <div><label>הבדיקה הינה</label><select id="testType"><option>ראשונה</option><option>חוזרת</option></select></div>
     </div>
 
-    <div class="section-head">3. נתונים וערכים לחישוב</div>
-    <div class="grid-3">
-        <div class="line"><span>Fser (ק"נ/מ'):</span><input id="Fser"></div>
-        <div class="line"><span>L1 (מ'):</span><input id="L1"></div>
-        <div class="line"><span>L2 (מ'):</span><input id="L2"></div>
-    </div>
-    <div class="grid-3">
-        <div class="line"><span>P מחושב:</span><input id="P_calc"></div>
-        <div class="line"><span>L מפתח מליא:</span><input id="L_fill"></div>
-    </div>
-
-    <div class="section-head">חישוב עומס רוח על לוח מליא (10.3.5 ג')</div>
-    <div class="grid-3">
-        <div class="line"><span>we (נ'/מ"ר):</span><input id="we_val"></div>
-        <div class="line"><span>S - שטח הלוח:</span><input id="S_area"></div>
-        <div class="line"><span>ws (עומס כולל):</span><input id="ws_total"></div>
+    <div class="section-title">2. פרטים על המערכת וסטטוס לפני בדיקה</div>
+    <div class="field-group">
+        <div><label>תיאור המבנה</label><input type="text" id="structureType"></div>
+        <div><label>תיאור הפריט שנבדק</label><input type="text" id="itemDesc"></div>
+        <div><label>מיקום הבדיקה</label><input type="text" id="testLocation"></div>
+        <div><label>תכנון המעקה</label><select id="planStatus"><option>הוגש</option><option>לא הוגש</option></select></div>
+        <div><label>חישוב הנדסי שלד</label><select id="engStatus"><option>הוגש</option><option>לא הוגש</option></select></div>
+        <div><label>חישוב לוח מליא</label><select id="glassStatus"><option>הוגש</option><option>לא הוגש</option></select></div>
     </div>
 
-    <div class="section-head">תוצאות הבדיקה</div>
+    <div class="section-title">3. נתונים וערכים לחישוב (Fser, L1, L2)</div>
+    <div class="field-group">
+        <div><label>Fser (ק"נ/מ')</label><input type="number" step="0.01" id="Fser"></div>
+        <div><label>L1 - מרחק בין ניצבים (מ')</label><input type="number" step="0.01" id="L1"></div>
+        <div><label>L2 - מפתח שדה סמוך (מ')</label><input type="number" step="0.01" id="L2"></div>
+        <div><label>P - עומס מחושב (ק"נ)</label><input type="number" step="0.01" id="P_calc"></div>
+        <div><label>L - מפתח לוח מליא (מ')</label><input type="number" step="0.01" id="L_fill"></div>
+    </div>
+
+    <div class="section-title">חישוב עומס רוח (10.3.5 ג')</div>
+    <div class="field-group">
+        <div><label>we - לחץ רוח תכנוני (נ'/מ"ר)</label><input type="number" id="we_val"></div>
+        <div><label>S - שטח הלוח (מ"ר)</label><input type="number" step="0.01" id="S_area"></div>
+        <div><label>ws - עומס כולל (נ')</label><input type="number" id="ws_total"></div>
+    </div>
+
+    <div class="section-title">תוצאות הבדיקה</div>
     <table>
-        <tr><th>מס' סעיף</th><th>תאור</th><th>תזוזה I</th><th>שיורית J</th><th>מסקנה</th></tr>
-        <tr><td>10.3.4 א'</td><td>העמסה אופקית מרוכזת</td><td><input id="hor_a"></td><td><input id="res_a"></td><td><select id="stat_a"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
-        <tr><td>10.3.4 ב'</td><td>העמסה אופקית מחזורית</td><td><input id="hor_b"></td><td><input id="res_b"></td><td><select id="stat_b"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
-        <tr><td>10.3.5 ג'</td><td>העמסה על לוח מליא</td><td><input id="hor_c"></td><td><input id="res_c"></td><td><select id="stat_c"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
+        <thead>
+            <tr><th>סעיף</th><th>תאור</th><th>תזוזה I</th><th>שיורית J</th><th>מסקנה</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>10.3.4 א'</td><td>אופקית מרוכזת</td><td><input id="hor_a"></td><td><input id="res_a"></td><td><select id="stat_a"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
+            <tr><td>10.3.4 ב'</td><td>אופקית מחזורית</td><td><input id="hor_b"></td><td><input id="res_b"></td><td><select id="stat_b"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
+            <tr><td>10.3.5 ג'</td><td>לוח מליא</td><td><input id="hor_c"></td><td><input id="res_c"></td><td><select id="stat_c"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
+        </tbody>
     </table>
 
-    <button class="btn" onclick="send()">הפק אקסל זהה לחלוטין למקור</button>
+    <div class="section-title">סיכום וחתימות</div>
+    <div class="field-group">
+        <div style="grid-column: span 2;"><label>מסקנה סופית</label><input type="text" id="conclusion" value="המעקה עומד בדרישות התקן"></div>
+        <div><label>שם הבודק</label><input type="text" id="testerName"></div>
+        <div><label>שם המאשר</label><input type="text" id="approverName"></div>
+    </div>
+
+    <button class="btn" onclick="generate()">💾 הפק אקסל מלא - ללא השמטות</button>
 </div>
 
 <script>
-    async function send() {
-        const d = {};
-        document.querySelectorAll('input, select').forEach(el => d[el.id] = el.value);
+    async function generate() {
+        const data = {};
+        document.querySelectorAll('input, select').forEach(el => data[el.id] = el.value);
         const res = await fetch('/generate-excel', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(d)
+            body: JSON.stringify(data)
         });
-        const b = await res.blob();
+        const blob = await res.blob();
         const a = document.createElement('a');
-        a.href = URL.createObjectURL(b);
-        a.download = "Railing_Report.xlsx";
+        a.href = URL.createObjectURL(blob);
+        a.download = "Railing_Report_Complete.xlsx";
         a.click();
     }
 </script>
