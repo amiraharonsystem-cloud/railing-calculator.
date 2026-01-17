@@ -9,26 +9,24 @@ app.post('/generate-excel', async (req, res) => {
     try {
         const { cells } = req.body; 
         const workbook = new ExcelJS.Workbook();
-        // טעינת הטמפלייט המקורי שלך
         await workbook.xlsx.readFile(path.join(__dirname, 'template.xlsx'));
         const ws = workbook.getWorksheet(1);
 
-        // הזרקה אבסולוטית של כל תא ותא שנשלח מהממשק
+        // הזרקה דינמית לכל תא ותא שמופיע בטופס ה-HTML
         Object.keys(cells).forEach(address => {
-            const cell = ws.getCell(address);
-            cell.value = cells[address];
-            // שמירה על פורמט בסיסי אם מדובר במספר
-            if (!isNaN(cells[address]) && cells[address] !== "") {
-                cell.value = Number(cells[address]);
+            const value = cells[address];
+            if (value !== undefined && value !== "") {
+                const cell = ws.getCell(address);
+                // אם הערך הוא מספר, נזין אותו כמספר כדי שנוסחאות האקסל יפעלו
+                cell.value = isNaN(value) ? value : Number(value);
             }
         });
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', 'attachment; filename=Full_Report_1142.xlsx');
-        const buffer = await workbook.xlsx.writeBuffer();
-        res.send(buffer);
+        res.setHeader('Content-Disposition', 'attachment; filename=Full_Railing_Report.xlsx');
+        res.send(await workbook.xlsx.writeBuffer());
     } catch (e) {
-        res.status(500).send("Error: " + e.message);
+        res.status(500).send("Error generating file: " + e.message);
     }
 });
 
