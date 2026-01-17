@@ -12,49 +12,51 @@ app.post('/generate-excel', async (req, res) => {
     try {
         const d = req.body;
         const workbook = new ExcelJS.Workbook();
-        const templatePath = path.join(__dirname, 'template.xlsx');
-        
-        await workbook.xlsx.readFile(templatePath);
+        await workbook.xlsx.readFile(path.join(__dirname, 'template.xlsx'));
         const ws = workbook.getWorksheet(1);
 
-        // מיפוי שדות לפי האקסל שלך
-        ws.getCell('L3').value = d.testDate;      
-        ws.getCell('C4').value = d.siteName;      
-        ws.getCell('L4').value = d.projectId;     
-        ws.getCell('C7').value = d.clientName;    
-        ws.getCell('L7').value = d.clientRep;     
-        ws.getCell('C8').value = d.siteAddress;   
-        ws.getCell('C10').value = d.structure;    
-        ws.getCell('C11').value = d.itemDesc;     
-        ws.getCell('C12').value = d.location;     
-        ws.getCell('C13').value = d.planningStatus; 
+        // --- פרטי כותרת ---
+        ws.getCell('L3').value = d.testDate;
+        ws.getCell('C4').value = d.siteName;
+        ws.getCell('L4').value = d.projectId;
 
-        // מדידות טכניות
-        ws.getCell('L22').value = d.L1; 
-        ws.getCell('L24').value = d.L2; 
-        ws.getCell('L26').value = d.L_fill; 
-        ws.getCell('L30').value = d.windLoad;
+        // --- 1. פרטי לקוח וזיהוי ---
+        ws.getCell('C7').value = d.clientName;
+        ws.getCell('L7').value = d.clientRep;
+        ws.getCell('C8').value = d.siteAddress;
+        ws.getCell('C10').value = d.structure;
+        ws.getCell('C11').value = d.itemDesc;
+        ws.getCell('C12').value = d.location;
+        ws.getCell('C13').value = d.planningStatus; // תכנון המעקה
+        ws.getCell('C14').value = d.calculationStatus; // חישוב הנדסי
 
-        // תוצאות בדיקה (V/X)
-        ws.getCell('B35').value = d.check1033;
-        ws.getCell('B36').value = d.check1034;
-        ws.getCell('B37').value = d.check1035;
-        
-        ws.getCell('C40').value = d.comments;      
-        ws.getCell('C42').value = d.inspectorName; 
+        // --- 2. תיאור הגיאומטריה (L1, L2, L) ---
+        ws.getCell('L22').value = d.L1;
+        ws.getCell('L24').value = d.L2;
+        ws.getCell('L26').value = d.L_fill;
 
-        // שליחה ישירה ללא שמירה בשרת
+        // --- 3. עומסי רוח ---
+        ws.getCell('L30').value = d.ws; // עומס רוח we x S
+        ws.getCell('L31').value = d.halfWs; // מחצית עומס רוח
+
+        // --- 4. טבלת תוצאות בדיקה (V/X/NA) ---
+        ws.getCell('G35').value = d.res1033; // 10.3.3
+        ws.getCell('G36').value = d.res1034; // 10.3.4
+        ws.getCell('G37').value = d.res1035; // 10.3.5
+
+        // --- 5. הערות וסיכום ---
+        ws.getCell('C40').value = d.comments;
+        ws.getCell('C42').value = d.inspectorName;
+
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', 'attachment; filename=Railing_Report.xlsx');
+        res.setHeader('Content-Disposition', `attachment; filename=Report_${d.projectId}.xlsx`);
         
         const buffer = await workbook.xlsx.writeBuffer();
         res.send(buffer);
-
     } catch (error) {
-        console.error(error);
-        res.status(500).send("שגיאה: וודא שהעלית קובץ template.xlsx לגיטהאב");
+        res.status(500).send("וודא שהעלית את template.xlsx לגיטהאב: " + error.message);
     }
 });
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, '0.0.0.0', () => console.log('Server Live'));
+app.listen(PORT, '0.0.0.0', () => console.log('Server Ready'));
