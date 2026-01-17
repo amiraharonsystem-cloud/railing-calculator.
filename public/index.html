@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת דוח ת"י 1142 - גרסה מלאה ומקצועית</title>
+    <title>מערכת דוח ת"י 1142 - גרסה מלאה וסופית</title>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Assistant', sans-serif; background: #f0f2f5; padding: 20px; direction: rtl; margin: 0; }
@@ -18,7 +18,7 @@
         .num-field { background: #fffde7; font-weight: bold; text-align: center; border: 1px solid #1a237e; }
         .auto-calc { background: #e3f2fd !important; color: #0d47a1; font-weight: bold; }
         .admin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; background: #f8f9fa; padding: 25px; border: 1px solid #dee2e6; margin-bottom: 20px; }
-        .btn-submit { background: #2e7d32; color: white; padding: 20px; width: 100%; font-size: 1.6rem; border: none; cursor: pointer; margin-top: 40px; font-weight: bold; border-radius: 6px; transition: 0.3s; }
+        .btn-submit { background: #2e7d32; color: white; padding: 20px; width: 100%; font-size: 1.6rem; border: none; cursor: pointer; margin-top: 40px; font-weight: bold; border-radius: 6px; }
     </style>
 </head>
 <body>
@@ -54,18 +54,18 @@
     <table>
         <tr><th>סעיף</th><th>שלב הבדיקה</th><th>ערך עומס</th><th>תזוזה אופקית</th><th>תזוזה שיורית</th><th>מסקנה</th></tr>
         <tr><td>10.3.4 א'</td><td class="req-text">מחצית העומס המרוכז (אוטומטי)</td><td><input id="halfLoad" data-addr="H107" class="num-field auto-calc" readonly></td><td><input id="h1_disp" data-addr="I107" class="num-field" oninput="calcSum()"></td><td><input data-addr="J107" class="num-field"></td><td><select data-addr="L107"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
-        <tr><td>10.3.4 א'</td><td class="req-text">העומס המרוכז המלא</td><td><input id="fullLoad" data-addr="H108" class="num-field" oninput="updateHalf()"></td><td><input data-addr="I108" class="num-field"></td><td><input data-addr="J108" class="num-field"></td><td><select data-addr="L108"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
+        <tr><td>10.3.4 א'</td><td class="req-text">העומס המרוכז המלא</td><td><input id="fullLoad" data-addr="H108" class="num-field" oninput="updateHalf()"></td><td><input id="h1_full_disp" data-addr="I108" class="num-field"></td><td><input data-addr="J108" class="num-field"></td><td><select data-addr="L108"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
         <tr><td>10.3.4 ג'</td><td class="req-text">העמסה של ניצב (שלב ביניים)</td><td><input data-addr="H110" class="num-field"></td><td><input id="h2_disp" data-addr="I110" class="num-field" oninput="calcSum()"></td><td><input data-addr="J110" class="num-field"></td><td><select data-addr="L110"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
         <tr style="background:#e8f5e9;"><td>10.3.4 ד'</td><td class="req-text">סכום תזוזות אופקיות (א'+ג')</td><td>-</td><td colspan="2"><input id="totalDisp" data-addr="I114" class="num-field auto-calc" readonly></td><td><select data-addr="L114"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
     </table>
 
     <div class="section-header">סעיף מס' 4: בדיקה חזותית לאחר העמסה (136-138)</div>
     <table>
-        <tr><td class="req-text">אי-גילוי סדקים, עיוות או נזק בזמן העמסה (136)</td><td><select data-addr="L136"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
-        <tr><td class="req-text">שלמות חיבורים ועגינה לאחר הסרת העומס (138)</td><td><select data-addr="L138"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
+        <tr><td class="req-text">אי-גילוי סדקים, עיוות או נזק בזמן העמסה</td><td><select data-addr="L136"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
+        <tr><td class="req-text">שלמות חיבורים ועגינה לאחר הסרת העומס</td><td><select data-addr="L138"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
     </table>
 
-    <button class="btn-submit" onclick="exportData()">📥 הפק דוח אקסל מלא ומקצועי (כל 138 השורות)</button>
+    <button class="btn-submit" onclick="exportData()">📥 הפק דוח אקסל מלא ומקובץ</button>
 </div>
 
 <script>
@@ -80,18 +80,24 @@
     }
     async function exportData() {
         const cells = {};
-        document.querySelectorAll('[data-addr]').forEach(el => cells[el.getAttribute('data-addr')] = el.value);
-        const fileName = `דוח_מעקה_${document.getElementById('projectNum').value || 'פרויקט'}.xlsx`;
+        document.querySelectorAll('[data-addr]').forEach(el => {
+            cells[el.getAttribute('data-addr')] = el.value;
+        });
+        
         const response = await fetch('/generate-excel', { 
             method: 'POST', 
             headers: {'Content-Type': 'application/json'}, 
-            body: JSON.stringify({ cells, fileName }) 
+            body: JSON.stringify({ 
+                cells: cells, 
+                fileName: `דוח_מעקה_${document.getElementById('projectNum').value || 'כללי'}.xlsx` 
+            }) 
         });
+        
         if (response.ok) {
             const blob = await response.blob();
             const link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
-            link.download = fileName;
+            link.download = `דוח_מעקה_${document.getElementById('projectNum').value}.xlsx`;
             link.click();
         }
     }
