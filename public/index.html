@@ -2,57 +2,105 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מערכת מעקב דוחות</title>
     <style>
-        body { font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
-        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h2 { color: #333; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 450px; }
+        h2 { color: #1a73e8; text-align: center; margin-bottom: 25px; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; }
+        
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #444; }
+        input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; background-color: #fafafa; }
+        input:focus { border-color: #1a73e8; outline: none; background-color: #fff; }
+        
+        button { width: 100%; padding: 14px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 18px; font-weight: bold; margin-top: 10px; transition: background 0.3s; }
         button:hover { background-color: #218838; }
-        .download-link { display: block; text-align: center; margin-top: 15px; color: #007bff; text-decoration: none; font-weight: bold; }
+        
+        #status { text-align: center; margin-top: 15px; font-weight: bold; min-height: 24px; }
+        .download-btn { display: block; text-align: center; margin-top: 20px; padding: 10px; color: #1a73e8; text-decoration: none; border: 1px dashed #1a73e8; border-radius: 6px; }
+        .download-btn:hover { background-color: #f1f8ff; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>הזנת דוח חדש</h2>
-        <input type="text" id="date" placeholder="תאריך (DD/MM/YYYY)">
-        <input type="text" id="site" placeholder="שם האתר">
-        <input type="text" id="code" placeholder="קוד פרויקט">
-        <input type="text" id="client" placeholder="שם המזמין">
-        <input type="text" id="loc" placeholder="מיקום">
-        <button onclick="saveData()">שמור באקסל</button>
-        <p id="status" style="text-align: center; font-weight: bold;"></p>
-        <a href="/download" class="download-link">⬇️ הורד קובץ אקסל המלא</a>
+
+<div class="container">
+    <h2>הזנת נתונים לאקסל</h2>
+    
+    <div class="form-group">
+        <label>תאריך:</label>
+        <input type="text" id="date" placeholder="למשל: 17/01/2026">
     </div>
 
-    <script>
-        async function saveData() {
-            const data = {
-                date: document.getElementById('date').value,
-                site: document.getElementById('site').value,
-                code: document.getElementById('code').value,
-                client: document.getElementById('client').value,
-                loc: document.getElementById('loc').value
-            };
+    <div class="form-group">
+        <label>שם אתר:</label>
+        <input type="text" id="site" placeholder="הכנס שם אתר">
+    </div>
 
-            const status = document.getElementById('status');
-            status.innerText = "שומר...";
+    <div class="form-group">
+        <label>קוד פרויקט:</label>
+        <input type="text" id="code" placeholder="הכנס קוד פרויקט">
+    </div>
 
-            try {
-                const response = await fetch('/add-row', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                const res = await response.json();
-                status.innerText = res.message;
+    <div class="form-group">
+        <label>שם מזמין:</label>
+        <input type="text" id="client" placeholder="מי המזמין?">
+    </div>
+
+    <div class="form-group">
+        <label>מיקום:</label>
+        <input type="text" id="loc" placeholder="מיקום גיאוגרפי">
+    </div>
+
+    <button onclick="saveToExcel()">💾 שמור באקסל</button>
+    
+    <p id="status"></p>
+    
+    <a href="/download" class="download-btn">⬇️ הורד את קובץ האקסל המלא</a>
+</div>
+
+<script>
+    async function saveToExcel() {
+        const status = document.getElementById('status');
+        const data = {
+            date: document.getElementById('date').value,
+            site: document.getElementById('site').value,
+            code: document.getElementById('code').value,
+            client: document.getElementById('client').value,
+            loc: document.getElementById('loc').value
+        };
+
+        if (!data.date || !data.site) {
+            status.innerText = "נא למלא לפחות תאריך ושם אתר";
+            status.style.color = "red";
+            return;
+        }
+
+        status.innerText = "מעבד נתונים...";
+        status.style.color = "blue";
+
+        try {
+            const response = await fetch('/add-row', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            if (response.ok) {
+                status.innerText = "✅ נשמר בהצלחה באקסל!";
                 status.style.color = "green";
-            } catch (e) {
-                status.innerText = "שגיאה בחיבור לשרת";
+                // ניקוי שדות
+                document.querySelectorAll('input').forEach(i => i.value = "");
+            } else {
+                status.innerText = "❌ שגיאה בשמירה";
                 status.style.color = "red";
             }
+        } catch (e) {
+            status.innerText = "❌ שגיאה בחיבור לשרת";
+            status.style.color = "red";
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
