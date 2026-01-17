@@ -1,71 +1,33 @@
 const express = require('express');
-const ExcelJS = require('exceljs');
 const path = require('path');
 const fs = require('fs');
-const cors = require('cors');
 
 const app = express();
 app.use(express.json());
-app.use(cors());
 
-// פתרון סופי לבעיית הנתיבים - בודק איפה אנחנו נמצאים
-const rootDir = process.cwd();
-const publicPath = path.join(rootDir, 'public');
+// מציאת הנתיב הנוכחי של השרת
+const currentDir = process.cwd();
 
-// משרת קבצים סטטיים
-app.use(express.static(publicPath));
-
-const FILE_PATH = path.join(rootDir, 'maake_reports.xlsx');
-
-// דף הבית - מנסה למצוא את הקובץ בכמה דרכים
+// פונקציה חכמה למציאת index.html
 app.get('/', (req, res) => {
-    const locations = [
-        path.join(publicPath, 'index.html'),
-        path.join(rootDir, 'public', 'index.html'),
+    const pathsToTry = [
+        path.join(currentDir, 'public', 'index.html'),
+        path.join(currentDir, 'index.html'),
         path.join(__dirname, 'public', 'index.html')
     ];
 
-    for (let loc of locations) {
-        if (fs.existsSync(loc)) {
-            return res.sendFile(loc);
+    for (let p of pathsToTry) {
+        if (fs.existsSync(p)) {
+            return res.sendFile(p);
         }
     }
-    
-    // אם הגענו לכאן, הקובץ באמת לא נמצא
-    res.status(404).send(`Error: index.html not found. Locations searched: ${locations.join(', ')}`);
+    res.status(404).send("Error: index.html not found. Please check Root Directory in Render Settings.");
 });
 
-app.post('/add-row', async (req, res) => {
-    try {
-        const workbook = new ExcelJS.Workbook();
-        let worksheet;
-        if (fs.existsSync(FILE_PATH)) {
-            await workbook.xlsx.readFile(FILE_PATH);
-            worksheet = workbook.getWorksheet(1);
-        } else {
-            worksheet = workbook.addWorksheet('בדיקות');
-            worksheet.columns = [
-                { header: 'תאריך', key: 'date' },
-                { header: 'אתר', key: 'site' },
-                { header: 'פרויקט', key: 'code' },
-                { header: 'מזמין', key: 'client' },
-                { header: 'מיקום', key: 'loc' }
-            ];
-        }
-        worksheet.addRow(req.body);
-        await workbook.xlsx.writeFile(FILE_PATH);
-        res.status(200).json({ message: 'נשמר בהצלחה!' });
-    } catch (e) {
-        res.status(500).json({ message: e.message });
-    }
-});
-
-app.get('/download', (req, res) => {
-    if (fs.existsSync(FILE_PATH)) res.download(FILE_PATH);
-    else res.status(404).send('הקובץ לא קיים');
-});
+// הגדרת תיקיית קבצים סטטיים
+app.use(express.static(path.join(currentDir, 'public')));
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
