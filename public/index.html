@@ -1,181 +1,50 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <title>מערכת הפקת דוחות - אמיר, סרגיי ואנדריי</title>
-    <style>
-        :root { --primary: #1a237e; --accent: #fbc02d; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; direction: rtl; padding: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-top: 8px solid var(--primary); }
-        .header { text-align: center; margin-bottom: 30px; }
-        .setup-box { background: #fffde7; border: 2px solid var(--accent); padding: 20px; border-radius: 8px; margin-bottom: 25px; display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
-        .section { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
-        .section-header { background: var(--primary); color: white; padding: 12px; font-weight: bold; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; padding: 20px; }
-        .field { display: flex; flex-direction: column; }
-        label { font-size: 13px; font-weight: bold; margin-bottom: 6px; color: #555; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
-        .calc-table { width: 100%; border-collapse: collapse; }
-        .calc-table th, .calc-table td { border: 1px solid #ddd; padding: 12px; text-align: center; }
-        .calc-table th { background: #f8f9fa; color: var(--primary); }
-        .num-in { width: 80px; text-align: center; font-weight: bold; background: #fff9c4; border: 1px solid #ffd54f; }
-        .btn { background: #2e7d32; color: white; padding: 15px; width: 100%; border: none; border-radius: 6px; font-size: 18px; cursor: pointer; font-weight: bold; margin-top: 20px; }
-        .btn:hover { background: #1b5e20; }
-        .status-tag { font-size: 11px; padding: 2px 6px; border-radius: 10px; margin-top: 4px; display: inline-block; }
-    </style>
-</head>
-<body>
+async function syncWithGoogleSheets() {
+    const tester = document.getElementById('testerSelect').value;
+    const selector = document.getElementById('scheduleSelect');
+    
+    if (!tester) return;
+    selector.innerHTML = '<option>טוען נתונים מהלו"ז...</option>';
 
-<div class="container">
-    <div class="header">
-        <h1>מערכת דוח בדיקה ת"י 1142</h1>
-        <p>סנכרון דינמי מול לו"ז "מערכות בניין 2026"</p>
-    </div>
+    // לוגיקה חכמה: מחלץ שם פרטי כדי למנוע בעיות של ו' חסרה/מיותרת
+    const firstName = tester.split(' ')[0]; 
 
-    <div class="setup-box">
-        <div class="field">
-            <label>1. בחר בודק:</label>
-            <select id="testerSelect" onchange="syncWithGoogleSheets()">
-                <option value="">-- בחר בודק --</option>
-                <option value="אמיר אהרון">אמיר אהרון</option>
-                <option value="סרגיי אוסוקרקו">סרגיי אוסוקרקו</option>
-                <option value="אנדריי רזיק">אנדריי רזיק</option>
-            </select>
-        </div>
-        <div class="field">
-            <label>2. פרויקטים פתוחים מהלו"ז (לפי תאריך):</label>
-            <select id="scheduleSelect" onchange="autoFillForm()">
-                <option value="">-- בחר בודק כדי לראות עבודות --</option>
-            </select>
-        </div>
-    </div>
+    let foundProjects = [];
 
-    <form id="inspectionForm">
-        <div class="section">
-            <div class="section-header">פרטי מנהלה וזיהוי (משיכה אוטומטית)</div>
-            <div class="grid">
-                <div class="field"><label>שם המזמין:</label><input type="text" id="clientName"></div>
-                <div class="field"><label>כתובת האתר:</label><input type="text" id="siteAddr"></div>
-                <div class="field"><label>מספר פרויקט:</label><input type="text" id="projId"></div>
-                <div class="field"><label>תאריך בדיקה:</label><input type="date" id="testDate"></div>
-            </div>
-        </div>
+    for (let gid of TAB_GIDS) {
+        try {
+            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
+            const res = await fetch(url);
+            const csvData = await res.text();
+            const rows = csvData.split('\n').map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
 
-        <div class="section">
-            <div class="section-header">סעיף 2: בדיקת העמסה אופקית (תאים 107-114)</div>
-            <table class="calc-table">
-                <tr>
-                    <th>שלב בדיקה</th>
-                    <th>עומס (ק"ג)</th>
-                    <th>תזוזה (מ"מ)</th>
-                    <th>מסקנה</th>
-                </tr>
-                <tr>
-                    <td>א' - מחצית עומס (107)</td>
-                    <td><input type="text" id="loadHalf" class="num-in" readonly style="background:#eee"></td>
-                    <td><input type="number" id="distHalf" class="num-in" oninput="doCalculations()"></td>
-                    <td><select><option>מתאים</option><option>לא מתאים</option></select></td>
-                </tr>
-                <tr>
-                    <td>א' - עומס מלא (108)</td>
-                    <td><input type="number" id="loadFull" class="num-in" oninput="updateHalfLoad()"></td>
-                    <td><input type="number" id="distFull" class="num-in"></td>
-                    <td><select><option>מתאים</option><option>לא מתאים</option></select></td>
-                </tr>
-                <tr>
-                    <td>ג' - ניצב (110)</td>
-                    <td><input type="number" class="num-in"></td>
-                    <td><input type="number" id="distVertical" class="num-in" oninput="doCalculations()"></td>
-                    <td><select><option>מתאים</option><option>לא מתאים</option></select></td>
-                </tr>
-                <tr style="background:#e8f5e9; font-weight:bold;">
-                    <td colspan="2">ד' - סכום תזוזות (114)</td>
-                    <td><input type="text" id="totalDist" class="num-in" readonly style="background:white"></td>
-                    <td><select><option>מתאים</option></select></td>
-                </tr>
-            </table>
-        </div>
-
-        <button type="button" class="btn" onclick="alert('הנתונים נשמרו בהצלחה!')">שמור דוח והפק אקסל</button>
-    </form>
-</div>
-
-<script>
-    // הגדרות הגיליון
-    const SHEET_ID = '1JpM_HhT-EyTclnSP12VlpaZFKZwgfHSGOS4YRPZbbvs';
-    const TAB_GIDS = ['689162898', '1424845815']; // GIDs של הטאבים הרלוונטיים (18/19 לינואר)
-
-    async function syncWithGoogleSheets() {
-        const tester = document.getElementById('testerSelect').value;
-        const selector = document.getElementById('scheduleSelect');
-        
-        if (!tester) return;
-        selector.innerHTML = '<option>טוען נתונים מהלו"ז...</option>';
-
-        let foundProjects = [];
-
-        for (let gid of TAB_GIDS) {
-            try {
-                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
-                const res = await fetch(url);
-                const csvData = await res.text();
+            rows.forEach((row) => {
+                const rowText = row.join(' ');
                 
-                // הפיכת ה-CSV למערך
-                const rows = csvData.split('\n').map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
-
-                rows.forEach((row) => {
-                    const rowText = row.join(' ');
-                    // חיפוש חופשי בשורה: שם הבודק קיים + אין מילת ביטול
-                    if (rowText.includes(tester) && !rowText.includes("בוטל") && !rowText.includes("נדחה")) {
-                        foundProjects.push({
-                            client: row[3] || row[2] || "לא צוין",
-                            address: row[4] || row[5] || "כתובת חסרה",
-                            projectNum: row[1] || "",
-                            date: gid === '689162898' ? '2026-01-18' : '2026-01-19'
-                        });
-                    }
-                });
-            } catch (e) { console.error("Error fetching tab:", gid); }
-        }
-
-        selector.innerHTML = '<option value="">-- בחר פרויקט מהרשימה --</option>';
-        if (foundProjects.length === 0) {
-            selector.innerHTML = '<option>אין עבודות משובצות לבודק זה</option>';
-        } else {
-            foundProjects.forEach((p, i) => {
-                const opt = document.createElement('option');
-                opt.value = i;
-                opt.text = `${p.date.split('-').reverse().join('.')} | ${p.client} - ${p.address}`;
-                opt.dataset.full = JSON.stringify(p);
-                selector.appendChild(opt);
+                // חיפוש לפי שם פרטי והתעלמות מביטולים
+                if (rowText.includes(firstName) && !rowText.includes("בוטל") && !rowText.includes("נדחה")) {
+                    
+                    // מציאת עמודות לפי כותרות או מיקום משוער
+                    foundProjects.push({
+                        client: row[3] || row[2] || "לא צוין", // עמודה D או C
+                        address: row[4] || row[5] || "כתובת חסרה", // עמודה E או F
+                        projectNum: row[1] || "", // עמודה B
+                        date: gid === '689162898' ? '2026-01-18' : '2026-01-19'
+                    });
+                }
             });
-        }
+        } catch (e) { console.error("Error fetching tab:", gid); }
     }
 
-    function autoFillForm() {
-        const sel = document.getElementById('scheduleSelect');
-        const opt = sel.options[sel.selectedIndex];
-        if (!opt || !opt.dataset.full) return;
-
-        const data = JSON.parse(opt.dataset.full);
-        document.getElementById('clientName').value = data.client;
-        document.getElementById('siteAddr').value = data.address;
-        document.getElementById('projId').value = data.projectNum;
-        document.getElementById('testDate').value = data.date;
+    selector.innerHTML = '<option value="">-- בחר פרויקט --</option>';
+    if (foundProjects.length === 0) {
+        selector.innerHTML = '<option>אין עבודות משובצות ל' + firstName + '</option>';
+    } else {
+        foundProjects.forEach((p, i) => {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.text = `${p.date.split('-').reverse().join('.')} | ${p.client} - ${p.address}`;
+            opt.dataset.full = JSON.stringify(p);
+            selector.appendChild(opt);
+        });
     }
-
-    // פונקציות חישוב
-    function updateHalfLoad() {
-        const full = parseFloat(document.getElementById('loadFull').value) || 0;
-        document.getElementById('loadHalf').value = (full / 2).toFixed(1);
-    }
-
-    function doCalculations() {
-        const d1 = parseFloat(document.getElementById('distHalf').value) || 0;
-        const d2 = parseFloat(document.getElementById('distVertical').value) || 0;
-        document.getElementById('totalDist').value = (d1 + d2).toFixed(2);
-    }
-</script>
-
-</body>
-</html>
+}
