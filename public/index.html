@@ -1,197 +1,41 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <title>דוח ת"י 1142 מלא - אמיר אהרון</title>
-    <style>
-        :root { --dark-blue: #1a237e; --header-bg: #e8eaf6; }
-        body { font-family: 'Segoe UI', Arial; background: #f0f2f5; direction: rtl; padding: 20px; }
-        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 30px; border: 2px solid var(--dark-blue); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .header { text-align: center; border-bottom: 4px solid var(--dark-blue); margin-bottom: 25px; padding-bottom: 10px; }
-        .section { margin-bottom: 25px; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; }
-        .section-header { background: var(--dark-blue); color: white; padding: 10px 15px; font-weight: bold; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; padding: 15px; }
-        .input-group { display: flex; flex-direction: column; }
-        label { font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #333; }
-        input, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th { background: var(--header-bg); color: var(--dark-blue); font-size: 13px; padding: 10px; border: 1px solid #ddd; }
-        td { padding: 8px; border: 1px solid #ddd; text-align: center; }
-        .num-input { width: 70px; text-align: center; background: #fffde7; font-weight: bold; }
-        .btn-submit { background: #1b5e20; color: white; padding: 20px; width: 100%; border: none; border-radius: 5px; font-size: 20px; cursor: pointer; font-weight: bold; margin-top: 20px; }
-        .project-selector { background: #fff9c4; padding: 15px; border: 2px solid #fbc02d; border-radius: 5px; margin-bottom: 20px; }
-    </style>
-</head>
-<body>
+async function loadDynamicSchedule() {
+    // הקישור לגיליון שלך בפורמט ייצוא ל-CSV
+    const sheetId = '1JpM_HhT-EyTclnSP12VlpaZFKZwgfHSGOS4YRPZbbvs';
+    const gid = '1424845815'; // ה-ID של הטאב הספציפי
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}`;
 
-<div class="container">
-    <div class="header">
-        <h1>תעודת בדיקה - ת"י 1142</h1>
-        <p>בודק מוסמך: <b>אמיר אהרון</b></p>
-    </div>
+    try {
+        const response = await fetch(url);
+        const data = await response.text();
+        const rows = data.split('\n').map(row => row.split(','));
 
-    <div class="project-selector">
-        <label>⚡ שליפת נתונים מהלו"ז (15.01 - 19.01):</label>
-        <select id="scheduleSelect" onchange="fillProjectData()" style="width: 100%; font-size: 16px; font-weight: bold;">
-            <option value="">-- בחר פרויקט לטעינה --</option>
-            <option value="1" data-client="א.ח.א בינוי והשקעות בע"מ" data-addr="רחוב הירקון 120, תל אביב" data-proj="2026-078" data-date="2026-01-15">15.01 - תל אביב (א.ח.א בינוי)</option>
-            <option value="2" data-client="רמי צרפתי" data-addr="רחוב הרצל 10, באר שבע" data-proj="2026-085" data-date="2026-01-18">18.01 - באר שבע (רמי צרפתי)</option>
-            <option value="3" data-client="קבוצת שובל" data-addr="רחוב ירושלים 45, ראשון לציון" data-proj="2026-092" data-date="2026-01-19">19.01 - ראשון לציון (קבוצת שובל)</option>
-        </select>
-    </div>
+        const selector = document.getElementById('scheduleSelect');
+        selector.innerHTML = '<option value="">-- בחר פרויקט מהלו"ז --</option>';
 
-    <script>
-        const statusOpts = `<option value="מתאים">מתאים</option><option value="לא מתאים">לא מתאים</option><option value="לא נדרש">לא נדרש</option><option value="לא רלוונטי">לא רלוונטי</option>`;
-    </script>
-
-    <div class="section">
-        <div class="section-header">פרטי מנהלה וזיהוי</div>
-        <div class="grid">
-            <div class="input-group">
-                <label>שם המזמין:</label>
-                <input type="text" id="clientName" data-addr="D5">
-            </div>
-            <div class="input-group">
-                <label>כתובת האתר:</label>
-                <input type="text" id="siteAddr" data-addr="D6">
-            </div>
-            <div class="input-group">
-                <label>מספר פרויקט:</label>
-                <input type="text" id="projNum" data-addr="J2">
-            </div>
-            <div class="input-group">
-                <label>תאריך:</label>
-                <input type="date" id="testDate" data-addr="L3">
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
-        <div class="section-header">סעיף 1: בדיקות גאומטריה (56-62)</div>
-        <table>
-            <tr>
-                <th>סעיף</th>
-                <th style="text-align: right;">תיאור</th>
-                <th>מדידה</th>
-                <th>מסקנה (L)</th>
-            </tr>
-            <tr>
-                <td>7.2.4</td>
-                <td style="text-align: right;">גובה המעקה (105 ס"מ)</td>
-                <td><input type="text" data-addr="I56" class="num-input"></td>
-                <td><select data-addr="L56"><script>document.write(statusOpts)</script></select></td>
-            </tr>
-            <tr>
-                <td>5.1.4.1</td>
-                <td style="text-align: right;">מרווחים במילוי (כדור 10)</td>
-                <td><input type="text" data-addr="I58" class="num-input"></td>
-                <td><select data-addr="L58"><script>document.write(statusOpts)</script></select></td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="section">
-        <div class="section-header">סעיף 2: העמסה אופקית (107-114)</div>
-        <table>
-            <tr>
-                <th>שלב</th>
-                <th>עומס (H)</th>
-                <th>תזוזה (I)</th>
-                <th>שיורית (J)</th>
-                <th>מסקנה (L)</th>
-            </tr>
-            <tr>
-                <td>א' - מחצית עומס</td>
-                <td><input type="text" id="h107" data-addr="H107" readonly style="background:#f1f1f1; width:60px; text-align:center;"></td>
-                <td><input type="text" id="i107" data-addr="I107" class="num-input" oninput="calc()"></td>
-                <td><input type="text" data-addr="J107" class="num-input"></td>
-                <td><select data-addr="L107"><script>document.write(statusOpts)</script></select></td>
-            </tr>
-            <tr>
-                <td>א' - עומס מלא</td>
-                <td><input type="text" id="h108" data-addr="H108" class="num-input" oninput="calcHalf()"></td>
-                <td><input type="text" data-addr="I108" class="num-input"></td>
-                <td><input type="text" data-addr="J108" class="num-input"></td>
-                <td><select data-addr="L108"><script>document.write(statusOpts)</script></select></td>
-            </tr>
-            <tr>
-                <td>ג' - ניצב</td>
-                <td><input type="text" data-addr="H110" class="num-input"></td>
-                <td><input type="text" id="i110" data-addr="I110" class="num-input" oninput="calc()"></td>
-                <td><input type="text" data-addr="J110" class="num-input"></td>
-                <td><select data-addr="L110"><script>document.write(statusOpts)</script></select></td>
-            </tr>
-            <tr style="background:#e8f5e9; font-weight:bold;">
-                <td>ד' - סכום תזוזות</td>
-                <td>-</td>
-                <td><input type="text" id="i114" data-addr="I114" readonly style="width:60px; text-align:center;"></td>
-                <td>-</td>
-                <td><select data-addr="L114"><script>document.write(statusOpts)</script></select></td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="section">
-        <div class="section-header">סעיף 3: העמסה בנקודות תורפה (119-132)</div>
-        <table>
-            <tr>
-                <th style="text-align: right;">תיאור הבדיקה</th>
-                <th>עומס (H)</th>
-                <th>תזוזה (I)</th>
-                <th>מסקנה (L)</th>
-            </tr>
-            <tr>
-                <td style="text-align: right;">אלמנט מילוי (119)</td>
-                <td><input type="text" data-addr="H119" class="num-input"></td>
-                <td><input type="text" data-addr="I119" class="num-input"></td>
-                <td><select data-addr="L119"><script>document.write(statusOpts)</script></select></td>
-            </tr>
-            <tr>
-                <td style="text-align: right;">אופקי בתורפה (120)</td>
-                <td><input type="text" data-addr="H120" class="num-input"></td>
-                <td><input type="text" data-addr="I120" class="num-input"></td>
-                <td><select data-addr="L120"><script>document.write(statusOpts)</script></select></td>
-            </tr>
-            <tr>
-                <td style="text-align: right;">הלם בראש ניצב (132)</td>
-                <td><input type="text" data-addr="H132" class="num-input"></td>
-                <td><input type="text" data-addr="I132" class="num-input"></td>
-                <td><select data-addr="L132"><script>document.write(statusOpts)</script></select></td>
-            </tr>
-        </table>
-    </div>
-
-    <button class="btn-submit" onclick="exportData()">💾 שמור והפק דוח אקסל סופי</button>
-</div>
-
-<script>
-    function fillProjectData() {
-        const s = document.getElementById('scheduleSelect');
-        const opt = s.options[s.selectedIndex];
-        if(!opt.value) return;
-        document.getElementById('clientName').value = opt.getAttribute('data-client');
-        document.getElementById('siteAddr').value = opt.getAttribute('data-addr');
-        document.getElementById('projNum').value = opt.getAttribute('data-proj');
-        document.getElementById('testDate').value = opt.getAttribute('data-date');
+        // רצים על כל השורות בגיליון
+        rows.forEach(row => {
+            const testerName = row[11]; // עמודה L בערך - שם הבודק
+            const status = row[12];     // עמודה M - סטטוס/הערות
+            
+            // לוגיקה: רק אמיר אהרון, ורק אם אין הערת "ביטול" או צבע אדום (טקסטואלי)
+            if (testerName && testerName.includes("אמיר אהרון") && !status.includes("בוטל")) {
+                const opt = document.createElement('option');
+                opt.value = row[0]; // מזהה כלשהו
+                opt.text = `${row[1]} - ${row[7]} (${row[3]})`; // תאריך - עיר (מזמין)
+                
+                // הוספת נתונים למילוי אוטומטי
+                opt.setAttribute('data-client', row[3]); // שם מזמין
+                opt.setAttribute('data-addr', row[5]);   // כתובת
+                opt.setAttribute('data-proj', row[0]);   // מס' פרויקט
+                opt.setAttribute('data-date', row[1]);   // תאריך
+                
+                selector.appendChild(opt);
+            }
+        });
+    } catch (e) {
+        console.error("לא ניתן לטעון את הלו"ז:", e);
     }
+}
 
-    function calcHalf() {
-        const f = parseFloat(document.getElementById('h108').value) || 0;
-        document.getElementById('h107').value = (f / 2).toFixed(1);
-    }
-
-    function calc() {
-        const i1 = parseFloat(document.getElementById('i107').value) || 0;
-        const i2 = parseFloat(document.getElementById('i110').value) || 0;
-        document.getElementById('i114').value = (i1 + i2).toFixed(2);
-    }
-
-    async function exportData() {
-        const cells = {};
-        document.querySelectorAll('[data-addr]').forEach(el => cells[el.getAttribute('data-addr')] = el.value);
-        alert("הנתונים נשמרו. מפיק דוח עבור: " + (cells['D5'] || "פרויקט ללא שם"));
-    }
-</script>
-
-</body>
-</html>
+// קריאה לפונקציה בטעינה
+window.onload = loadDynamicSchedule;
