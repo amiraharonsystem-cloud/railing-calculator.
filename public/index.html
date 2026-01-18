@@ -1,94 +1,123 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>מערכת בדיקת מעקות</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת הפקת דוחות - גרסה מלאה</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <style>
         :root { --blue: #1a237e; --green: #2e7d32; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; direction: rtl; padding: 15px; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 6px solid var(--blue); }
-        .setup { background: #fff9c4; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #fbc02d; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f9; direction: rtl; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 8px solid var(--blue); }
+        .setup-box { background: #fffde7; padding: 15px; border-radius: 8px; border: 1px solid #fbc02d; margin-bottom: 20px; }
+        .section-title { background: var(--blue); color: white; padding: 10px; border-radius: 4px; margin-top: 20px; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 10px; }
         input, select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; width: 100%; box-sizing: border-box; }
-        .btn-excel { background: var(--green); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        .num-val { width: 80px; text-align: center; font-weight: bold; background: #fffde7; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background: #f1f3f5; }
+        .btn-submit { background: var(--green); color: white; border: none; padding: 18px; width: 100%; border-radius: 8px; font-size: 20px; font-weight: bold; cursor: pointer; margin-top: 25px; }
+        .num-input { width: 85px; text-align: center; font-weight: bold; background: #fffde7; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2 style="text-align:center;">דוח בדיקת מעקה - ת"י 1142</h2>
+    <h2 style="text-align:center; color:var(--blue);">דוח בדיקת מעקה - ת"י 1142</h2>
     
-    <div class="setup">
+    <div class="setup-box">
         <div class="grid">
-            <div><label>בודק:</label>
-                <select id="testerSelect" onchange="loadSchedule()">
-                    <option value="">-- בחר --</option>
+            <div>
+                <label>1. בחר בודק:</label>
+                <select id="testerSelect" onchange="fetchFromRender()">
+                    <option value="">-- בחר בודק --</option>
                     <option value="אמיר אהרון">אמיר אהרון</option>
                     <option value="סרגיי אוסוקרקו">סרגיי אוסוקרקו</option>
                 </select>
             </div>
-            <div><label>פרויקט:</label>
-                <select id="projectSelect" onchange="fillForm()"><option>בחר בודק...</option></select>
+            <div>
+                <label>2. פרויקט מהלו"ז:</label>
+                <select id="projectSelect" onchange="autoFillForm()"><option>בחר בודק תחילה...</option></select>
             </div>
         </div>
     </div>
 
     <form id="reportForm">
+        <div class="section-title">פרטי מנהלה</div>
         <div class="grid">
-            <input type="text" id="client" placeholder="מזמין">
-            <input type="text" id="address" placeholder="כתובת">
-            <input type="text" id="pNum" placeholder="מס' פרויקט">
-            <input type="text" id="date" placeholder="תאריך">
+            <div><label>שם המזמין:</label><input type="text" id="client"></div>
+            <div><label>כתובת האתר:</label><input type="text" id="address"></div>
+            <div><label>מספר פרויקט:</label><input type="text" id="pNum"></div>
+            <div><label>תאריך בדיקה:</label><input type="text" id="date"></div>
         </div>
 
-        <h4 style="background:var(--blue); color:white; padding:5px;">סעיף 1: גאומטריה</h4>
+        <div class="section-title">סעיף 1: בדיקות גאומטריה</div>
         <table>
-            <tr><td>גובה מעקה (105 ס"מ)</td><td><input type="number" id="h_val" value="105" class="num-val"></td><td><select id="h_stat"><option>מתאים</option><option>לא מתאים</option></select></td></tr>
+            <tr><th>תיאור</th><th>מדידה</th><th>מסקנה</th></tr>
+            <tr>
+                <td>גובה מעקה (מינימום 105 ס"מ)</td>
+                <td><input type="number" id="g_height" value="105" class="num-input"></td>
+                <td><select id="g_res1"><option>מתאים</option><option>לא מתאים</option></select></td>
+            </tr>
+            <tr>
+                <td>מרווחים במילוי (כדור 10 ס"מ)</td>
+                <td><input type="text" value="תקין" class="num-input" style="width:100px"></td>
+                <td><select id="g_res2"><option>מתאים</option><option>לא מתאים</option></select></td>
+            </tr>
         </table>
 
-        <h4 style="background:var(--blue); color:white; padding:5px;">סעיף 2: העמסה אופקית</h4>
+        <div class="section-title">סעיף 2: העמסה אופקית (107-114)</div>
         <table>
-            <tr><th>שלב</th><th>עומס</th><th>תזוזה</th></tr>
-            <tr><td>עומס מלא (108)</td><td><input type="number" id="h108" class="num-val"></td><td><input type="number" id="i108" class="num-val"></td></tr>
-            <tr style="background:#e8f5e9"><td><b>סכום תזוזות (114)</b></td><td></td><td><input type="text" id="totalI" readonly class="num-val"></td></tr>
+            <tr><th>שלב בדיקה</th><th>עומס (ק"ג)</th><th>תזוזה (מ"מ)</th><th>מסקנה</th></tr>
+            <tr>
+                <td>א' - מחצית עומס (107)</td>
+                <td><input type="number" id="h107" readonly class="num-input" style="background:#eee"></td>
+                <td><input type="number" id="i107" step="0.01" class="num-input" oninput="calculateTotal()"></td>
+                <td><select><option>מתאים</option></select></td>
+            </tr>
+            <tr>
+                <td>א' - עומס מלא (108)</td>
+                <td><input type="number" id="h108" class="num-input" oninput="updateHalf(); calculateTotal();"></td>
+                <td><input type="number" id="i108" step="0.01" class="num-input"></td>
+                <td><select><option>מתאים</option></select></td>
+            </tr>
+            <tr>
+                <td>ג' - ניצב (110)</td>
+                <td><input type="number" id="h110" class="num-input"></td>
+                <td><input type="number" id="i110" step="0.01" class="num-input" oninput="calculateTotal()"></td>
+                <td><select><option>מתאים</option></select></td>
+            </tr>
+            <tr style="background:#e8f5e9">
+                <td colspan="2"><b>ד' - סכום תזוזות (114)</b></td>
+                <td><input type="text" id="totalI" readonly class="num-input" style="background:white; border:2px solid var(--green)"></td>
+                <td><b>מתאים</b></td>
+            </tr>
         </table>
 
-        <button type="button" class="btn-excel" onclick="saveExcel()">📥 הורד דוח אקסל</button>
+        <button type="button" class="btn-submit" onclick="generateExcel()">📥 הפק דוח אקסל סופי</button>
     </form>
 </div>
 
 <script>
-    const API_BASE = window.location.origin;
-
-    async function loadSchedule() {
+    async function fetchFromRender() {
         const tester = document.getElementById('testerSelect').value;
         const sel = document.getElementById('projectSelect');
         if(!tester) return;
-        sel.innerHTML = '<option>טוען נתונים מהשרת...</option>';
-        
+        sel.innerHTML = '<option>מתחבר לשרת...</option>';
         try {
-            const res = await fetch(`${API_BASE}/api/schedule/${encodeURIComponent(tester)}`);
+            const res = await fetch(`/api/schedule/${encodeURIComponent(tester)}`);
             const data = await res.json();
-            if(data.error) throw new Error(data.error);
-            
-            sel.innerHTML = data.length ? '<option value="">בחר פרויקט</option>' : '<option>אין עבודות משובצות</option>';
+            sel.innerHTML = data.length ? '<option value="">בחר פרויקט מהרשימה</option>' : '<option>אין עבודות משובצות</option>';
             data.forEach(p => {
                 const opt = document.createElement('option');
                 opt.text = `${p.date} | ${p.client}`;
                 opt.value = JSON.stringify(p);
                 sel.appendChild(opt);
             });
-        } catch(e) { 
-            sel.innerHTML = '<option>שגיאת התחברות לשרת</option>';
-            console.error(e);
-        }
+        } catch(e) { sel.innerHTML = '<option>שגיאת התחברות לשרת</option>'; }
     }
 
-    function fillForm() {
+    function autoFillForm() {
         const val = document.getElementById('projectSelect').value;
         if(!val) return;
         const p = JSON.parse(val);
@@ -98,15 +127,36 @@
         document.getElementById('date').value = p.date;
     }
 
-    function saveExcel() {
-        const data = [
+    function updateHalf() {
+        const full = parseFloat(document.getElementById('h108').value) || 0;
+        document.getElementById('h107').value = (full / 2).toFixed(1);
+    }
+
+    function calculateTotal() {
+        const i107 = parseFloat(document.getElementById('i107').value) || 0;
+        const i110 = parseFloat(document.getElementById('i110').value) || 0;
+        document.getElementById('totalI').value = (i107 + i110).toFixed(2);
+    }
+
+    function generateExcel() {
+        const rows = [
             ["דוח בדיקה ת\"י 1142"],
-            ["לקוח", document.getElementById('client').value],
-            ["כתובת", document.getElementById('address').value],
-            ["מס' פרויקט", document.getElementById('pNum').value],
-            ["גובה מעקה", document.getElementById('h_val').value, document.getElementById('h_stat').value]
+            ["שם המזמין", document.getElementById('client').value],
+            ["כתובת האתר", document.getElementById('address').value],
+            ["מספר פרויקט", document.getElementById('pNum').value],
+            ["תאריך בדיקה", document.getElementById('date').value],
+            [],
+            ["בדיקת גאומטריה"],
+            ["גובה מעקה", document.getElementById('g_height').value, document.getElementById('g_res1').value],
+            ["מרווחים במילוי", "תקין", document.getElementById('g_res2').value],
+            [],
+            ["בדיקת העמסה"],
+            ["עומס מלא (108)", document.getElementById('h108').value + " ק\"ג"],
+            ["תזוזה (107)", document.getElementById('i107').value + " מ\"מ"],
+            ["תזוזה (110)", document.getElementById('i110').value + " מ\"מ"],
+            ["סכום תזוזות (114)", document.getElementById('totalI').value + " מ\"מ", "מתאים"]
         ];
-        const ws = XLSX.utils.aoa_to_sheet(data);
+        const ws = XLSX.utils.aoa_to_sheet(rows);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "דוח");
         XLSX.writeFile(wb, `Report_${document.getElementById('pNum').value}.xlsx`);
