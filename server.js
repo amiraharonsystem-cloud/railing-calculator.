@@ -18,16 +18,15 @@ app.get('/api/schedule/:tester', async (req, res) => {
             const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
             const response = await axios.get(url);
             
-            // פירוק CSV חכם שמטפל בגרשיים ופסיקים בתוך תאים
+            // פירוק CSV שמתמודד עם פסיקים בתוך תאים (כמו בכתובות)
             const rows = response.data.split('\n').map(row => 
                 row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(cell => cell.replace(/"/g, '').trim())
             );
 
             for (let i = 0; i < rows.length; i++) {
-                const rowText = rows[i].join(' ');
-                if (rowText.includes(testerName)) {
-                    // לוגיקה לסרגיי: אם התא של 'שם המזמין' (אינדקס 3) ריק בשורה של השם, קח את השורה הבאה
-                    let dataRow = (rows[i][3] && rows[i][3].length > 2) ? rows[i] : rows[i + 1];
+                if (rows[i].join(' ').includes(testerName)) {
+                    // תיקון לסרגיי: אם התא של שם המזמין (אינדקס 3) ריק, קח את השורה הבאה
+                    let dataRow = (rows[i][3] && rows[i][3].length > 1) ? rows[i] : rows[i + 1];
                     
                     if (dataRow && dataRow[3] && !dataRow.join(' ').includes("בוטל")) {
                         foundProjects.push({
@@ -42,8 +41,7 @@ app.get('/api/schedule/:tester', async (req, res) => {
         }
         res.json(foundProjects);
     } catch (error) {
-        console.error("Fetch Error:", error);
-        res.status(500).json({ error: "שגיאה במשיכת הנתונים מגוגל" });
+        res.status(500).json({ error: "Server error fetching data" });
     }
 });
 
