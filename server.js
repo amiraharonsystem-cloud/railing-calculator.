@@ -7,27 +7,25 @@ app.use(cors());
 app.use(express.static('public'));
 
 const SHEET_ID = '1JpM_HhT-EyTclnSP12VlpaZFKZwgfHSGOS4YRPZbbvs';
-const GIDS = ['689162898', '1424845815']; // 18.01 and 19.01
+const TAB_GIDS = ['689162898', '1424845815']; 
 
 app.get('/api/schedule/:tester', async (req, res) => {
     try {
-        const testerSearch = decodeURIComponent(req.params.tester).split(' ')[0];
+        const testerName = decodeURIComponent(req.params.tester).split(' ')[0];
         let foundProjects = [];
 
-        for (let gid of GIDS) {
+        for (let gid of TAB_GIDS) {
             const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
-            const response = await axios.get(url, { timeout: 10000 });
+            const response = await axios.get(url);
             
-            // פירוק ה-CSV למערך תוך שמירה על תאים עם פסיקים
             const rows = response.data.split('\n').map(row => 
                 row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(cell => cell.replace(/"/g, '').trim())
             );
 
-            rows.forEach((row, i) => {
-                const fullRowText = row.join(' ');
-                if (fullRowText.includes(testerSearch)) {
-                    // לוגיקת סרגיי: אם השורה הנוכחית לא מכילה שם פרויקט, בדוק את השורה הבאה
-                    let dataRow = (row[3] && row[3].length > 2) ? row : (rows[i + 1] || row);
+            for (let i = 0; i < rows.length; i++) {
+                if (rows[i].join(' ').includes(testerName)) {
+                    // אם השורה של הבודק ריקה (כמו אצל סרגיי), קח את השורה הבאה
+                    let dataRow = (rows[i][3] && rows[i][3].length > 2) ? rows[i] : (rows[i+1] || rows[i]);
                     
                     if (dataRow[3] && !dataRow.join(' ').includes("בוטל")) {
                         foundProjects.push({
@@ -38,14 +36,13 @@ app.get('/api/schedule/:tester', async (req, res) => {
                         });
                     }
                 }
-            });
+            }
         }
         res.json(foundProjects);
     } catch (error) {
-        console.error("Server Error:", error.message);
-        res.status(500).json({ error: "שגיאת שרת פנימית" });
+        res.status(500).json({ error: "Server Error" });
     }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running`));
