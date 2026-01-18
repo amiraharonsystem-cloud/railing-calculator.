@@ -1,51 +1,45 @@
-from flask import Flask, request, send_file
-import pandas as pd
-import openpyxl
-from openpyxl import load_workbook
-import io
-import os
+const express = require('express');
+const axios = require('axios');
+const cors = require('cors');
+const app = express();
 
-app = Flask(__name__)
+app.use(cors());
+app.use(express.static('public'));
 
-@app.route('/generate-excel', methods=['POST'])
-def generate_excel():
-    data = request.json
-    cells = data.get('cells', {})
-    # מקבל את שם הקובץ הדינמי שנשלח מה-Frontend
-    file_name = data.get('fileName', 'Report_1142.xlsx')
-    
-    # נתיב לקובץ הטמפלייט המקורי שלך
-    template_path = 'template.xlsx' 
-    
-    if not os.path.exists(template_path):
-        return "Template file not found", 404
+const SHEET_ID = '1JpM_HhT-EyTclnSP12VlpaZFKZwgfHSGOS4YRPZbbvs';
+const GIDS = ['689162898', '1424845815'];
 
-    # טעינת האקסל המקורי
-    wb = load_workbook(template_path)
-    ws = wb.active # או wb['שם הגיליון']
+app.get('/api/schedule/:tester', async (req, res) => {
+    const testerName = req.params.tester.split(' ')[0]; // מחפש לפי שם פרטי
+    let foundProjects = [];
 
-    # כתיבת הנתונים לתאים לפי הכתובות ששלחנו מה-HTML
-    for addr, value in cells.items():
-        try:
-            # המרה למספר אם ניתן, כדי שהאקסל יוכל לבצע חישובים
-            if value and value.replace('.', '', 1).isdigit():
-                ws[addr] = float(value)
-            else:
-                ws[addr] = value
-        except Exception as e:
-            print(f"Error writing to cell {addr}: {e}")
+    try {
+        for (let gid of GIDS) {
+            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
+            const response = await axios.get(url);
+            const rows = response.data.split('\n').map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
 
-    # שמירה לזיכרון ושליחה למשתמש
-    excel_file = io.BytesIO()
-    wb.save(excel_file)
-    excel_file.seek(0)
+            rows.forEach((row, i) => {
+                if (row.join(' ').includes(testerName)) {
+                    // לוגיקה חכמה: אם השורה הנוכחית ריקה מפרטים, בדוק את השורה הבאה
+                    let dataRow = (row[3] && row[3].length > 1) ? row : rows[i + 1];
+                    
+                    if (dataRow && dataRow[3] && !dataRow.join(' ').includes("בוטל")) {
+                        foundProjects.push({
+                            client: dataRow[3],
+                            address: dataRow[4],
+                            pNum: dataRow[1],
+                            date: gid === '689162898' ? '2026-01-18' : '2026-01-19'
+                        });
+                    }
+                }
+            });
+        }
+        res.json(foundProjects);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch data" });
+    }
+});
 
-    return send_file(
-        excel_file,
-        as_attachment=True,
-        download_name=file_name, # משתמש בשם הקובץ הדינמי
-        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
