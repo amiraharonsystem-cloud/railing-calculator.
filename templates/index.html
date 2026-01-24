@@ -1,27 +1,63 @@
 <!DOCTYPE html>
-<html dir="rtl">
+<html dir="rtl" lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>דוח בדיקה דינמי</title>
+    <title>דוח דינמי - אמיר אהרון</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background: #f4f4f9; }
-        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
-        .result-box { background: #e7f3fe; padding: 15px; border-right: 5px solid #3498db; margin: 20px 0; }
-        .value { font-weight: bold; color: #e74c3c; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0056b3; padding-bottom: 15px; margin-bottom: 20px; }
+        .selector { background: #eef6ff; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: right; }
+        th { background: #0056b3; color: white; }
+        .highlight { color: #d9534f; font-weight: bold; font-size: 1.2em; }
+        .btn-print { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>דוח הנדסי דינמי</h1>
-        <p>בודק: <strong>{{ name }}</strong></p>
-        
-        <div class="result-box">
-            <p>עומס תכנוני קובע ($F_{max}$): <span class="value">{{ f_max }}</span> N/m</p>
-            <p><strong>חישוב סעיף ה' (ניצב אמצעי):</strong> <span class="value">{{ section_e }}</span> N</p>
+        <div class="header">
+            <h2>דוח הנדסי דינמי - מערכות בניין</h2>
+            <img src="https://via.placeholder.com/150x50?text=Logo" alt="Logo">
         </div>
-        
-        <button onclick="window.print()">הדפס דוח זה</button>
+
+        <div class="selector">
+            <label>בחר תאריך לבדיקה:</label>
+            <select id="datePicker" onchange="changeDate()">
+                <option value="25/01/2026" {% if date == '25/01/2026' %}selected{% endif %}>25/01/2026 (מחר)</option>
+                <option value="01/01/2026" {% if date == '01/01/2026' %}selected{% endif %}>01/01/2026</option>
+                <option value="04/01/2026" {% if date == '04/01/2026' %}selected{% endif %}>04/01/2026</option>
+            </select>
+        </div>
+
+        {% if error %}
+            <div style="color: red; padding: 20px; border: 1px solid red;">{{ error }}</div>
+        {% else %}
+            <h3>פרטי פרויקט</h3>
+            <table>
+                <tr><th>שם בודק</th><td>{{ name }}</td></tr>
+                <tr><th>פרויקט</th><td>{{ project }}</td></tr>
+                <tr><th>כתובת</th><td>{{ address }}</td></tr>
+                <tr><th>מספר הזמנה</th><td>{{ order }}</td></tr>
+            </table>
+
+            <h3>תוצאות חישוב (לפי אקסל)</h3>
+            <table>
+                <tr><th>פרמטר</th><th>תוצאה</th></tr>
+                <tr><td>עומס תכנוני קובע (Fmax)</td><td>{{ f_max }} N/m</td></tr>
+                <tr><td><strong>חישוב סעיף ה' (ניצב אמצעי)</strong></td><td class="highlight">{{ section_e }} N</td></tr>
+            </table>
+        {% endif %}
+
+        <button class="btn-print" onclick="window.print()">הדפס דוח PDF</button>
     </div>
+
+    <script>
+        function changeDate() {
+            const date = document.getElementById('datePicker').value;
+            window.location.href = `/api/schedule/Amir?date=${date}`;
+        }
+    </script>
 </body>
 </html>
