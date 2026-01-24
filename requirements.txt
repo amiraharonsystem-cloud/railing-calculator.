@@ -1,4 +1,3 @@
 flask
 flask-cors
 fpdf2
-requests
