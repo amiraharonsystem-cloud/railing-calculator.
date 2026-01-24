@@ -7,40 +7,38 @@ import io
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/api/generate-pdf', methods=['POST', 'GET'])
-def generate_pdf():
-    try:
-        # קבלת נתונים מה-Frontend
-        if request.method == 'POST':
-            data = request.get_json() or {}
-        else:
-            data = request.args
-            
-        # יצירת PDF בסיסי (ללא פונטים חיצוניים בשלב זה כדי למנוע קריסה)
-        pdf = FPDF()
-        pdf.add_page()
-        pdf.set_font("Arial", size=12)
+def create_simple_pdf(data):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="Railing Report", ln=True, align='C')
+    pdf.ln(10)
+    
+    # כתיבת הנתונים שהתקבלו
+    for key, value in data.items():
+        pdf.cell(0, 10, txt=f"{key}: {value}", ln=True)
         
-        pdf.cell(200, 10, txt="Railing Test Report - IS 1142", ln=True, align='C')
-        pdf.ln(10)
-        
-        # הוספת הנתונים מהטופס
-        for key, value in data.items():
-            pdf.cell(200, 10, txt=f"{key}: {value}", ln=True, align='L')
-            
-        # יצירת הקובץ בזיכרון
-        pdf_output = io.BytesIO()
-        pdf_str = pdf.output(dest='S')
-        pdf_output.write(pdf_str)
-        pdf_output.seek(0)
+    pdf_output = io.BytesIO()
+    pdf_str = pdf.output(dest='S')
+    pdf_output.write(pdf_str)
+    pdf_output.seek(0)
+    return pdf_output
 
+# זה הנתיב שה-Frontend שלך מחפש לפי צילום המסך (image_15c593.jpg)
+@app.route('/api/schedule/<name>', methods=['GET', 'POST'])
+def schedule_pdf(name):
+    try:
+        # אם זו בקשת GET (כמו בדפדפן), ניקח נתונים מה-URL
+        data = request.args.to_dict()
+        data['Inspector'] = name
+        
+        pdf_file = create_simple_pdf(data)
         return send_file(
-            pdf_output,
+            pdf_file,
             mimetype='application/pdf',
             as_attachment=True,
-            download_name='Report.pdf'
+            download_name=f'Report_{name}.pdf'
         )
-
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
