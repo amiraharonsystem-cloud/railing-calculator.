@@ -2,62 +2,62 @@
 <html dir="rtl" lang="he">
 <head>
     <meta charset="UTF-8">
-    <title>דוח דינמי - אמיר אהרון</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0056b3; padding-bottom: 15px; margin-bottom: 20px; }
-        .selector { background: #eef6ff; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: right; }
-        th { background: #0056b3; color: white; }
-        .highlight { color: #d9534f; font-weight: bold; font-size: 1.2em; }
-        .btn-print { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+        body { font-family: Arial, sans-serif; background: #fff; color: #000; padding: 0; }
+        .excel-table { width: 100%; border-collapse: collapse; border: 2px solid #000; }
+        .excel-table td, .excel-table th { border: 1px solid #000; padding: 8px; font-size: 14px; }
+        .header-cell { background-color: #d9d9d9; font-weight: bold; width: 150px; }
+        .title-row { background-color: #4472c4; color: white; text-align: center; font-weight: bold; font-size: 18px; }
+        .section-header { background-color: #bdd7ee; font-weight: bold; }
+        .value-cell { background-color: #fff; text-align: center; }
+        .print-btn { margin: 20px; padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; }
+        @media print { .print-btn, .selector { display: none; } }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h2>דוח הנדסי דינמי - מערכות בניין</h2>
-            <img src="https://via.placeholder.com/150x50?text=Logo" alt="Logo">
-        </div>
+    <div style="max-width: 800px; margin: auto; padding: 20px;">
+        <table class="excel-table">
+            <tr class="title-row"><td colspan="4">דוח בדיקה הנדסית - מעקות</td></tr>
+            
+            <tr>
+                <td class="header-cell">תאריך:</td><td class="value-cell">{{ cell_B2 }}</td>
+                <td class="header-cell">בודק:</td><td class="value-cell">{{ cell_E2 }}</td>
+            </tr>
+            <tr>
+                <td class="header-cell">מזמין/פרויקט:</td><td class="value-cell">{{ cell_B3 }}</td>
+                <td class="header-cell">מס' הזמנה:</td><td class="value-cell">{{ cell_E3 }}</td>
+            </tr>
+            <tr>
+                <td class="header-cell">כתובת:</td><td colspan="3" class="value-cell">{{ cell_B4 }}</td>
+            </tr>
 
-        <div class="selector">
-            <label>בחר תאריך לבדיקה:</label>
-            <select id="datePicker" onchange="changeDate()">
-                <option value="25/01/2026" {% if date == '25/01/2026' %}selected{% endif %}>25/01/2026 (מחר)</option>
-                <option value="01/01/2026" {% if date == '01/01/2026' %}selected{% endif %}>01/01/2026</option>
-                <option value="04/01/2026" {% if date == '04/01/2026' %}selected{% endif %}>04/01/2026</option>
-            </select>
-        </div>
+            <tr class="section-header"><td colspan="4">חישובים הנדסיים לפי ת"י 1142</td></tr>
+            
+            <tr>
+                <td colspan="2">עומס תכנוני קובע ($F_{max}$)</td>
+                <td colspan="2" class="value-cell"><strong>{{ f_max }} N/m</strong></td>
+            </tr>
+            
+            <tr>
+                <td class="header-cell">סעיף א'</td><td>עומס אופקי על המאחז</td>
+                <td colspan="2" class="value-cell">{{ sec_a }} N</td>
+            </tr>
+            <tr>
+                <td class="header-cell">סעיף ב'</td><td>כוח בחיבור המעקה</td>
+                <td colspan="2" class="value-cell">{{ sec_b }} N</td>
+            </tr>
+            <tr>
+                <td class="header-cell">סעיף ג'</td><td>עומס אופקי מרוכז</td>
+                <td colspan="2" class="value-cell">{{ sec_c }} N</td>
+            </tr>
+            <tr>
+                <td class="header-cell" style="background-color: #ffeb3b;">סעיף ה'</td>
+                <td style="background-color: #ffeb3b;"><strong>עומס על ניצב אמצעי</strong></td>
+                <td colspan="2" class="value-cell" style="background-color: #ffeb3b; font-weight: bold;">{{ sec_e }} N</td>
+            </tr>
+        </table>
 
-        {% if error %}
-            <div style="color: red; padding: 20px; border: 1px solid red;">{{ error }}</div>
-        {% else %}
-            <h3>פרטי פרויקט</h3>
-            <table>
-                <tr><th>שם בודק</th><td>{{ name }}</td></tr>
-                <tr><th>פרויקט</th><td>{{ project }}</td></tr>
-                <tr><th>כתובת</th><td>{{ address }}</td></tr>
-                <tr><th>מספר הזמנה</th><td>{{ order }}</td></tr>
-            </table>
-
-            <h3>תוצאות חישוב (לפי אקסל)</h3>
-            <table>
-                <tr><th>פרמטר</th><th>תוצאה</th></tr>
-                <tr><td>עומס תכנוני קובע (Fmax)</td><td>{{ f_max }} N/m</td></tr>
-                <tr><td><strong>חישוב סעיף ה' (ניצב אמצעי)</strong></td><td class="highlight">{{ section_e }} N</td></tr>
-            </table>
-        {% endif %}
-
-        <button class="btn-print" onclick="window.print()">הדפס דוח PDF</button>
+        <button class="print-btn" onclick="window.print()">הדפס דוח (זהה לאקסל)</button>
     </div>
-
-    <script>
-        function changeDate() {
-            const date = document.getElementById('datePicker').value;
-            window.location.href = `/api/schedule/Amir?date=${date}`;
-        }
-    </script>
 </body>
 </html>
