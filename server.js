@@ -15,45 +15,44 @@ def home():
     return """
     <div dir="rtl" style="font-family:Arial; text-align:center; padding:50px;">
         <h1>מערכת דוחות - אמיר אהרון</h1>
-        <p>בחר תאריך:</p>
+        <p>בחר תאריך מהלוח:</p>
         <input type="date" id="datePicker" style="padding:10px; font-size:18px;">
         <br><br>
         <button onclick="submitDate()" style="padding:10px 20px; font-size:18px; cursor:pointer;">הצג דוח</button>
-        <script>
-            function submitDate() {
-                var val = document.getElementById('datePicker').value;
-                if(!val) return alert('נא לבחור תאריך');
-                var p = val.split('-');
-                var formatted = p[2] + '.' + p[1] + '.' + p[0];
-                window.location.href = '/api/schedule/Amir?date=' + formatted;
-            }
-        </script>
     </div>
+    <script>
+        function submitDate() {
+            var val = document.getElementById('datePicker').value;
+            if(!val) return alert('נא לבחור תאריך');
+            var p = val.split('-');
+            var formatted = p[2] + '.' + p[1] + '.' + p[0];
+            window.location.href = '/api/schedule/Amir?date=' + formatted;
+        }
+    </script>
     """
 
 @app.route('/api/schedule/Amir')
 def get_report():
     target_date = request.args.get('date')
-    # ניסיון למצוא את הלשונית בפורמט הרגיל או עם רווח בהתחלה
     try:
-        # בדיקה ראשונה: ללא רווח
+        # ניסיון ראשון: קריאה רגילה
         url = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/export?format=csv&sheet={target_date}"
         df = pd.read_csv(url, storage_options={'User-Agent': 'Mozilla/5.0'})
     except Exception:
         try:
-            # בדיקה שנייה: עם רווח (כמו שמופיע בתמונה שלך)
+            # ניסיון שני: עם רווח לפני (בגלל מה שראינו בטאבים שלך)
             url_space = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/export?format=csv&sheet=%20{target_date}"
             df = pd.read_csv(url_space, storage_options={'User-Agent': 'Mozilla/5.0'})
         except Exception as e:
-            return f"<div dir='rtl'><h1>שגיאה: הלשונית {target_date} לא נמצאה</h1><p>{str(e)}</p><a href='/'>חזור</a></div>", 404
+            return f"<div dir='rtl'><h1>שגיאה: לא הצלחתי למצוא את הלשונית {target_date}</h1><p>וודא שהגדרת שיתוף ל'כל מי שקיבל את הקישור'.</p></div>", 401
 
     df = df.fillna('')
-    # חיפוש אמיר אהרון בכל השורה
+    # חיפוש אמיר אהרון בכל הגיליון
     mask = df.apply(lambda row: row.astype(str).str.contains('אמיר אהרון').any(), axis=1)
     rows = df[mask]
     
     if rows.empty:
-        return f"<div dir='rtl'><h1>לא נמצא פרויקט לאמיר ב-{target_date}</h1><a href='/'>חזור</a></div>", 404
+        return f"<div dir='rtl'><h1>לא נמצא פרויקט לאמיר ב-{target_date}</h1></div>", 404
 
     r = rows.iloc[0]
     data = {
