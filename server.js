@@ -1,35 +1,24 @@
-import os
-import io
-from flask import Flask, request, send_file
-from flask_cors import CORS
-from openpyxl import load_workbook
-
-app = Flask(__name__)
-CORS(app) # מאפשר לדפדפן לשלוח נתונים מהגיליון לשרת
-
-@app.route('/generate', methods=['POST'])
-def generate():
-    data = request.json
-    try:
-        template_path = 'template.xlsx'
-        wb = load_workbook(template_path)
-        ws = wb.active
-        
-        # הזרקת הנתונים שהגיעו מהדפדפן
-        ws['B2'] = data.get('date', '')
-        ws['E2'] = "אמיר אהרון"
-        ws['B3'] = data.get('project', '')
-        ws['E3'] = data.get('order', '')
-        ws['B4'] = data.get('address', '')
-        ws['F15'] = 1693.68
-        ws['F20'] = 1693.68
-
-        out = io.BytesIO()
-        wb.save(out)
-        out.seek(0)
-        return send_file(out, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', as_attachment=True, download_name=f"Report_{data.get('date')}.xlsx")
-    except Exception as e:
-        return str(e), 500
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
+javascript:(function(){
+    let row = prompt("הדבק כאן את השורה שהעתקת מאקסל:");
+    if(!row) return;
+    let p = row.split(/\t/);
+    let data = {
+        order: p[0],
+        project: p[3],
+        address: p[4],
+        date: new Date().toLocaleDateString('he-IL')
+    };
+    fetch('https://YOUR-APP-NAME.onrender.com/generate', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(response => response.blob())
+    .then(blob => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = "Report.xlsx";
+        a.click();
+    });
+})();
