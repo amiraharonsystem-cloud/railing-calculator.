@@ -1,32 +1,38 @@
 import os
+import pandas as pd
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/api/schedule/<name>', methods=['GET', 'POST'])
-def generate_dynamic_report(name):
+@app.route('/api/schedule/<name>')
+def generate_from_excel(name):
     try:
-        # שליפת נתוני החישוב מהכתובת (URL parameters)
-        # אם הנתונים לא קיימים, נשתמש בערכי ברירת מחדל
-        fw = float(request.args.get('fw', 1693.68))
-        l1 = float(request.args.get('l1', 1.0))
-        l2 = float(request.args.get('l2', 1.0))
-        
-        # ביצוע החישוב ההנדסי (סעיף ה')
-        f_max = max(fw, fw * 0.943)
-        section_e = f_max * (l1/2 + l2/2)
+        # קריאת קובץ האקסל שנמצא ב-GitHub שלך
+        excel_file = 'template.xlsx'
+        df = pd.read_excel(excel_file)
 
-        # פקודת הקסם: מחברת את הנתונים לקובץ ה-HTML שיצרת בתיקיית templates
+        # נניח שאנחנו מחפשים את השורה של הפרויקט לפי שם הבודק
+        # כאן המערכת הופכת ל"זהה לאקסל" - היא שולפת נתונים אמיתיים
+        project_data = df[df['בודק'] == name].to_dict(orient='records')
+        
+        if not project_data:
+            # אם לא מצאנו באקסל, נשתמש בנתונים מה-URL כגיבוי
+            fw = float(request.args.get('fw', 1693))
+            l1 = float(request.args.get('l1', 1.0))
+        else:
+            # משיכת נתונים ישירות מהאקסל
+            fw = project_data[0].get('עומס', 1693)
+            l1 = project_data[0].get('מרווח', 1.0)
+
+        # חישוב סעיף ה'
+        section_e = fw * l1 # דוגמה לחישוב
+
         return render_template('index.html', 
                                name=name, 
-                               f_max=round(f_max, 2), 
+                               f_max=fw, 
                                section_e=round(section_e, 2))
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
