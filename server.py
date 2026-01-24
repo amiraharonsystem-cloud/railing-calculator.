@@ -1,50 +1,54 @@
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
-const app = express();
+import math
+import os
+import requests
+from fpdf import FPDF
 
-app.use(cors());
-app.use(express.static('public'));
+# פונקציה לעיבוד טקסט עברי (היפוך סימנים)
+def fix_heb(text):
+    if not text: return ""
+    return str(text)[::-1]
 
-const SHEET_ID = '1JpM_HhT-EyTclnSP12VlpaZFKZwgfHSGOS4YRPZbbvs';
-const GIDS = ['689162898', '1424845815'];
+class RailingReport(FPDF):
+    def header(self):
+        # טעינת פונט עברי מהרשת כדי שיעבוד על כל שרת ללא התקנה
+        font_url = "https://github.com/google/fonts/raw/main/ofl/arimo/Arimo%5Bwght%5D.ttf"
+        font_path = "HebrewFont.ttf"
+        if not os.path.exists(font_path):
+            r = requests.get(font_url)
+            with open(font_path, 'wb') as f:
+                f.write(r.content)
+        
+        self.add_font("Arimo", "", font_path)
+        self.set_font("Arimo", size=16)
+        self.cell(0, 10, fix_heb("דוח הנדסי - בדיקת מעקות לפי ת\"י 1142 ו-414"), ln=True, align='C')
+        self.ln(10)
 
-app.get('/api/schedule/:tester', async (req, res) => {
-    try {
-        const testerSearch = decodeURIComponent(req.params.tester).split(' ')[0];
-        let foundProjects = [];
+def generate_pdf(data):
+    pdf = RailingReport()
+    pdf.add_page()
+    pdf.set_font("Arimo", size=12)
+    
+    # נתונים מהחישוב
+    fw = data.get('fw', 0)
+    fser = fw * 0.943
+    f_max = max(fw, fser)
+    l1 = data.get('l1', 1.0)
+    l2 = data.get('l2', 1.0)
+    proj_name = data.get('project', 'ללא שם')
 
-        for (let gid of GIDS) {
-            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
-            const response = await axios.get(url);
-            
-            const rows = response.data.split('\n').map(row => 
-                row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(cell => cell.replace(/"/g, '').trim())
-            );
+    # כתיבת תוכן הדוח
+    pdf.cell(0, 10, f"{fix_heb('שם הפרויקט')}: {fix_heb(proj_name)}", ln=True, align='R')
+    pdf.cell(0, 10, f"{fix_heb('עומס רוח מחושב')} (Fw): {fw:.2f} N/m", ln=True, align='R')
+    pdf.cell(0, 10, f"{fix_heb('עומס שירות')} (Fser): {fser:.2f} N/m", ln=True, align='R')
+    pdf.set_text_color(0, 0, 255) # כחול לערך הקובע
+    pdf.cell(0, 10, f"{fix_heb('ערך קובע לחישובים')}: {f_max:.2f} N/m", ln=True, align='R')
+    pdf.set_text_color(0, 0, 0)
+    
+    pdf.ln(5)
+    pdf.cell(0, 5, "----------------------------------------------------------------", ln=True, align='C')
+    pdf.ln(5)
 
-            rows.forEach((row, i) => {
-                try {
-                    if (row.join(' ').includes(testerSearch)) {
-                        // בדיקה אם המידע בשורה הנוכחית או בשורה הבאה
-                        let dataRow = (row[3] && row[3].length > 2) ? row : (rows[i + 1] || null);
-                        
-                        if (dataRow && dataRow[3] && !dataRow.join(' ').includes("בוטל")) {
-                            foundProjects.push({
-                                client: dataRow[3],
-                                address: dataRow[4] || "יהוד",
-                                pNum: dataRow[1] || "148533",
-                                date: gid === '689162898' ? '18/01/2026' : '19/01/2026'
-                            });
-                        }
-                    }
-                } catch (e) { /* דילוג על שורות שגויות */ }
-            });
-        }
-        res.json(foundProjects);
-    } catch (error) {
-        res.status(500).json({ error: "Server Error" });
-    }
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    # סעיפי הבדיקה
+    sections = [
+        (fix_heb("סעיף א' - עומס על המאחז"), f"{0.375 * l1 * f_max:.2f} N"),
+        (fix_heb("סעי
