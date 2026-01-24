@@ -8,19 +8,23 @@ from openpyxl import load_workbook
 app = Flask(__name__)
 CORS(app)
 
+# קישור ה-CSV של הגליון שלך מגוגל
 SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_2H0G6j8iS_F8W6I8-09Gz9H1z6v9H1z6v9H1z6v9H1z6v9H1z6v9H1z6v9H/pub?output=csv"
 
 @app.route('/api/schedule/Amir')
 def get_report():
     target_date = request.args.get('date', '25/01/2026')
     try:
+        # 1. משיכת נתונים מהגליון
         df = pd.read_csv(SHEET_CSV_URL)
         row = df[(df['בודק'] == 'אמיר אהרון') & (df['תאריך'] == target_date)]
         
         if row.empty:
-            return render_template('index.html', error="לא נמצאו נתונים")
+            return render_template('index.html', error=f"לא נמצא פרויקט לתאריך {target_date}")
 
         r = row.iloc[0]
+        
+        # 2. חישובים הנדסיים (זהים לאקסל)
         fw = float(request.args.get('fw', 1693.68))
         l1 = float(request.args.get('l1', 1.0))
         f_max = max(fw, fw * 0.943)
@@ -32,44 +36,16 @@ def get_report():
             "order": r.get('מספר הזמנה', ''),
             "inspector": "אמיר אהרון",
             "f_max": round(f_max, 2),
+            "sec_a": round(0.375 * l1 * f_max, 2),
+            "sec_b": round(0.75 * l1 * f_max, 2),
+            "sec_c": round(1.2 * f_max, 2),
             "sec_e": round(f_max * l1, 2)
         }
 
-        # אם המשתמש ביקש להוריד אקסל
+        # 3. אם התבקשה הורדת אקסל
         if request.args.get('download') == 'excel':
-            return download_excel_filled(data)
+            return generate_excel_response(data)
 
         return render_template('index.html', **data)
-    except Exception as e:
-        return f"Error: {str(e)}"
-
-def download_excel_filled(data):
-    # טעינת התבנית המקורית מהתיקייה
-    template_path = 'template.xlsx'
-    wb = load_workbook(template_path)
-    ws = wb.active # או ws = wb['שם הגיליון']
-
-    # הזרקת הנתונים בדיוק לתאים המקוריים (דוגמה לפי המבנה שלך)
-    ws['B2'] = data['date']
-    ws['E2'] = data['inspector']
-    ws['B3'] = data['project']
-    ws['E3'] = data['order']
-    ws['B4'] = data['address']
-    ws['F15'] = data['f_max'] # דוגמה לתא חישוב
-    ws['F20'] = data['sec_e'] # תא סעיף ה'
-
-    # שמירה לזיכרון ושליחה למשתמש
-    excel_out = io.BytesIO()
-    wb.save(excel_out)
-    excel_out.seek(0)
     
-    return send_file(
-        excel_out,
-        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        as_attachment=True,
-        download_name=f"Report_{data['date'].replace('/','-')}.xlsx"
-    )
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host='0.0.0.0', port=port)
+    except
