@@ -13,15 +13,14 @@ SPREADSHEET_ID = "1JpM_HhT-EyTclnSP12VlpaZFKZwgfHSGOS4YRPZbbvs"
 
 @app.route('/')
 def home():
-    # דף בית עם לוח שנה
     return """
     <div dir="rtl" style="font-family:Arial, sans-serif; text-align:center; padding:50px; background:#f4f7f8; min-height:100vh;">
         <div style="background:white; padding:30px; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.1); display:inline-block;">
             <h1 style="color:#1a4e8a;">מערכת דוחות - אמיר אהרון</h1>
-            <p>בחר תאריך לביצוע הבדיקה:</p>
+            <p>בחר תאריך מהלוח:</p>
             <input type="date" id="datePicker" style="padding:15px; font-size:18px; border-radius:8px; border:2px solid #1a4e8a; width:250px;">
             <br><br>
-            <button onclick="submitDate()" style="background:#1a4e8a; color:white; padding:15px 40px; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:18px;">הצג נתונים מהגיליון</button>
+            <button onclick="submitDate()" style="background:#1a4e8a; color:white; padding:15px 40px; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:18px;">הצג דוח</button>
         </div>
         <script>
             function submitDate() {
@@ -37,26 +36,28 @@ def home():
 
 @app.route('/api/schedule/Amir')
 def get_report():
-    target_date = request.args.get('date') # יגיע כ-25.01.2026
+    target_date = request.args.get('date') 
     try:
-        # בניית קישור להורדת הלשונית כ-CSV
-        # השימוש ב-export?format=csv הוא הדרך היציבה ביותר לקריאה ללא הרשאות מנהל
+        # פתרון לבעיית הרווחים: אנחנו מנסים גם עם רווח וגם בלי
         url = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/export?format=csv&sheet={target_date}"
         
-        # הוספת User-Agent כדי להיראות כמו דפדפן רגיל ולמנוע חסימה
-        df = pd.read_csv(url, storage_options={'User-Agent': 'Mozilla/5.0'})
+        try:
+            df = pd.read_csv(url, storage_options={'User-Agent': 'Mozilla/5.0'})
+        except:
+            # ניסיון שני עם רווח לפני התאריך (כפי שמופיע בתמונה שלך)
+            url_with_space = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/export?format=csv&sheet=%20{target_date}"
+            df = pd.read_csv(url_with_space, storage_options={'User-Agent': 'Mozilla/5.0'})
+
         df = df.fillna('')
         
-        # חיפוש "אמיר אהרון" בכל הגיליון (למקרה של שינויי מבנה)
+        # חיפוש "אמיר אהרון" בשורה
         mask = df.apply(lambda row: row.astype(str).str.contains('אמיר אהרון').any(), axis=1)
         rows = df[mask]
         
         if rows.empty:
-            return f"<div dir='rtl' style='text-align:center; padding:50px;'><h1>לא נמצא פרויקט לאמיר בלשונית '{target_date}'</h1><a href='/'>חזור ללוח השנה</a></div>", 404
+            return f"<div dir='rtl' style='text-align:center; padding:50px;'><h1>לא נמצא פרויקט לאמיר בתאריך {target_date}</h1><a href='/'>חזור</a></div>", 404
 
         r = rows.iloc[0]
-        
-        # מיפוי נתונים לפי עמודות A, D, E (מספרים 0, 3, 4)
         data = {
             "date": target_date,
             "order": str(r.iloc[0]),   # עמודה A
@@ -73,7 +74,7 @@ def get_report():
         return render_template('index.html', **data)
     
     except Exception as e:
-        return f"<div dir='rtl' style='padding:50px;'><h1>שגיאה בגישה ללשונית {target_date}</h1><p>וודא שהגדרת 'שיתוף > כל מי שקיבל את הקישור'.</p><p>פרטים: {str(e)}</p><a href='/'>חזור</a></div>", 500
+        return f"<div dir='rtl' style='padding:50px;'><h1>שגיאה בגישה ללשונית</h1><p>ודא שהלשונית <b>{target_date}</b> קיימת בגיליון.</p><p>שגיאה: {str(e)}</p><a href='/'>חזור</a></div>", 500
 
 def generate_excel(data):
     template_path = 'template.xlsx'
