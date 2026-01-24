@@ -8,85 +8,91 @@ from openpyxl import load_workbook
 app = Flask(__name__)
 CORS(app)
 
-# קישור ה-CSV של הגליון שלך (Published to web)
-SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_2H0G6j8iS_F8W6I8-09Gz9H1z6v9H1z6v9H1z6v9H1z6v9H1z6v9H1z6v9H/pub?output=csv"
+# --- כאן תדביק את הקישור שקיבלת מגוגל שיטס (חובה שיהיה בסיומת output=csv) ---
+SHEET_CSV_URL = "YOUR_CSV_LINK_HERE"
+
+@app.route('/')
+def home():
+    return """
+    <div dir="rtl" style="font-family:Arial; text-align:center; padding:50px;">
+        <h1>המערכת פעילה! 🚀</h1>
+        <p>כדי לראות את הדוח של אמיר אהרון למחר, לחץ כאן:</p>
+        <a href="/api/schedule/Amir?date=25/01/2026" style="font-size:20px;">צפה בדוח ל-25/01/2026</a>
+    </div>
+    """
 
 @app.route('/api/schedule/Amir')
 def get_report():
     target_date = request.args.get('date', '25/01/2026')
     try:
-        # 1. משיכת הנתונים מהגליון (מערכות בניין 2026)
+        # 1. משיכת הנתונים מגוגל שיטס
         df = pd.read_csv(SHEET_CSV_URL)
+        
+        # ניקוי רווחים משמות העמודות (למניעת שגיאות)
+        df.columns = df.columns.str.strip()
+        
         # סינון לפי בודק ותאריך
         row = df[(df['בודק'] == 'אמיר אהרון') & (df['תאריך'] == target_date)]
         
         if row.empty:
-            return render_template('index.html', error=f"לא נמצאו נתונים עבור אמיר בתאריך {target_date}")
+            return f"<h1 dir='rtl'>לא נמצאו נתונים עבור אמיר אהרון בתאריך {target_date}</h1>", 404
 
         r = row.iloc[0]
         
-        # 2. איסוף נתונים לחישוב (מתוך האתר או הגליון)
-        fw = float(request.args.get('fw', 1693.68))
-        l1 = float(request.args.get('l1', 1.0))
-        f_max = max(fw, fw * 0.943)
-
+        # 2. הכנת הנתונים (שימוש בערכי ברירת מחדל אם התא ריק)
         data = {
             "date": target_date,
-            "project": r.get('שם המזמין', 'חסר נתון'),
-            "address": r.get('כתובת האתר', 'חסר נתון'),
-            "order": r.get('מספר הזמנה', '0'),
+            "project": str(r.get('שם המזמין', 'ללא שם')),
+            "address": str(r.get('כתובת האתר', 'ללא כתובת')),
+            "order": str(r.get('מספר הזמנה', '0')),
             "inspector": "אמיר אהרון",
-            "f_max": round(f_max, 2),
-            "sec_a": round(0.375 * l1 * f_max, 2),
-            "sec_b": round(0.75 * l1 * f_max, 2),
-            "sec_c": round(1.2 * f_max, 2),
-            "sec_e": round(f_max * l1, 2)
+            "fw": 1693.68, # ערך קבוע מהאקסל המקורי
+            "l1": 1.0,     # ערך קבוע מהאקסל המקורי
         }
+        
+        # חישובים הנדסיים זהים לאקסל
+        f_max = max(data['fw'], data['fw'] * 0.943)
+        data['f_max'] = round(f_max, 2)
+        data['sec_e'] = round(f_max * data['l1'], 2)
 
         # 3. אם המשתמש לוחץ על הורדת אקסל
         if request.args.get('download') == 'excel':
             return generate_excel_response(data)
 
-        # 4. תצוגה דינמית ב-HTML
+        # 4. תצוגה באתר
         return render_template('index.html', **data)
     
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "שגיאה בגישה לנתונים. וודא שהקישור לגוגל שיטס תקין.", "details": str(e)}), 500
 
 def generate_excel_response(data):
-    # טעינת קובץ המקור (התבנית שלך)
     template_path = 'template.xlsx'
     if not os.path.exists(template_path):
-        return "קובץ template.xlsx לא נמצא בשרת GitHub שלך", 404
+        return "שגיאה: קובץ template.xlsx לא נמצא ב-GitHub שלך", 404
         
     wb = load_workbook(template_path)
     ws = wb.active
 
-    # הזרקה לתאים - התאמה מדויקת למבנה האקסל המקורי
+    # הזרקה לתאים בדיוק לפי המבנה המקורי של האקסל שלך
     ws['B2'] = data['date']      # תאריך
     ws['E2'] = data['inspector'] # בודק
     ws['B3'] = data['project']   # מזמין/פרויקט
     ws['E3'] = data['order']     # מס' הזמנה
     ws['B4'] = data['address']   # כתובת האתר
     
-    # הזרקת חישובים הנדסיים לתאים הרלוונטיים
+    # הזרקת חישובים הנדסיים
     ws['F15'] = data['f_max']    # עומס תכנוני
-    ws['F17'] = data['sec_a']    # סעיף א'
-    ws['F18'] = data['sec_b']    # סעיף ב'
-    ws['F19'] = data['sec_c']    # סעיף ג'
     ws['F20'] = data['sec_e']    # סעיף ה'
 
-    # שמירה לזיכרון ושליחה למשתמש
     output = io.BytesIO()
     wb.save(output)
     output.seek(0)
 
-    filename = f"Report_Amir_{data['date'].replace('/', '-')}.xlsx"
     return send_file(
         output,
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         as_attachment=True,
-        download_name=filename
+        download_name=f"Report_Amir_{data['date'].replace('/', '_')}.xlsx"
     )
 
 if __name__ == "__main__":
