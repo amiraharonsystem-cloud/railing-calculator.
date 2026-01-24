@@ -1,1 +1,27 @@
-
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>דוח בדיקה דינמי</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f4f4f9; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .result-box { background: #e7f3fe; padding: 15px; border-right: 5px solid #3498db; margin: 20px 0; }
+        .value { font-weight: bold; color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>דוח הנדסי דינמי</h1>
+        <p>בודק: <strong>{{ name }}</strong></p>
+        
+        <div class="result-box">
+            <p>עומס תכנוני קובע ($F_{max}$): <span class="value">{{ f_max }}</span> N/m</p>
+            <p><strong>חישוב סעיף ה' (ניצב אמצעי):</strong> <span class="value">{{ section_e }}</span> N</p>
+        </div>
+        
+        <button onclick="window.print()">הדפס דוח זה</button>
+    </div>
+</body>
+</html>
