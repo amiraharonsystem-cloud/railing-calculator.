@@ -13,14 +13,12 @@ SPREADSHEET_ID = "1JpM_HhT-EyTclnSP12VlpaZFKZwgfHSGOS4YRPZbbvs"
 @app.route('/')
 def home():
     return """
-    <div dir="rtl" style="font-family:Arial; text-align:center; padding:50px; background:#f4f7f8; min-height:100vh;">
-        <div style="background:white; padding:30px; border-radius:15px; box-shadow:0 10px 25px rgba(0,0,0,0.1); display:inline-block;">
-            <h1 style="color:#1a4e8a;">מערכת דוחות - אמיר אהרון</h1>
-            <p>בחר תאריך מהלוח:</p>
-            <input type="date" id="datePicker" style="padding:15px; font-size:18px; border-radius:8px; border:2px solid #1a4e8a;">
-            <br><br>
-            <button onclick="submitDate()" style="background:#1a4e8a; color:white; padding:15px 40px; border:none; border-radius:8px; cursor:pointer; font-size:18px;">הצג דוח</button>
-        </div>
+    <div dir="rtl" style="font-family:Arial; text-align:center; padding:50px;">
+        <h1>מערכת דוחות - אמיר אהרון</h1>
+        <p>בחר תאריך:</p>
+        <input type="date" id="datePicker" style="padding:10px; font-size:18px;">
+        <br><br>
+        <button onclick="submitDate()" style="padding:10px 20px; font-size:18px; cursor:pointer;">הצג דוח</button>
         <script>
             function submitDate() {
                 var val = document.getElementById('datePicker').value;
@@ -36,42 +34,42 @@ def home():
 @app.route('/api/schedule/Amir')
 def get_report():
     target_date = request.args.get('date')
+    # ניסיון למצוא את הלשונית בפורמט הרגיל או עם רווח בהתחלה
     try:
-        # ניסיון קריאה עם ובלי רווח (כי ראינו רווח בתמונה שלך)
+        # בדיקה ראשונה: ללא רווח
         url = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/export?format=csv&sheet={target_date}"
-        
+        df = pd.read_csv(url, storage_options={'User-Agent': 'Mozilla/5.0'})
+    except Exception:
         try:
-            df = pd.read_csv(url, storage_options={'User-Agent': 'Mozilla/5.0'})
-        except Exception:
-            # אם נכשל, מנסה עם רווח לפני (כמו בגיליון שלך)
+            # בדיקה שנייה: עם רווח (כמו שמופיע בתמונה שלך)
             url_space = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/export?format=csv&sheet=%20{target_date}"
             df = pd.read_csv(url_space, storage_options={'User-Agent': 'Mozilla/5.0'})
+        except Exception as e:
+            return f"<div dir='rtl'><h1>שגיאה: הלשונית {target_date} לא נמצאה</h1><p>{str(e)}</p><a href='/'>חזור</a></div>", 404
 
-        df = df.fillna('')
-        mask = df.apply(lambda row: row.astype(str).str.contains('אמיר אהרון').any(), axis=1)
-        rows = df[mask]
-        
-        if rows.empty:
-            return f"<div dir='rtl'><h1>לא נמצא פרויקט לאמיר ב-{target_date}</h1><a href='/'>חזור</a></div>", 404
+    df = df.fillna('')
+    # חיפוש אמיר אהרון בכל השורה
+    mask = df.apply(lambda row: row.astype(str).str.contains('אמיר אהרון').any(), axis=1)
+    rows = df[mask]
+    
+    if rows.empty:
+        return f"<div dir='rtl'><h1>לא נמצא פרויקט לאמיר ב-{target_date}</h1><a href='/'>חזור</a></div>", 404
 
-        r = rows.iloc[0]
-        data = {
-            "date": target_date,
-            "order": str(r.iloc[0]),
-            "project": str(r.iloc[3]),
-            "address": str(r.iloc[4]),
-            "inspector": "אמיר אהרון",
-            "f_max": 1693.68,
-            "sec_e": 1693.68
-        }
+    r = rows.iloc[0]
+    data = {
+        "date": target_date,
+        "order": str(r.iloc[0]),   # עמודה A
+        "project": str(r.iloc[3]), # עמודה D
+        "address": str(r.iloc[4]), # עמודה E
+        "inspector": "אמיר אהרון",
+        "f_max": 1693.68,
+        "sec_e": 1693.68
+    }
 
-        if request.args.get('download') == 'excel':
-            return generate_excel(data)
+    if request.args.get('download') == 'excel':
+        return generate_excel(data)
 
-        return render_template('index.html', **data)
-
-    except Exception as e:
-        return f"<div dir='rtl'><h1>שגיאה בגישה לגיליון</h1><p>{str(e)}</p><a href='/'>חזור</a></div>", 500
+    return render_template('index.html', **data)
 
 def generate_excel(data):
     template_path = 'template.xlsx'
