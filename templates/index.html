@@ -1,63 +1,12 @@
-<!DOCTYPE html>
-<html dir="rtl" lang="he">
-<head>
-    <meta charset="UTF-8">
-    <style>
-        body { font-family: Arial, sans-serif; background: #fff; color: #000; padding: 0; }
-        .excel-table { width: 100%; border-collapse: collapse; border: 2px solid #000; }
-        .excel-table td, .excel-table th { border: 1px solid #000; padding: 8px; font-size: 14px; }
-        .header-cell { background-color: #d9d9d9; font-weight: bold; width: 150px; }
-        .title-row { background-color: #4472c4; color: white; text-align: center; font-weight: bold; font-size: 18px; }
-        .section-header { background-color: #bdd7ee; font-weight: bold; }
-        .value-cell { background-color: #fff; text-align: center; }
-        .print-btn { margin: 20px; padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; }
-        @media print { .print-btn, .selector { display: none; } }
-    </style>
-</head>
-<body>
-    <div style="max-width: 800px; margin: auto; padding: 20px;">
-        <table class="excel-table">
-            <tr class="title-row"><td colspan="4">דוח בדיקה הנדסית - מעקות</td></tr>
-            
-            <tr>
-                <td class="header-cell">תאריך:</td><td class="value-cell">{{ cell_B2 }}</td>
-                <td class="header-cell">בודק:</td><td class="value-cell">{{ cell_E2 }}</td>
-            </tr>
-            <tr>
-                <td class="header-cell">מזמין/פרויקט:</td><td class="value-cell">{{ cell_B3 }}</td>
-                <td class="header-cell">מס' הזמנה:</td><td class="value-cell">{{ cell_E3 }}</td>
-            </tr>
-            <tr>
-                <td class="header-cell">כתובת:</td><td colspan="3" class="value-cell">{{ cell_B4 }}</td>
-            </tr>
+<button class="print-btn" style="background: #007bff;" 
+        onclick="downloadExcel()">
+    הורד כקובץ אקסל (XLSX)
+</button>
 
-            <tr class="section-header"><td colspan="4">חישובים הנדסיים לפי ת"י 1142</td></tr>
-            
-            <tr>
-                <td colspan="2">עומס תכנוני קובע ($F_{max}$)</td>
-                <td colspan="2" class="value-cell"><strong>{{ f_max }} N/m</strong></td>
-            </tr>
-            
-            <tr>
-                <td class="header-cell">סעיף א'</td><td>עומס אופקי על המאחז</td>
-                <td colspan="2" class="value-cell">{{ sec_a }} N</td>
-            </tr>
-            <tr>
-                <td class="header-cell">סעיף ב'</td><td>כוח בחיבור המעקה</td>
-                <td colspan="2" class="value-cell">{{ sec_b }} N</td>
-            </tr>
-            <tr>
-                <td class="header-cell">סעיף ג'</td><td>עומס אופקי מרוכז</td>
-                <td colspan="2" class="value-cell">{{ sec_c }} N</td>
-            </tr>
-            <tr>
-                <td class="header-cell" style="background-color: #ffeb3b;">סעיף ה'</td>
-                <td style="background-color: #ffeb3b;"><strong>עומס על ניצב אמצעי</strong></td>
-                <td colspan="2" class="value-cell" style="background-color: #ffeb3b; font-weight: bold;">{{ sec_e }} N</td>
-            </tr>
-        </table>
-
-        <button class="print-btn" onclick="window.print()">הדפס דוח (זהה לאקסל)</button>
-    </div>
-</body>
-</html>
+<script>
+function downloadExcel() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const date = urlParams.get('date') || '25/01/2026';
+    window.location.href = `/api/schedule/Amir?date=${date}&download=excel`;
+}
+</script>
