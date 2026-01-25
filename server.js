@@ -1,36 +1,42 @@
-import os
-import io
-from flask import Flask, request, send_file
-from flask_cors import CORS
-from openpyxl import load_workbook
+const express = require('express');
+const cors = require('cors');
+const ExcelJS = require('exceljs');
+const fs = require('fs');
 
-app = Flask(__name__)
-CORS(app) # קריטי כדי שהדפדפן יאפשר לסימנייה לשלוח נתונים
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-@app.route('/generate', methods=['POST'])
-def generate():
-    try:
-        data = request.json
-        template_path = 'template.xlsx'
-        wb = load_workbook(template_path)
-        ws = wb.active
-        
-        # הזרקת הנתונים שהגיעו מהסימנייה
-        ws['B2'] = data.get('date', '')
-        ws['E2'] = "אמיר אהרון"
-        ws['B3'] = data.get('project', '')
-        ws['E3'] = data.get('order', '')
-        ws['B4'] = data.get('address', '')
-        ws['F15'] = 1693.68
-        ws['F20'] = 1693.68
+app.post('/generate', async (req, res) => {
+    try {
+        const data = req.body;
+        const workbook = new ExcelJS.Workbook();
+        const templatePath = './template.xlsx';
 
-        out = io.BytesIO()
-        wb.save(out)
-        out.seek(0)
-        return send_file(out, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', as_attachment=True, download_name=f"Report_{data.get('date')}.xlsx")
-    except Exception as e:
-        print(f"Error: {e}")
-        return str(e), 500
+        if (fs.existsSync(templatePath)) {
+            await workbook.xlsx.readFile(templatePath);
+        } else {
+            workbook.addWorksheet('Report');
+        }
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
+        const worksheet = workbook.getWorksheet(1);
+
+        // הזנת הנתונים לתאים
+        worksheet.getCell('B2').value = data.date || "";
+        worksheet.getCell('E2').value = "אמיר אהרון";
+        worksheet.getCell('B3').value = data.project || "";
+        worksheet.getCell('E3').value = data.order || "";
+        worksheet.getCell('B4').value = data.address || "";
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=Report.xlsx');
+
+        await workbook.xlsx.write(res);
+        res.end();
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
