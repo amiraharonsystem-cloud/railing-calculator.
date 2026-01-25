@@ -23,18 +23,15 @@ def generate():
         wb = load_workbook('template.xlsx')
         ws = wb.active
         
-        # מיקום נתונים מדויק לפי התבנית שראינו בתמונה
-        write_to_cell(ws, 'B2', data.get('date', ''))      # תאריך (צד שמאל למעלה)
-        write_to_cell(ws, 'E2', "אמיר אהרון")             # שם בודק
+        # שתילת הנתונים - תאריך ופרטי פרויקט
+        write_to_cell(ws, 'B2', data.get('date', ''))      # תאריך בדיקה
+        write_to_cell(ws, 'E2', "אמיר אהרון")             # בודק (קבוע)
         
-        # הזנת מספר פרויקט (ללא ה-IO) לתא הנכון
-        write_to_cell(ws, 'B3', data.get('project', ''))   # עמודה B שורה 3
+        write_to_cell(ws, 'B3', data.get('site_name', '')) # שם אתר
+        write_to_cell(ws, 'E3', data.get('project', ''))   # קוד פרויקט (בלי IO)
         
-        # הזנת מספר הזמנה (IO-XXXX) לתא D3 כפי שמופיע בתמונה
-        write_to_cell(ws, 'D3', data.get('order', ''))     
-        
-        # כתובת האתר מלאה בתא A4
-        write_to_cell(ws, 'A4', data.get('address', ''))   
+        write_to_cell(ws, 'B4', data.get('address', ''))   # כתובת
+        write_to_cell(ws, 'E4', data.get('customer', ''))  # שם המזמין
         
         out = io.BytesIO()
         wb.save(out)
