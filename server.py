@@ -26,9 +26,15 @@ def generate():
         # מיקום נתונים מדויק לפי התבנית שראינו בתמונה
         write_to_cell(ws, 'B2', data.get('date', ''))      # תאריך (צד שמאל למעלה)
         write_to_cell(ws, 'E2', "אמיר אהרון")             # שם בודק
-        write_to_cell(ws, 'A3', data.get('project', ''))   # מספר פרויקט (במקום ה-IO שזז)
-        write_to_cell(ws, 'D3', data.get('order', ''))     # מספר הזמנה (IO-XXXX)
-        write_to_cell(ws, 'A4', data.get('address', ''))   # כתובת האתר מלאה
+        
+        # הזנת מספר פרויקט (ללא ה-IO) לתא הנכון
+        write_to_cell(ws, 'B3', data.get('project', ''))   # עמודה B שורה 3
+        
+        # הזנת מספר הזמנה (IO-XXXX) לתא D3 כפי שמופיע בתמונה
+        write_to_cell(ws, 'D3', data.get('order', ''))     
+        
+        # כתובת האתר מלאה בתא A4
+        write_to_cell(ws, 'A4', data.get('address', ''))   
         
         out = io.BytesIO()
         wb.save(out)
